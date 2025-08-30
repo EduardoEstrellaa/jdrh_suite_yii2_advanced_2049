@@ -1,0 +1,4 @@
+usuario root plantilla_rbac_yii2_2049
+username: root
+email: root@root.com
+password: root1234
