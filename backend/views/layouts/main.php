@@ -21,157 +21,186 @@ FontAwesomeAsset::register($this);
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
+
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    
+
 </head>
 
 <body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
+    <?php $this->beginBody() ?>
 
-<header>
-    <?php
+    <header>
+        <?php
 
-    if (!Yii::$app->user->isGuest){
-        $es_admin = PermisosHelpers::requerirMinimoRol('Admin');
+        if (!Yii::$app->user->isGuest) {
+            $es_admin = PermisosHelpers::requerirMinimoRol('Admin');
 
-        $id_user = Yii::$app->user->identity->getId();
-        $nombreRol = User::findOne(['id'=>$id_user])->rol->rol_nombre;
-        
-        NavBar::begin([
-            'brandLabel' => '<i class="fa fa-home fa-2x" style="padding: 0px 5px 5px 5px;
+            $id_user = Yii::$app->user->identity->getId();
+            $nombreRol = User::findOne(['id' => $id_user])->rol->rol_nombre;
+
+            NavBar::begin([
+                'brandLabel' => '<i class="fa fa-home fa-2x" style="padding: 0px 5px 5px 5px;
                                                                 margin: 0px 5px 10px 0px;
                                                                 background-color:#000099;
-                                                                border-radius: 10px;"></i> Rol actual: '. $nombreRol,
-            'brandUrl' => Yii::$app->homeUrl,
-            'options' => [
-                'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-                //navbar navbar-expand-md navbar-dark bg-dark fixed-top
+                                                                border-radius: 10px;"></i> Rol actual: ' . $nombreRol,
+                'brandUrl' => Yii::$app->homeUrl,
+                'options' => [
+                    'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+                    //navbar navbar-expand-md navbar-dark bg-dark fixed-top
                 ],
             ]);
-            $menuItems = [ ]; // Se manejo este arreglo vacio para poder alinear a la derecha el menu en Backend
-    }else {
-        NavBar::begin([
-            'brandLabel' => 'Sistema XXX',            //Yii::$app->name,
-            'brandUrl' => Yii::$app->homeUrl,
-            'options' => [
-                'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            $menuItems = []; // Se manejo este arreglo vacio para poder alinear a la derecha el menu en Backend
+        } else {
+            NavBar::begin([
+                'brandLabel' => 'Sistema XXX',            //Yii::$app->name,
+                'brandUrl' => Yii::$app->homeUrl,
+                'options' => [
+                    'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
                 ],
             ]);
             $menuItems = [
                 ['label' => 'Home', 'url' => ['/site/index']],
-        ];
-    }
+            ];
+        }
 
-    // echo Nav::widget([
-    //         'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-    //         'items' => $menuItems,
-    // ]);      
-             
-    if (!Yii::$app->user->isGuest && $es_admin) {
+        // echo Nav::widget([
+        //         'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
+        //         'items' => $menuItems,
+        // ]);      
+
+        if (!Yii::$app->user->isGuest && $es_admin) {
 
             $id_user = Yii::$app->user->identity->getId();
-            $nombreRol = User::findOne(['id'=>$id_user])->rol->rol_nombre;
+            $nombreRol = User::findOne(['id' => $id_user])->rol->rol_nombre;
             $menuItems[] = [
-            ['label'=>$nombreRol],
-            'label' => 'Administración', 'url' => ['site/index'],
-            'options' =>['class' =>'dropdown'],
-            'template'=>'<a href="{url}" class="href_class">{label}</a>',
-            'items' =>[ ['label' => 'Usuarios', 'url' => ['/user']],
-                        //['label' => 'Perfiles', 'url' => ['/perfil']],
-                        ['label' => 'Roles', 'url' => ['/rol']],   
-                        ['label' => 'Tipos de Usuario', 'url' => ['/tipo-usuario']],  
-                        ['label' => 'Estados Usuarios', 'url' => ['/estado']],                                               
-                    ],
+                ['label' => $nombreRol],
+                'label' => 'Administración',
+                'url' => ['site/index'],
+                'options' => ['class' => 'dropdown'],
+                'template' => '<a href="{url}" class="href_class">{label}</a>',
+                'items' => [
+                    ['label' => 'Usuarios', 'url' => ['/user']],
+                    //['label' => 'Perfiles', 'url' => ['/perfil']],
+                    ['label' => 'Roles', 'url' => ['/rol']],
+                    ['label' => 'Tipos de Usuario', 'url' => ['/tipo-usuario']],
+                    ['label' => 'Estados Usuarios', 'url' => ['/estado']],
+                ],
             ];
-            $menuItems[] = ['label' => 'Catalogos', 'url' => ['/site/index'],
-            'options' =>['class' =>'dropdown'],
-            'template'=>'<a href="{url}" class="href_class">{label}</a>',
-            'items' =>[ ['label' => 'Productos', 'url' => ['/asignatura']],
-            
-                        ],
-            ]; 
-            $menuItems[] = ['label' => 'Transacciones', 'url' => ['/site/index'],
-            'options' =>['class' =>'dropdown'],
-            'template'=>'<a href="{url}" class="href_class">{label}</a>',
-            'items' =>[ ['label' => 'Ventas', 'url' => ['/asignatura']],
-            
-                        ],
-            ];   
-        // echo Html::tag('div',Html::a('Usuarios',['/user/index'],
-        //                                 ['class' => ['btn btn-link login text-decoration-none']]),
-        //                                 ['class' => ['d-flex']]);
 
-        // echo Html::tag('div',Html::a('Perfiles',['/perfil/index'],
-        //                                 ['class' => ['btn btn-link login text-decoration-none']]),
-        //                                 ['class' => ['d-flex']]);
-            
-        // echo Html::tag('div',Html::a('Roles',['/rol/index'],
-        //                                 ['class' => ['btn btn-link login text-decoration-none']]),
-        //                                 ['class' => ['d-flex']]);
+            // NUEVO MENÚ PARA DATOS GENERALES
+            $menuItems[] = [
+                'label' => 'DATOS GENERALES',
+                'url' => ['/site/index'],
+                'options' => ['class' => 'dropdown'],
+                'template' => '<a href="{url}" class="href_class">{label}</a>',
+                'items' => [
+                    //EDUARDO ALEXANDER ESTRELLA ESCOBEDO
+                    ['label' => 'Generaciones', 'url' => ['/generaciones']],
+                    ['label' => 'Plan de Estudios', 'url' => ['/plan-estudios']],
+                    ['label' => 'Licenciaturas', 'url' => ['/licenciaturas']],
+                    ['label' => 'Plan de Licenciaturas', 'url' => ['/plan-licenciaturas']],
+                    ['label' => 'Semestres', 'url' => ['/semestres']],
+                    ['label' => 'Unidades de Estudio', 'url' => ['/unidades-estudio']],
+                    ['label' => 'Plan Semestres', 'url' => ['/plan-semestres']],
+                    ['label' => 'ciclos Escolares', 'url' => ['/ciclos-escolares']],
+                    ['label' => 'Grupos', 'url' => ['/grupos']],
+                    ['label' => 'Tipos de Inscripciones', 'url' => ['/tipos-inscripciones']],
+                    ['label' => 'Asignaciones de Tutores', 'url' => ['/asignaciones-tutores']],
+                    ['label' => 'Asignaciones de  Grupos', 'url' => ['/asignaciones-grupos']],
+                    ['label' => 'Alumnos', 'url' => ['/alumnos']],
+                    ['label' => 'Alumnos Inscripciones', 'url' => ['/alum-inscripciones']],
+                    ['label' => 'Alumnos Datos Familiares', 'url' => ['/alum-datos-familiares']],
+                    ['label' => 'Asignaciones Alumnos a Grupos', 'url' => ['/asignaciones-alumnos-grupos']],
 
-        // echo Html::tag('div',Html::a('Tipo de Usuario',['/tipo-usuario/index'],
-        //                                 ['class' => ['btn btn-link login text-decoration-none']]),
-        //                                 ['class' => ['d-flex']]);
+                    //JOHANA YANET OLIVO ESCOBEDO
+                    ['label' => 'Estados Civiles', 'url' => ['/estados-civiles']],
+                    ['label' => 'Nacionalidades', 'url' => ['/nacionalidades']],
+                    ['label' => 'Datos Generales', 'url' => ['/datos-generales']],
+                    ['label' => 'Datos Personales', 'url' => ['/datos-personales']],
+                    ['label' => 'Localidades', 'url' => ['/localidades']],
+                    ['label' => 'Municipios', 'url' => ['/municipios']],
+                    ['label' => 'Entidades Federativas', 'url' => ['/entidades-federativas']],
+                    ['label' => 'Domicilios Actuales', 'url' => ['/domicilios-actuales']],
+                    ['label' => 'Lugares Nacimiento', 'url' => ['/lugares-nacimiento']],
 
-        // echo Html::tag('div',Html::a('Estados',['/estado/index'],
-        //                                 ['class' => ['btn btn-link login text-decoration-none']]),
-        //                                 ['class' => ['d-flex']]);      
-    }   
+                ],
+            ];
+            // echo Html::tag('div',Html::a('Usuarios',['/user/index'],
+            //                                 ['class' => ['btn btn-link login text-decoration-none']]),
+            //                                 ['class' => ['d-flex']]);
 
-    echo Nav::widget([
+            // echo Html::tag('div',Html::a('Perfiles',['/perfil/index'],
+            //                                 ['class' => ['btn btn-link login text-decoration-none']]),
+            //                                 ['class' => ['d-flex']]);
+
+            // echo Html::tag('div',Html::a('Roles',['/rol/index'],
+            //                                 ['class' => ['btn btn-link login text-decoration-none']]),
+            //                                 ['class' => ['d-flex']]);
+
+            // echo Html::tag('div',Html::a('Tipo de Usuario',['/tipo-usuario/index'],
+            //                                 ['class' => ['btn btn-link login text-decoration-none']]),
+            //                                 ['class' => ['d-flex']]);
+
+            // echo Html::tag('div',Html::a('Estados',['/estado/index'],
+            //                                 ['class' => ['btn btn-link login text-decoration-none']]),
+            //                                 ['class' => ['d-flex']]);      
+        }
+
+        echo Nav::widget([
             'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
             'items' => $menuItems,
-    ]); 
-    
-    if (Yii::$app->user->isGuest) {
+        ]);
 
-        $menuItems[] = ['label' => 'Login', 'url' => ['site/login']];
-    }else{
-        // $menuItems[] = ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-        //             'url' => ['/site/logout'],
-        //             'linkOptions' => ['data-method' => 'post']
-        //       ];
-        echo Html::beginForm(['/site/logout'], 'post', ['class' => 'navbar'])
+        if (Yii::$app->user->isGuest) {
+
+            $menuItems[] = ['label' => 'Login', 'url' => ['site/login']];
+        } else {
+            // $menuItems[] = ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+            //             'url' => ['/site/logout'],
+            //             'linkOptions' => ['data-method' => 'post']
+            //       ];
+            echo Html::beginForm(['/site/logout'], 'post', ['class' => 'navbar'])
                 . Html::submitButton(
                     'Salir (' . Yii::$app->user->identity->username . ')',
                     ['class' => 'btn btn-link logout text-decoration-none form-control me-2']
                 )
                 . Html::endForm();
 
-        // $menuItems[] = ['label' => 'Login', 'url' => ['site/login']];       
-    }
-   
-    NavBar::end();
-    ?>
-</header>
+            // $menuItems[] = ['label' => 'Login', 'url' => ['site/login']];       
+        }
 
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
+        NavBar::end();
+        ?>
+    </header>
 
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; I.S.C EDUARDO ALEXANDER ESTRELLA ESCOBEDO
-                                      <!-- <?= Html::encode('Sistema XXX') ?> -->
-                                      <?= date('Y')?>
-                                      <spam></spam>
-        </p>
-        <!-- <p class="float-end"><?= Yii::powered() ?></p> -->
-    </div>
-</footer>
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <?= Breadcrumbs::widget([
+                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            ]) ?>
+            <?= Alert::widget() ?>
+            <?= $content ?>
+        </div>
+    </main>
 
-<?php $this->endBody() ?>
+    <footer class="footer mt-auto py-3 text-muted">
+        <div class="container">
+            <p class="float-start">&copy; I.S.C EDUARDO ALEXANDER ESTRELLA ESCOBEDO
+                <!-- <?= Html::encode('Sistema XXX') ?> -->
+                <?= date('Y') ?>
+                <spam></spam>
+            </p>
+            <!-- <p class="float-end"><?= Yii::powered() ?></p> -->
+        </div>
+    </footer>
+
+    <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage();
