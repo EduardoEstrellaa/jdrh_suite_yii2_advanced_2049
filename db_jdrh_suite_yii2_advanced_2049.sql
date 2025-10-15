@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 14-10-2025 a las 03:18:16
+-- Tiempo de generación: 15-10-2025 a las 04:57:22
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.2.26
 
@@ -122,6 +122,22 @@ CREATE TABLE IF NOT EXISTS `alum_becas` (
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_becas_tipos_becas1_idx` (`tipos_becas_id`),
   KEY `fk_alumnos_becas_alumnos1_idx` (`alumnos_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `alum_bienes_personales`
+--
+
+DROP TABLE IF EXISTS `alum_bienes_personales`;
+CREATE TABLE IF NOT EXISTS `alum_bienes_personales` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `alumnos_id` int NOT NULL,
+  `catalogo_vienes_personales_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_alum_vienes_personales_catalogo_vienes_personales1_idx` (`catalogo_vienes_personales_id`),
+  KEY `fk_alum_vienes_personales_alumnos1_idx` (`alumnos_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -446,22 +462,6 @@ CREATE TABLE IF NOT EXISTS `alum_uso_anteojos` (
   `utilizas_anteojos` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_uso_anteojos_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `alum_vienes_personales`
---
-
-DROP TABLE IF EXISTS `alum_vienes_personales`;
-CREATE TABLE IF NOT EXISTS `alum_vienes_personales` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `alumnos_id` int NOT NULL,
-  `catalogo_vienes_personales_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_alum_vienes_personales_catalogo_vienes_personales1_idx` (`catalogo_vienes_personales_id`),
-  KEY `fk_alum_vienes_personales_alumnos1_idx` (`alumnos_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -1739,6 +1739,13 @@ ALTER TABLE `alum_becas`
   ADD CONSTRAINT `fk_alumnos_becas_tipos_becas1` FOREIGN KEY (`tipos_becas_id`) REFERENCES `tipos_becas` (`id`);
 
 --
+-- Filtros para la tabla `alum_bienes_personales`
+--
+ALTER TABLE `alum_bienes_personales`
+  ADD CONSTRAINT `fk_alum_vienes_personales_alumnos1` FOREIGN KEY (`alumnos_id`) REFERENCES `alumnos` (`id`),
+  ADD CONSTRAINT `fk_alum_vienes_personales_catalogo_vienes_personales1` FOREIGN KEY (`catalogo_vienes_personales_id`) REFERENCES `catalogo_vienes_personales` (`id`);
+
+--
 -- Filtros para la tabla `alum_consumo_alimentos`
 --
 ALTER TABLE `alum_consumo_alimentos`
@@ -1863,13 +1870,6 @@ ALTER TABLE `alum_tratamientos`
 --
 ALTER TABLE `alum_uso_anteojos`
   ADD CONSTRAINT `fk_alum_uso_anteojos_alumnos1` FOREIGN KEY (`alumnos_id`) REFERENCES `alumnos` (`id`);
-
---
--- Filtros para la tabla `alum_vienes_personales`
---
-ALTER TABLE `alum_vienes_personales`
-  ADD CONSTRAINT `fk_alum_vienes_personales_alumnos1` FOREIGN KEY (`alumnos_id`) REFERENCES `alumnos` (`id`),
-  ADD CONSTRAINT `fk_alum_vienes_personales_catalogo_vienes_personales1` FOREIGN KEY (`catalogo_vienes_personales_id`) REFERENCES `catalogo_vienes_personales` (`id`);
 
 --
 -- Filtros para la tabla `alum_vivienda`
