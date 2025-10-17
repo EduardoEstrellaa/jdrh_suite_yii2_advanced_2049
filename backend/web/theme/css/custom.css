@@ -5,3 +5,73 @@ Website: https://themesbrand.com/
 Contact: support@themesbrand.com
 File: Custom Css File
 */
+
+/* ===========================
+   Variables para mantener consistencia
+=========================== */
+:root {
+    --topbar-bg: #611232;
+    --hover-color: #ffee003a;
+    --icon-color: #ffffff;
+    --dropdown-bg: #ffffff;
+    --dropdown-text: #000000;
+}
+
+/* ===========================
+   Fondo rojo para el topbar y todos sus elementos
+=========================== */
+
+#page-topbar,
+#page-topbar .d-flex.align-items-center,
+#page-topbar .header-item {
+    background-color: var(--topbar-bg) !important;
+}
+
+/* ===========================
+   Hover para TODOS los botones del topbar
+=========================== */
+
+#page-topbar .btn-topbar.btn-ghost-secondary.rounded-circle:hover {
+    background-color: var(--hover-color) !important;
+    transition: background-color 0.3s ease;
+}
+
+/* ===========================
+   Color para TODOS los iconos del topbar
+=========================== */
+
+#page-topbar .btn-topbar i {
+    color: var(--icon-color) !important;
+}
+
+/* ===========================
+   Estilos para TODOS los dropdowns del topbar
+=========================== */
+
+#page-topbar .dropdown-item {
+    color: var(--dropdown-text) !important;
+}
+
+#page-topbar .dropdown-item:hover {
+    background-color: var(--hover-color) !important;
+}
+
+/* ===========================
+   Específico para el dropdown de notificaciones
+=========================== */
+
+/* Cabecera del dropdown de notificaciones */
+#page-topbar .dropdown-head.bg-primary {
+    background-color: var(--topbar-bg) !important;
+}
+
+
+/* ===========================
+   Reset COMPLETO de estados azules - Versión agresiva
+=========================== */
+
+/* Remove TODOS los estilos azules de Bootstrap */
+#page-topbar .btn:focus,
+#page-topbar .btn.show {
+    background-color: var(--hover-color) !important;
+}

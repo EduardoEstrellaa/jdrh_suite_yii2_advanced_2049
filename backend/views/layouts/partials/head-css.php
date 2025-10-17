@@ -15,3 +15,6 @@ use yii\helpers\Url;
 <link href="<?= Url::base(true) ?>/theme/css/custom.min.css" rel="stylesheet" type="text/css" />
 
 <link href="<?= Url::base(true) ?>/theme/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Custom Sidebar -->
+<link href="<?= Url::base(true) ?>/theme/css/custom.css" rel="stylesheet" type="text/css" />
