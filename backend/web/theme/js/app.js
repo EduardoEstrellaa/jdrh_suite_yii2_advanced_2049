@@ -770,7 +770,7 @@ File: Main Js File
 				document.body.classList.remove("vertical-sidebar-enable");
 				document.documentElement.getAttribute("data-sidebar-size") == "sm" ?
 					document.documentElement.setAttribute("data-sidebar-size", "") :
-					document.documentElement.setAttribute("data-sidebar-size", "sm");				
+					document.documentElement.setAttribute("data-sidebar-size", "sm");
 			} else if (windowSize > 1025) {
 				document.body.classList.remove("vertical-sidebar-enable");
 				document.documentElement.getAttribute("data-sidebar-size") == "lg" ?
@@ -786,7 +786,7 @@ File: Main Js File
 		if (document.documentElement.getAttribute("data-layout") === "semibox") {
 			if (windowSize > 767) {
 				// (document.querySelector(".hamburger-icon").classList.contains("open")) ? document.documentElement.setAttribute('data-sidebar-visibility', "show"): '';
-				if(document.documentElement.getAttribute('data-sidebar-visibility') == "show") {
+				if (document.documentElement.getAttribute('data-sidebar-visibility') == "show") {
 					document.documentElement.getAttribute("data-sidebar-size") == "lg" ?
 						document.documentElement.setAttribute("data-sidebar-size", "sm") :
 						document.documentElement.setAttribute("data-sidebar-size", "lg");
@@ -1030,7 +1030,7 @@ File: Main Js File
 						if (!emptyNotificationElem) {
 							elem.innerHTML += '<div class="empty-notification-elem">\
 							<div class="w-25 w-sm-50 pt-3 mx-auto">\
-								<img src="administrador/images/svg/bell.svg" class="img-fluid" alt="user-pic">\
+								<img src="theme/images/svg/bell.svg" class="img-fluid" alt="user-pic">\
 							</div>\
 							<div class="text-center pb-5 mt-2">\
 								<h6 class="fs-18 fw-semibold lh-base">Hey! You have no any notifications </h6>\
@@ -1675,7 +1675,7 @@ File: Main Js File
 							document.documentElement.setAttribute("data-body-image", "img-1");
 
 							if (document.getElementById("theme-settings-offcanvas")) {
-								if (document.getElementById("sidebar-img")) { 
+								if (document.getElementById("sidebar-img")) {
 									document.getElementById("sidebar-img").style.display = "none";
 									document.documentElement.removeAttribute("data-sidebar-image");
 								}
@@ -1773,7 +1773,7 @@ File: Main Js File
 
 				var sidebarSections = "block";
 				if (document.documentElement.getAttribute("data-layout") == "semibox") {
-					if(document.documentElement.getAttribute("data-sidebar-visibility") == "hidden"){
+					if (document.documentElement.getAttribute("data-sidebar-visibility") == "hidden") {
 						document.documentElement.removeAttribute("data-sidebar");
 						document.documentElement.removeAttribute("data-sidebar-image");
 						document.documentElement.removeAttribute("data-sidebar-size");
@@ -1805,7 +1805,7 @@ File: Main Js File
 					document.getElementById("customizerclose-btn").click();
 				}
 
-				if(ele == 'data-bs-theme') {
+				if (ele == 'data-bs-theme') {
 					// Dispatch the resize event on the window object
 					window.dispatchEvent(resizeEvent);
 				}
@@ -1832,7 +1832,7 @@ File: Main Js File
 
 		if (document.querySelectorAll("[data-bs-target='#collapseBgGradient.show']")) {
 			Array.from(document.querySelectorAll("[data-bs-target='#collapseBgGradient.show']")).forEach(function (subElem) {
-				subElem.addEventListener("click", function(){
+				subElem.addEventListener("click", function () {
 					var myCollapse = document.getElementById('collapseBgGradient')
 					var bsCollapse = new bootstrap.Collapse(myCollapse, {
 						toggle: false,
@@ -1955,8 +1955,8 @@ File: Main Js File
 				html.hasAttribute("data-bs-theme") && html.getAttribute("data-bs-theme") == "dark" ?
 					setLayoutMode("data-bs-theme", "light", "layout-mode-light", html) :
 					setLayoutMode("data-bs-theme", "dark", "layout-mode-dark", html);
-					// Dispatch the resize event on the window object
-					window.dispatchEvent(resizeEvent);
+				// Dispatch the resize event on the window object
+				window.dispatchEvent(resizeEvent);
 			});
 		}
 	}

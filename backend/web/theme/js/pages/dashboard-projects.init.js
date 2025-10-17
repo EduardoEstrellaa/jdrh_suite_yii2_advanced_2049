@@ -214,7 +214,9 @@ scrollToBottom(currentChatId);
 // Scroll to Bottom
 function scrollToBottom(id) {
     setTimeout(() => {
-        var scrollEl = new SimpleBar(document.getElementById('chat-conversation'));
-        scrollEl.getScrollElement().scrollTop = document.getElementById("users-conversation").scrollHeight;
+        var usersConversation = document.getElementById("users-conversation");
+        if (usersConversation) {
+            usersConversation.scrollTop = usersConversation.scrollHeight;
+        }
     }, 100);
 }

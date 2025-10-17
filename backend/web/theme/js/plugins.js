@@ -1,15 +1,26 @@
-/*
-Template Name: Velzon - Admin & Dashboard Template
-Author: Themesbrand
-Version: 3.5.0
-Website: https://Themesbrand.com/
-Contact: Themesbrand@gmail.com
-File: Common Plugins Js File
-*/
+document.addEventListener("DOMContentLoaded", function () {
+  const hasToast = document.querySelector("[toast-list]");
+  const hasChoices = document.querySelector("[data-choices]");
+  const hasFlatpickr = document.querySelector("[data-provider]");
 
-//Common plugins
-if(document.querySelectorAll("[toast-list]") || document.querySelectorAll('[data-choices]') || document.querySelectorAll("[data-provider]")){ 
-  document.writeln("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/toastify-js'></script>");
-  document.writeln("<script type='text/javascript' src='administrador/libs/choices.js/public/assets/scripts/choices.min.js'></script>");
-  document.writeln("<script type='text/javascript' src='administrador/libs/flatpickr/flatpickr.min.js'></script>");    
-}
+  // Utilidad para cargar scripts dinámicamente
+  function loadScript(src) {
+    const script = document.createElement('script');
+    script.src = src;
+    script.type = 'text/javascript';
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  if (hasToast) {
+    loadScript("https://cdn.jsdelivr.net/npm/toastify-js");
+  }
+
+  if (hasChoices) {
+    loadScript("theme/libs/choices.js/public/assets/scripts/choices.min.js");
+  }
+
+  if (hasFlatpickr) {
+    loadScript("theme/libs/flatpickr/flatpickr.min.js");
+  }
+});
