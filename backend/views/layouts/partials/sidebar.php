@@ -6,7 +6,6 @@
 use yii\helpers\Url;
 use common\models\PermisosHelpers;
 
-
 ?>
 
 <!-- ========== App Menu ========== -->
@@ -50,7 +49,6 @@ use common\models\PermisosHelpers;
                     </a>
                 </li>
 
-
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAdministrar" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdministrar">
                         <i class="ri-tools-line"></i><span data-key="t-administrar">Administracion</span>
@@ -86,51 +84,168 @@ use common\models\PermisosHelpers;
                     </div>
                 </li>
 
+                <!-- NUEVO MÓDULO DATOS GENERALES -->
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarDictamen" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDictamen">
-                        <i class="ri-file-list-3-line"></i> <span data-key="t-dictamen">Dictamenes</span>
+                    <a class="nav-link menu-link" href="#sidebarDatosGenerales" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDatosGenerales">
+                        <i class="ri-database-2-line"></i> <span data-key="t-datos-generales">Datos Generales</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarDictamen">
+                    <div class="collapse menu-dropdown" id="sidebarDatosGenerales">
                         <ul class="nav nav-sm flex-column">
+                            <!-- EDUARDO ALEXANDER ESTRELLA ESCOBEDO -->
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="<?= Url::to(['/sede']); ?>">
-                                    <i class="ri-building-line"></i><span data-key="t-sede">Sede</span>
+                                <a class="nav-link menu-link" href="<?= Url::to(['/generaciones']); ?>">
+                                    <i class="ri-calendar-line"></i><span data-key="t-generaciones">Generaciones</span>
                                 </a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="<?= Url::to(['/dictamen']); ?>">
-                                    <i class="ri-user-line"></i><span data-key="t-dictamen">Dictamen</span>
+                                <a class="nav-link menu-link" href="<?= Url::to(['/plan-estudios']); ?>">
+                                    <i class="ri-book-line"></i><span data-key="t-plan-estudios">Plan de Estudios</span>
                                 </a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="<?= Url::to(['/validacion']); ?>">
-                                    <i class="ri-award-line"></i><span data-key="t-validacion">Validacion</span>
+                                <a class="nav-link menu-link" href="<?= Url::to(['/licenciaturas']); ?>">
+                                    <i class="ri-graduation-cap-line"></i><span data-key="t-licenciaturas">Licenciaturas</span>
                                 </a>
                             </li>
 
-
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarTransacciones" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarTransacciones">
-                        <i class="las la-briefcase"></i> <span data-key="t-Transacciones">Transacciones</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarTransacciones">
-                        <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="<?= Url::to(['/asignatura']); ?>">
-                                    <i class="ri-building-2-line"></i><span data-key="t-asignatura">Venta</span>
+                                <a class="nav-link menu-link" href="<?= Url::to(['/plan-licenciaturas']); ?>">
+                                    <i class="ri-map-pin-line"></i><span data-key="t-plan-licenciaturas">Plan de Licenciaturas</span>
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/semestres']); ?>">
+                                    <i class="ri-time-line"></i><span data-key="t-semestres">Semestres</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/unidades-estudio']); ?>">
+                                    <i class="ri-community-line"></i><span data-key="t-unidades-estudio">Unidades de Estudio</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/plan-semestres']); ?>">
+                                    <i class="ri-calendar-schedule-line"></i><span data-key="t-plan-semestres">Plan Semestres</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/ciclos-escolares']); ?>">
+                                    <i class="ri-loop-left-line"></i><span data-key="t-ciclos-escolares">Ciclos Escolares</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/grupos']); ?>">
+                                    <i class="ri-group-line"></i><span data-key="t-grupos">Grupos</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/tipos-inscripciones']); ?>">
+                                    <i class="ri-file-list-line"></i><span data-key="t-tipos-inscripciones">Tipos de Inscripciones</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/asignaciones-tutores']); ?>">
+                                    <i class="ri-user-shared-line"></i><span data-key="t-asignaciones-tutores">Asignaciones de Tutores</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/asignaciones-grupos']); ?>">
+                                    <i class="ri-layout-grid-line"></i><span data-key="t-asignaciones-grupos">Asignaciones de Grupos</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/alumnos']); ?>">
+                                    <i class="ri-user-line"></i><span data-key="t-alumnos">Alumnos</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/alum-inscripciones']); ?>">
+                                    <i class="ri-file-edit-line"></i><span data-key="t-alum-inscripciones">Alumnos Inscripciones</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/alum-datos-familiares']); ?>">
+                                    <i class="ri-home-heart-line"></i><span data-key="t-alum-datos-familiares">Alumnos Datos Familiares</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/asignaciones-alumnos-grupos']); ?>">
+                                    <i class="ri-user-add-line"></i><span data-key="t-asignaciones-alumnos-grupos">Asignaciones Alumnos a Grupos</span>
+                                </a>
+                            </li>
+
+                            <!-- JOHANA YANET OLIVO ESCOBEDO -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/estados-civiles']); ?>">
+                                    <i class="ri-heart-line"></i><span data-key="t-estados-civiles">Estados Civiles</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/nacionalidades']); ?>">
+                                    <i class="ri-flag-line"></i><span data-key="t-nacionalidades">Nacionalidades</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/datos-generales']); ?>">
+                                    <i class="ri-profile-line"></i><span data-key="t-datos-generales-item">Datos Generales</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/datos-personales']); ?>">
+                                    <i class="ri-user-settings-line"></i><span data-key="t-datos-personales">Datos Personales</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/localidades']); ?>">
+                                    <i class="ri-map-pin-2-line"></i><span data-key="t-localidades">Localidades</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/municipios']); ?>">
+                                    <i class="ri-building-2-line"></i><span data-key="t-municipios">Municipios</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/entidades-federativas']); ?>">
+                                    <i class="ri-government-line"></i><span data-key="t-entidades-federativas">Entidades Federativas</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/domicilios-actuales']); ?>">
+                                    <i class="ri-home-8-line"></i><span data-key="t-domicilios-actuales">Domicilios Actuales</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['/lugares-nacimiento']); ?>">
+                                    <i class="ri-map-pin-user-line"></i><span data-key="t-lugares-nacimiento">Lugares Nacimiento</span>
+                                </a>
+                            </li>
+
                         </ul>
                     </div>
                 </li> <!-- end Dashboard Menu -->
-
-
 
             </ul>
         </div>
