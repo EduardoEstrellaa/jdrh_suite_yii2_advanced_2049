@@ -1,0 +1,70 @@
+<?php
+
+namespace backend\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "alum_estado_salud".
+ *
+ * @property int $id
+ * @property int $alumnos_id
+ * @property int $tuvo_problema_salud
+ *
+ * @property Alumnos $alumnos
+ * @property ProblemasSalud[] $problemasSaluds
+ */
+class AlumEstadoSalud extends \yii\db\ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return 'alum_estado_salud';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['alumnos_id', 'tuvo_problema_salud'], 'required'],
+            [['alumnos_id', 'tuvo_problema_salud'], 'integer'],
+            [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'alumnos_id' => 'Alumnos ID',
+            'tuvo_problema_salud' => 'Tuvo Problema Salud',
+        ];
+    }
+
+    /**
+     * Gets query for [[Alumnos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAlumnos()
+    {
+        return $this->hasOne(Alumnos::class, ['id' => 'alumnos_id']);
+    }
+
+    /**
+     * Gets query for [[ProblemasSaluds]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProblemasSaluds()
+    {
+        return $this->hasMany(ProblemasSalud::class, ['alum_estado_salud_id' => 'id']);
+    }
+}
