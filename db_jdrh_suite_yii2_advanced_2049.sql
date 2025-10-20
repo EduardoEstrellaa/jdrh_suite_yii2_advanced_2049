@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 15-10-2025 a las 04:57:22
+-- Tiempo de generación: 20-10-2025 a las 15:37:22
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.2.26
 
@@ -133,11 +133,11 @@ CREATE TABLE IF NOT EXISTS `alum_becas` (
 DROP TABLE IF EXISTS `alum_bienes_personales`;
 CREATE TABLE IF NOT EXISTS `alum_bienes_personales` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `catalogo_bienes_personales_id` int NOT NULL,
   `alumnos_id` int NOT NULL,
-  `catalogo_vienes_personales_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_alum_vienes_personales_catalogo_vienes_personales1_idx` (`catalogo_vienes_personales_id`),
-  KEY `fk_alum_vienes_personales_alumnos1_idx` (`alumnos_id`)
+  KEY `fk_alum_bienes_personales_catalogo_bienes_personales1_idx` (`catalogo_bienes_personales_id`),
+  KEY `fk_alum_bienes_personales_alumnos1_idx` (`alumnos_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -579,6 +579,20 @@ CREATE TABLE IF NOT EXISTS `catalogo_alimentos` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `catalogo_bienes_personales`
+--
+
+DROP TABLE IF EXISTS `catalogo_bienes_personales`;
+CREATE TABLE IF NOT EXISTS `catalogo_bienes_personales` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) NOT NULL,
+  `descripcion` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `catalogo_bienes_vivienda`
 --
 
@@ -794,20 +808,6 @@ CREATE TABLE IF NOT EXISTS `catalogo_usos_internet` (
 DROP TABLE IF EXISTS `catalogo_uso_anteojos`;
 CREATE TABLE IF NOT EXISTS `catalogo_uso_anteojos` (
   `id` int NOT NULL,
-  `nombre` varchar(150) NOT NULL,
-  `descripcion` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `catalogo_vienes_personales`
---
-
-DROP TABLE IF EXISTS `catalogo_vienes_personales`;
-CREATE TABLE IF NOT EXISTS `catalogo_vienes_personales` (
-  `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1742,8 +1742,8 @@ ALTER TABLE `alum_becas`
 -- Filtros para la tabla `alum_bienes_personales`
 --
 ALTER TABLE `alum_bienes_personales`
-  ADD CONSTRAINT `fk_alum_vienes_personales_alumnos1` FOREIGN KEY (`alumnos_id`) REFERENCES `alumnos` (`id`),
-  ADD CONSTRAINT `fk_alum_vienes_personales_catalogo_vienes_personales1` FOREIGN KEY (`catalogo_vienes_personales_id`) REFERENCES `catalogo_vienes_personales` (`id`);
+  ADD CONSTRAINT `fk_alum_bienes_personales_alumnos1` FOREIGN KEY (`alumnos_id`) REFERENCES `alumnos` (`id`),
+  ADD CONSTRAINT `fk_alum_bienes_personales_catalogo_bienes_personales1` FOREIGN KEY (`catalogo_bienes_personales_id`) REFERENCES `catalogo_bienes_personales` (`id`);
 
 --
 -- Filtros para la tabla `alum_consumo_alimentos`
