@@ -272,6 +272,318 @@ use common\models\PermisosHelpers;
                                     </ul>
                                 </div>
                             </li>
+
+                            <!-- HÁBITOS Y ESTILO DE VIDA -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarHabitos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarHabitos">
+                                    <i class="ri-heart-pulse-line"></i><span data-key="t-habitos">Hábitos y Estilo de Vida</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarHabitos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-cigarros-dia']); ?>">
+                                                <i class="ri-smoking-line"></i><span data-key="t-catalogo-cigarros-dia">Cigarros al Día</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-usos-internet']); ?>">
+                                                <i class="ri-wifi-line"></i><span data-key="t-catalogo-usos-internet">Usos de Internet</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-lugares-acceso-principal']); ?>">
+                                                <i class="ri-map-pin-line"></i><span data-key="t-catalogo-lugares-acceso-principal">Lugares de Acceso</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- ORGANIZACIONES Y PARTICIPACIÓN -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarOrganizaciones" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOrganizaciones">
+                                    <i class="ri-organization-chart"></i><span data-key="t-organizaciones">Organizaciones</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarOrganizaciones">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/tipo-organizacion']); ?>">
+                                                <i class="ri-list-check"></i><span data-key="t-tipo-organizacion">Tipos de Organización</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-organizaciones']); ?>">
+                                                <i class="ri-building-line"></i><span data-key="t-catalogo-organizaciones">Catálogo de Organizaciones</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/organizaciones']); ?>">
+                                                <i class="ri-community-line"></i><span data-key="t-organizaciones">Organizaciones</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- SALUD Y BIENESTAR -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarSalud" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSalud">
+                                    <i class="ri-heart-line"></i><span data-key="t-salud">Salud y Bienestar</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarSalud">
+                                    <ul class="nav nav-sm flex-column">
+                                        <!-- PROBLEMAS DE SALUD -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarProblemasSalud" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProblemasSalud">
+                                                <i class="ri-hospital-line"></i><span data-key="t-problemas-salud">Problemas de Salud</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarProblemasSalud">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-problemas-salud']); ?>">
+                                                            <i class="ri-list-check"></i><span data-key="t-catalogo-problemas-salud">Catálogo Problemas</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/tipo-gravedad']); ?>">
+                                                            <i class="ri-alert-line"></i><span data-key="t-tipo-gravedad">Tipos de Gravedad</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/problemas-salud']); ?>">
+                                                            <i class="ri-stethoscope-line"></i><span data-key="t-problemas-salud">Problemas de Salud</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <!-- SERVICIOS DE SALUD -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarServiciosSalud" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarServiciosSalud">
+                                                <i class="ri-first-aid-kit-line"></i><span data-key="t-servicios-salud">Servicios de Salud</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarServiciosSalud">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-servicios-salud']); ?>">
+                                                            <i class="ri-list-check"></i><span data-key="t-catalogo-servicios-salud">Catálogo Servicios</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/servicios-salud']); ?>">
+                                                            <i class="ri-hospital-line"></i><span data-key="t-servicios-salud">Servicios de Salud</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <!-- TRATAMIENTOS MÉDICOS -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarTratamientos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarTratamientos">
+                                                <i class="ri-capsule-line"></i><span data-key="t-tratamientos">Tratamientos</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarTratamientos">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/tipos-tratamientos']); ?>">
+                                                            <i class="ri-list-check"></i><span data-key="t-tipos-tratamientos">Tipos de Tratamientos</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-tratamientos']); ?>">
+                                                            <i class="ri-medicine-bottle-line"></i><span data-key="t-catalogo-tratamientos">Catálogo Tratamientos</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/tratamientos']); ?>">
+                                                            <i class="ri-capsule-line"></i><span data-key="t-tratamientos">Tratamientos</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <!-- ALERGIAS -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarAlergias" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAlergias">
+                                                <i class="ri-allergy-line"></i><span data-key="t-alergias">Alergias</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarAlergias">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/tipo-alergias']); ?>">
+                                                            <i class="ri-list-check"></i><span data-key="t-tipo-alergias">Tipos de Alergias</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-alergias']); ?>">
+                                                            <i class="ri-skull-line"></i><span data-key="t-catalogo-alergias">Catálogo Alergias</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/alergias']); ?>">
+                                                            <i class="ri-allergy-line"></i><span data-key="t-alergias">Alergias</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-reacciones-alergicas']); ?>">
+                                                            <i class="ri-flask-line"></i><span data-key="t-catalogo-reacciones-alergicas">Reacciones Alérgicas</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/varias-reacciones-alergicas']); ?>">
+                                                            <i class="ri-bug-line"></i><span data-key="t-varias-reacciones-alergicas">Varias Reacciones</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <!-- ENFERMEDADES CRÓNICAS -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarEnfermedadesCronicas" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarEnfermedadesCronicas">
+                                                <i class="ri-heart-pulse-line"></i><span data-key="t-enfermedades-cronicas">Enfermedades Crónicas</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarEnfermedadesCronicas">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-enferm-cronicas']); ?>">
+                                                            <i class="ri-list-check"></i><span data-key="t-catalogo-enferm-cronicas">Catálogo Enfermedades</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/enfermedades-cronicas']); ?>">
+                                                            <i class="ri-heart-pulse-line"></i><span data-key="t-enfermedades-cronicas">Enfermedades Crónicas</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <!-- FRECUENCIAS -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarFrecuencias" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarFrecuencias">
+                                                <i class="ri-time-line"></i><span data-key="t-frecuencias">Frecuencias</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarFrecuencias">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/frecuencia-tiempo']); ?>">
+                                                            <i class="ri-time-line"></i><span data-key="t-frecuencia-tiempo">Frecuencia de Tiempo</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/frecuencia-veces']); ?>">
+                                                            <i class="ri-repeat-line"></i><span data-key="t-frecuencia-veces">Frecuencia Veces</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/frecuencia-veces-semana']); ?>">
+                                                            <i class="ri-calendar-line"></i><span data-key="t-frecuencia-veces-semana">Frecuencia por Semana</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <!-- VISIÓN -->
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="#sidebarVision" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarVision">
+                                                <i class="ri-eye-line"></i><span data-key="t-vision">Visión</span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="sidebarVision">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-uso-anteojos']); ?>">
+                                                            <i class="ri-list-check"></i><span data-key="t-catalogo-uso-anteojos">Catálogo Uso Anteojos</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link menu-link" href="<?= Url::to(['/uso-anteojos']); ?>">
+                                                            <i class="ri-glasses-line"></i><span data-key="t-uso-anteojos">Uso de Anteojos</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- NUTRICIÓN Y ALIMENTACIÓN -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarNutricion" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarNutricion">
+                                    <i class="ri-restaurant-line"></i><span data-key="t-nutricion">Nutrición y Alimentación</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarNutricion">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/categorias-catalogo-alimentos']); ?>">
+                                                <i class="ri-list-check"></i><span data-key="t-categorias-catalogo-alimentos">Categorías de Alimentos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-alimentos']); ?>">
+                                                <i class="ri-apple-line"></i><span data-key="t-catalogo-alimentos">Catálogo de Alimentos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-lugares-comer']); ?>">
+                                                <i class="ri-map-pin-line"></i><span data-key="t-catalogo-lugares-comer">Lugares para Comer</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- ACTIVIDAD FÍSICA Y DEPORTE -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarActividadFisica" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarActividadFisica">
+                                    <i class="ri-run-line"></i><span data-key="t-actividad-fisica">Actividad Física</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarActividadFisica">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-deportes']); ?>">
+                                                <i class="ri-list-check"></i><span data-key="t-catalogo-deportes">Catálogo de Deportes</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/deportes']); ?>">
+                                                <i class="ri-basketball-line"></i><span data-key="t-deportes">Deportes</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-actividad-ejercicio']); ?>">
+                                                <i class="ri-list-check"></i><span data-key="t-catalogo-actividad-ejercicio">Actividades de Ejercicio</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/ejercicio-fisico']); ?>">
+                                                <i class="ri-run-line"></i><span data-key="t-ejercicio-fisico">Ejercicio Físico</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- BIENES PERSONALES -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarBienesPersonales" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarBienesPersonales">
+                                    <i class="ri-archive-drawer-line"></i><span data-key="t-bienes-personales">Bienes Personales</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarBienesPersonales">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-bienes-personales']); ?>">
+                                                <i class="ri-list-check"></i><span data-key="t-catalogo-bienes-personales">Catálogo Bienes Personales</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -422,6 +734,157 @@ use common\models\PermisosHelpers;
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="<?= Url::to(['/alum-transportes']); ?>">
                                                 <i class="ri-roadster-line"></i><span data-key="t-alum-transportes">Transporte del Alumno</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- HÁBITOS Y ESTILO DE VIDA ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarHabitosAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarHabitosAlumnos">
+                                    <i class="ri-heart-pulse-line"></i><span data-key="t-habitos-alumnos">Hábitos y Estilo de Vida</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarHabitosAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-habitos-consumo']); ?>">
+                                                <i class="ri-drinks-line"></i><span data-key="t-habitos-consumo">Hábitos de Consumo</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-recreacion-tiempo']); ?>">
+                                                <i class="ri-gamepad-line"></i><span data-key="t-alum-recreacion-tiempo">Recreación y Tiempo Libre</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/usos-internet']); ?>">
+                                                <i class="ri-wifi-line"></i><span data-key="t-usos-internet">Usos de Internet</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- ORGANIZACIONES ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarOrganizacionesAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOrganizacionesAlumnos">
+                                    <i class="ri-organization-chart"></i><span data-key="t-organizaciones-alumnos">Participación en Organizaciones</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarOrganizacionesAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-organizacion']); ?>">
+                                                <i class="ri-user-shared-line"></i><span data-key="t-alum-organizacion">Organizaciones del Alumno</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- SALUD ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarSaludAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSaludAlumnos">
+                                    <i class="ri-heart-line"></i><span data-key="t-salud-alumnos">Salud del Alumno</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarSaludAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-estado-salud']); ?>">
+                                                <i class="ri-user-health-line"></i><span data-key="t-alum-estado-salud">Estado de Salud</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-servicios-salud']); ?>">
+                                                <i class="ri-hospital-line"></i><span data-key="t-alum-servicios-salud">Servicios de Salud</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-asiste-medico']); ?>">
+                                                <i class="ri-stethoscope-line"></i><span data-key="t-alum-asiste-medico">Visitas al Médico</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-asiste-dentista']); ?>">
+                                                <i class="ri-tooth-line"></i><span data-key="t-alum-asiste-dentista">Visitas al Dentista</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-uso-anteojos']); ?>">
+                                                <i class="ri-glasses-line"></i><span data-key="t-alum-uso-anteojos">Uso de Anteojos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-tratamientos']); ?>">
+                                                <i class="ri-capsule-line"></i><span data-key="t-alum-tratamientos">Tratamientos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-alergia']); ?>">
+                                                <i class="ri-allergy-line"></i><span data-key="t-alum-alergia">Alergias</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-enfermedades-cronicas']); ?>">
+                                                <i class="ri-heart-pulse-line"></i><span data-key="t-alum-enfermedades-cronicas">Enfermedades Crónicas</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- NUTRICIÓN ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarNutricionAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarNutricionAlumnos">
+                                    <i class="ri-restaurant-line"></i><span data-key="t-nutricion-alumnos">Nutrición y Alimentación</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarNutricionAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-lugares-comer']); ?>">
+                                                <i class="ri-map-pin-line"></i><span data-key="t-alum-lugares-comer">Lugares para Comer</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-consumo-alimentos']); ?>">
+                                                <i class="ri-apple-line"></i><span data-key="t-alum-consumo-alimentos">Consumo de Alimentos</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- ACTIVIDAD FÍSICA ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarActividadFisicaAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarActividadFisicaAlumnos">
+                                    <i class="ri-run-line"></i><span data-key="t-actividad-fisica-alumnos">Actividad Física</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarActividadFisicaAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-deportes']); ?>">
+                                                <i class="ri-basketball-line"></i><span data-key="t-alum-deportes">Deportes</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-ejercicio']); ?>">
+                                                <i class="ri-run-line"></i><span data-key="t-alum-ejercicio">Ejercicio Físico</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- BIENES PERSONALES ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarBienesPersonalesAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarBienesPersonalesAlumnos">
+                                    <i class="ri-archive-drawer-line"></i><span data-key="t-bienes-personales-alumnos">Bienes Personales</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarBienesPersonalesAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-bienes-personales']); ?>">
+                                                <i class="ri-archive-drawer-line"></i><span data-key="t-alum-bienes-personales">Bienes Personales</span>
                                             </a>
                                         </li>
                                     </ul>
