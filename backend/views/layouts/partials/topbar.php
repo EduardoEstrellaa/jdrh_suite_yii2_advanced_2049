@@ -29,7 +29,7 @@ $form = Html::beginForm(['/site/logout'], 'post', ['class' => 'd-none', 'id' => 
                             <img src="theme/images/logo-sm.png" alt="" height="22">
                         </span>
                         <span class="logo-lg">
-                            <img src="theme/images/logo-light.png" alt="" height="17">
+                            <img src="theme/images/jdrh-logo.svg" alt="" height="40">
                         </span>
                     </a>
                 </div>
