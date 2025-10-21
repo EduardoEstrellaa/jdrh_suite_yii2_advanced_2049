@@ -53,7 +53,7 @@ use yii\bootstrap5\Breadcrumbs;
     </div>
     <!-- END layout-wrapper -->
 
-    <?= $this->render('partials/customizer') ?>
+    <?php //= $this->render('partials/customizer') ?>
     <?= $this->render('partials/vendor-scripts') ?>
     <!-- App js -->
     <script src="<?= Url::base(true) ?>/theme/libs/flatpickr/flatpickr.min.js"></script>
