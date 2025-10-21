@@ -272,6 +272,58 @@ use common\models\PermisosHelpers;
                                     </ul>
                                 </div>
                             </li>
+
+                            <!-- HÁBITOS Y ESTILO DE VIDA -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarHabitos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarHabitos">
+                                    <i class="ri-heart-pulse-line"></i><span data-key="t-habitos">Hábitos y Estilo de Vida</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarHabitos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-cigarros-dia']); ?>">
+                                                <i class="ri-smoking-line"></i><span data-key="t-catalogo-cigarros-dia">Cigarros al Día</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-usos-internet']); ?>">
+                                                <i class="ri-wifi-line"></i><span data-key="t-catalogo-usos-internet">Usos de Internet</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-lugares-acceso-principal']); ?>">
+                                                <i class="ri-map-pin-line"></i><span data-key="t-catalogo-lugares-acceso-principal">Lugares de Acceso</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- ORGANIZACIONES Y PARTICIPACIÓN -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarOrganizaciones" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOrganizaciones">
+                                    <i class="ri-organization-chart"></i><span data-key="t-organizaciones">Organizaciones</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarOrganizaciones">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/tipo-organizacion']); ?>">
+                                                <i class="ri-list-check"></i><span data-key="t-tipo-organizacion">Tipos de Organización</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/catalogo-organizaciones']); ?>">
+                                                <i class="ri-building-line"></i><span data-key="t-catalogo-organizaciones">Catálogo de Organizaciones</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/organizaciones']); ?>">
+                                                <i class="ri-community-line"></i><span data-key="t-organizaciones">Organizaciones</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -422,6 +474,48 @@ use common\models\PermisosHelpers;
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="<?= Url::to(['/alum-transportes']); ?>">
                                                 <i class="ri-roadster-line"></i><span data-key="t-alum-transportes">Transporte del Alumno</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- HÁBITOS Y ESTILO DE VIDA ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarHabitosAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarHabitosAlumnos">
+                                    <i class="ri-heart-pulse-line"></i><span data-key="t-habitos-alumnos">Hábitos y Estilo de Vida</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarHabitosAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-habitos-consumo']); ?>">
+                                                <i class="ri-drinks-line"></i><span data-key="t-habitos-consumo">Hábitos de Consumo</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-recreacion-tiempo']); ?>">
+                                                <i class="ri-gamepad-line"></i><span data-key="t-alum-recreacion-tiempo">Recreación y Tiempo Libre</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/usos-internet']); ?>">
+                                                <i class="ri-wifi-line"></i><span data-key="t-usos-internet">Usos de Internet</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- ORGANIZACIONES ALUMNOS -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarOrganizacionesAlumnos" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOrganizacionesAlumnos">
+                                    <i class="ri-organization-chart"></i><span data-key="t-organizaciones-alumnos">Participación en Organizaciones</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarOrganizacionesAlumnos">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/alum-organizacion']); ?>">
+                                                <i class="ri-user-shared-line"></i><span data-key="t-alum-organizacion">Organizaciones del Alumno</span>
                                             </a>
                                         </li>
                                     </ul>
