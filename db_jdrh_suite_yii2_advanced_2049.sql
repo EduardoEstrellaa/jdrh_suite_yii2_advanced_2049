@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 20-10-2025 a las 15:37:22
+-- Tiempo de generación: 22-10-2025 a las 02:21:28
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.2.26
 
@@ -998,9 +998,9 @@ CREATE TABLE IF NOT EXISTS `ejercicio_fisico` (
 DROP TABLE IF EXISTS `enfermedades_cronicas`;
 CREATE TABLE IF NOT EXISTS `enfermedades_cronicas` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `catalogo_enferm_cronicas_id` int NOT NULL,
   `alum_enfermedades_cronicas_id` int NOT NULL,
-  `otro_especificas` varchar(250) DEFAULT NULL,
+  `catalogo_enferm_cronicas_id` int NOT NULL,
+  `otro_especificar` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_enferm_cronica_catalogo_enferm_cronicas1_idx` (`catalogo_enferm_cronicas_id`),
   KEY `fk_enferm_cronica_alum_enfermedades_cronicas1_idx` (`alum_enfermedades_cronicas_id`)
@@ -1587,7 +1587,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password_reset_token` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `rol_id` smallint NOT NULL DEFAULT '1',
-  `estado_id` smallint NOT NULL DEFAULT '1',
+  `estado_id` smallint NOT NULL DEFAULT '2',
   `tipo_usuario_id` smallint NOT NULL DEFAULT '1',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -1600,14 +1600,15 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `fk_user_rol1_idx` (`rol_id`),
   KEY `fk_user_estado1_idx` (`estado_id`),
   KEY `fk_user_tipo_usuario1_idx` (`tipo_usuario_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `rol_id`, `estado_id`, `tipo_usuario_id`, `created_at`, `updated_at`, `verification_token`) VALUES
-(1, 'root', 'pQeZefuxsI0kiGxn_OKI6IXdBznTmWF9', '$2y$13$M0AvNyw666uh452dv5sdJOLimBesSgRNjdFTGZFCXEEf0rsnEVohm', NULL, 'root@root.com', 7, 1, 2, '2025-08-30 14:25:57', '2025-08-30 14:25:57', 'WnDqUcudrydqtx7rhS8QrZ5P8m-a8mMn_1756585557');
+(1, 'root', 'pQeZefuxsI0kiGxn_OKI6IXdBznTmWF9', '$2y$13$M0AvNyw666uh452dv5sdJOLimBesSgRNjdFTGZFCXEEf0rsnEVohm', NULL, 'root@root.com', 7, 1, 2, '2025-08-30 14:25:57', '2025-08-30 14:25:57', 'WnDqUcudrydqtx7rhS8QrZ5P8m-a8mMn_1756585557'),
+(2, 'johana.yoe', 'GqZduOgEPC11E7LNsOijpE8vfRCQuQNW', '$2y$13$Duf6LpXt64pPolHBJ/Dnku7/u/XOpC1JhNFMwz0xaai/RCxUNF9tm', NULL, 'johana.yoe@gmail.com', 1, 2, 1, '2025-10-21 14:40:05', '2025-10-21 14:50:19', 'niBMnPGMSbCnhaRxXgG6CNM7fUIRB2zX_1761079205');
 
 -- --------------------------------------------------------
 
