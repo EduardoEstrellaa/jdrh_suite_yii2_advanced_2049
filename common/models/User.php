@@ -71,7 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['estado_id'],'in',  'range'=>array_keys($this->getEstadoLista())],
 
-            ['rol_id', 'default', 'value' => 1],
+            ['rol_id', 'default', 'value' => 8],
 
             [['rol_id'],'in',  'range'=>array_keys($this->getRolLista())],
 
