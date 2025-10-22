@@ -67,7 +67,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['estado_id', 'default', 'value' =>  ValorHelpers::getEstadoId('Activo')],
+            ['estado_id', 'default', 'value' =>  ValorHelpers::getEstadoId('Pendiente')],
 
             [['estado_id'],'in',  'range'=>array_keys($this->getEstadoLista())],
 

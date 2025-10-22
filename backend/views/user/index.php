@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?> 
 
    
-    <?php  echo Accordion::widget([
+    <?php  /* echo Accordion::widget([
                             'items' => [
                                 // equivalent to the above
                                 [
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                    // if you want to swap out .card-block with .list-group, you may use the following
                             ]
-                        ]);
+                        ]); */
     ?> 
     
     <p> </p>
