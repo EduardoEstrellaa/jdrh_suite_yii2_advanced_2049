@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+
 
 /**
  * This is the model class for table "plan_licenciaturas".
@@ -89,5 +91,25 @@ class PlanLicenciaturas extends \yii\db\ActiveRecord
     public function getPlanSemestres()
     {
         return $this->hasMany(PlanSemestres::class, ['plan_licenciatura_id' => 'id']);
+    }
+
+
+    /**
+     * Devuelve un mapa de planes de estudios con licenciaturas [id => "PlanEstudios - Licenciatura"].
+     *
+     * @return array<int, string> Mapa donde la clave es el ID del plan y el valor es la combinación de PlanEstudios y Licenciatura.
+     */
+    public static function getPlanesLicenciaturasMap(): array
+    {
+        $planes = self::find()
+            ->joinWith('licenciaturas')
+            ->joinWith('planEstudios')
+            ->all();
+
+        return ArrayHelper::map(
+            $planes,
+            'id',
+            fn($model) => $model->planEstudios->nombre . ' - ' . $model->licenciaturas->nombre
+        );
     }
 }

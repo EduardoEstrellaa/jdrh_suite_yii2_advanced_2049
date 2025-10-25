@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+
 
 /**
  * This is the model class for table "generaciones".
@@ -60,5 +62,22 @@ class Generaciones extends \yii\db\ActiveRecord
     public function getAlumnos()
     {
         return $this->hasMany(Alumnos::class, ['generaciones_id' => 'id']);
+    }
+
+
+    /**
+     * Devuelve un mapa de generaciones [id => nombre].
+     *
+     * @return array<int, string> Mapa donde la clave es el ID de la generación y el valor es su nombre.
+     */
+    public static function getGeneracionesMap(): array
+    {
+        $generaciones = self::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($generaciones, 'id', 'nombre');
     }
 }

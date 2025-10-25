@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 22-10-2025 a las 02:21:28
+-- Tiempo de generación: 22-10-2025 a las 16:19:21
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.2.26
 
@@ -1360,7 +1360,7 @@ CREATE TABLE IF NOT EXISTS `rol` (
   `rol_nombre` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `rol_valor` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `rol`
@@ -1369,7 +1369,8 @@ CREATE TABLE IF NOT EXISTS `rol` (
 INSERT INTO `rol` (`id`, `rol_nombre`, `rol_valor`) VALUES
 (1, 'Usuario', 10),
 (2, 'Admin', 20),
-(7, 'SuperUsuario', 30);
+(7, 'SuperUsuario', 30),
+(8, 'Alumno', 11);
 
 -- --------------------------------------------------------
 
@@ -1586,7 +1587,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password_hash` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `password_reset_token` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `rol_id` smallint NOT NULL DEFAULT '1',
+  `rol_id` smallint NOT NULL DEFAULT '8',
   `estado_id` smallint NOT NULL DEFAULT '2',
   `tipo_usuario_id` smallint NOT NULL DEFAULT '1',
   `created_at` datetime NOT NULL,

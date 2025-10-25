@@ -2,6 +2,9 @@
 
 namespace backend\models;
 
+use frontend\models\Perfil;
+
+
 use Yii;
 
 /**
