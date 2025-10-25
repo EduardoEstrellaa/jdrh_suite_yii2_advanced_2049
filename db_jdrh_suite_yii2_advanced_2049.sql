@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 22-10-2025 a las 16:19:21
+-- Tiempo de generación: 25-10-2025 a las 22:58:57
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.2.26
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `alumnos` (
   KEY `fk_alumnos_perfil1_idx` (`perfil_id`),
   KEY `fk_alumnos_generaciones1_idx` (`generaciones_id`),
   KEY `fk_alumnos_plan_licenciaturas1_idx` (`plan_licenciaturas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1109,7 +1109,15 @@ CREATE TABLE IF NOT EXISTS `generaciones` (
   `anio_fin` datetime NOT NULL,
   `descripcion` varchar(250) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `generaciones`
+--
+
+INSERT INTO `generaciones` (`id`, `nombre`, `anio_inicio`, `anio_fin`, `descripcion`) VALUES
+(1, 'Generacion 2025 - 2029', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Esta generación corresponde a los estudiantes que iniciaron sus estudios en el año 2025 y culminarán en el 2029'),
+(2, 'Generacion 2026 - 2030', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Esta generación agrupa a los alumnos que comienzan su trayectoria académica en 2026 y concluirán en 2030');
 
 -- --------------------------------------------------------
 
@@ -1129,8 +1137,8 @@ CREATE TABLE IF NOT EXISTS `genero` (
 --
 
 INSERT INTO `genero` (`id`, `genero_nombre`) VALUES
-(1, 'masculino'),
-(2, 'femenino');
+(1, 'Masculino'),
+(2, 'Femenino');
 
 -- --------------------------------------------------------
 
@@ -1158,7 +1166,15 @@ CREATE TABLE IF NOT EXISTS `licenciaturas` (
   `nombre` varchar(250) NOT NULL,
   `descripcion` varchar(800) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `licenciaturas`
+--
+
+INSERT INTO `licenciaturas` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Licenciatura en Educación Primaria Intercultural, Plurilingüe y Comunitaria', 'El Plan de Estudio es el documento base que enmarca el proceso de formación de maestras y maestros de educación preescolar para contextos indígenas, interculturales y plurilingües del Sistema Educativo Nacional. Describe las orientaciones fundamentales que permiten el mejor desarrollo de los contenidos curriculares en los contextos de la escuela normal y las escuelas de práctica, los elementos generales y específicos que lo conforman de acuerdo con los aportes de las teorías curriculares, ciencias de la educación y otras áreas del conocimiento, y con los enfoques y fundamentos del plan de estudios de educación básica enmarcados en la Nueva Escuela Mexicana.'),
+(2, 'Licenciatura en Educación Primaria', 'El Plan de Estudio es el documento base que enmarca el proceso de formación de maestras y maestros de educación primaria del Sistema Educativo Nacional. Describe las orientaciones fundamentales que permiten el mejor desarrollo de los contenidos curriculares en los contextos de la escuela normal y las escuelas de práctica, los elementos generales y específicos que lo conforman de acuerdo con los aportes de las teorías curriculares, ciencias de la educación y otras áreas del conocimiento, y con los enfoques y fundamentos del plan de estudios de educación básica enmarcados en la Nueva Escuela Mexicana.');
 
 -- --------------------------------------------------------
 
@@ -1278,7 +1294,7 @@ CREATE TABLE IF NOT EXISTS `perfil` (
   PRIMARY KEY (`id`),
   KEY `genero_id_2` (`genero_id`),
   KEY `fk_perfil_user1_idx` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1293,7 +1309,14 @@ CREATE TABLE IF NOT EXISTS `plan_estudios` (
   `anio` int NOT NULL,
   `descripcion` varchar(250) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `plan_estudios`
+--
+
+INSERT INTO `plan_estudios` (`id`, `nombre`, `anio`, `descripcion`) VALUES
+(1, 'Planes de Estudio 2022', 2022, 'Este plan de estudios establece la estructura académica, los objetivos formativos y las líneas curriculares que guían la formación profesional de los futuros docentes conforme a los lineamientos educativos vigentes.');
 
 -- --------------------------------------------------------
 
@@ -1309,7 +1332,14 @@ CREATE TABLE IF NOT EXISTS `plan_licenciaturas` (
   PRIMARY KEY (`id`),
   KEY `fk_plan_licenciatura_plan_estudios1_idx` (`plan_estudios_id`),
   KEY `fk_plan_licenciatura_licenciaturas1_idx` (`licenciaturas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `plan_licenciaturas`
+--
+
+INSERT INTO `plan_licenciaturas` (`id`, `plan_estudios_id`, `licenciaturas_id`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1601,15 +1631,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `fk_user_rol1_idx` (`rol_id`),
   KEY `fk_user_estado1_idx` (`estado_id`),
   KEY `fk_user_tipo_usuario1_idx` (`tipo_usuario_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `rol_id`, `estado_id`, `tipo_usuario_id`, `created_at`, `updated_at`, `verification_token`) VALUES
-(1, 'root', 'pQeZefuxsI0kiGxn_OKI6IXdBznTmWF9', '$2y$13$M0AvNyw666uh452dv5sdJOLimBesSgRNjdFTGZFCXEEf0rsnEVohm', NULL, 'root@root.com', 7, 1, 2, '2025-08-30 14:25:57', '2025-08-30 14:25:57', 'WnDqUcudrydqtx7rhS8QrZ5P8m-a8mMn_1756585557'),
-(2, 'johana.yoe', 'GqZduOgEPC11E7LNsOijpE8vfRCQuQNW', '$2y$13$Duf6LpXt64pPolHBJ/Dnku7/u/XOpC1JhNFMwz0xaai/RCxUNF9tm', NULL, 'johana.yoe@gmail.com', 1, 2, 1, '2025-10-21 14:40:05', '2025-10-21 14:50:19', 'niBMnPGMSbCnhaRxXgG6CNM7fUIRB2zX_1761079205');
+(1, 'root', 'pQeZefuxsI0kiGxn_OKI6IXdBznTmWF9', '$2y$13$M0AvNyw666uh452dv5sdJOLimBesSgRNjdFTGZFCXEEf0rsnEVohm', NULL, 'root@root.com', 7, 1, 2, '2025-08-30 14:25:57', '2025-08-30 14:25:57', 'WnDqUcudrydqtx7rhS8QrZ5P8m-a8mMn_1756585557');
 
 -- --------------------------------------------------------
 
@@ -1710,7 +1739,7 @@ ALTER TABLE `alergias`
 --
 ALTER TABLE `alumnos`
   ADD CONSTRAINT `fk_alumnos_generaciones1` FOREIGN KEY (`generaciones_id`) REFERENCES `generaciones` (`id`),
-  ADD CONSTRAINT `fk_alumnos_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`),
+  ADD CONSTRAINT `fk_alumnos_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_alumnos_plan_licenciaturas1` FOREIGN KEY (`plan_licenciaturas_id`) REFERENCES `plan_licenciaturas` (`id`);
 
 --
@@ -2010,7 +2039,7 @@ ALTER TABLE `organizaciones`
 -- Filtros para la tabla `perfil`
 --
 ALTER TABLE `perfil`
-  ADD CONSTRAINT `fk_perfil_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `fk_perfil_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `perfil_ibfk_1` FOREIGN KEY (`genero_id`) REFERENCES `genero` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
