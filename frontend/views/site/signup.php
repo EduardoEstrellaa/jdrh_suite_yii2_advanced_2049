@@ -36,7 +36,7 @@ function inputWithIcon($form, $model, $attribute, $iconClass, $options = [])
                 <i class="' . $iconClass . ' input-icon"></i>
                 {input}
             </div>
-            {error}', // el mensaje de error está fuera del icon-wrapper
+            {error}',
     ];
 
     // Widget Select2
@@ -167,45 +167,3 @@ $generacionesLista = Generaciones::getGeneracionesMap();
         <?php ActiveForm::end(); ?>
     </div>
 </div>
-
-<style>
-    /* Contenedor general */
-    .icon-input-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    /* Ícono fijo dentro del campo */
-    .icon-input-wrapper .input-icon {
-        position: absolute;
-        top: 50%;
-        left: 12px;
-        transform: translateY(-50%);
-        color: #6c757d;
-        z-index: 10;
-        pointer-events: none;
-        font-size: 1rem;
-    }
-
-    /* Asegura que todos los campos tengan suficiente padding izquierdo */
-    .icon-input-wrapper .form-control,
-    .icon-input-wrapper .select2-selection {
-        padding-left: 2.3rem !important;
-    }
-
-    /* Para Select2: mantener altura y alineación */
-    .select2-container {
-        width: 100% !important;
-    }
-
-    .select2-selection {
-        min-height: 38px !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-
-    /* Cuando aparece el error, no afecta la posición del icono */
-    .form-field .invalid-feedback {
-        margin-top: 0.25rem;
-    }
-</style>
