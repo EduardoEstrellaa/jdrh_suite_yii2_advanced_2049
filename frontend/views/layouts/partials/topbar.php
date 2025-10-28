@@ -362,7 +362,7 @@ $form = Html::beginForm(['/site/logout'], 'post', ['class' => 'd-none', 'id' => 
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <h6 class="dropdown-header">Bienvenido <?= Yii::$app->user->identity->username ?>!</h6>
-                            <a class="dropdown-item" href="pages-profile">
+                            <a class="dropdown-item" href="<?= Url::to(['/perfil/index']) ?>">
                                 <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                                 <span class="align-middle">Perfil</span>
                             </a>
