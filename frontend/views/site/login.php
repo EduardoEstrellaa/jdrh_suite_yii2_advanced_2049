@@ -6,26 +6,13 @@
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
+use frontend\assets\LoginAsset;
 
 $this->title = 'Login';
+LoginAsset::register($this);
 
 
 ?>
-<style>
-    .auth-page-content {
-        margin-top: -100px !important;
-    }
-
-    /* SOBRESCRIBIR EL FONDO */
-    #auth-particles.auth-one-bg {
-        background-image: url('<?= Yii::getAlias('@web') ?>/img/jdrh-banner.jpg') !important;
-    }
-
-    .auth-one-bg .bg-overlay {
-        background: rgba(0, 0, 0, 0.5) !important;
-        /* Oscurecer menos para ver mejor la imagen */
-    }
-</style>
 
 
 <?php if (Yii::$app->session->hasFlash('success')) : ?>
@@ -79,7 +66,7 @@ $this->title = 'Login';
 
                             <div>
                                 <a href="index.php" class="d-inline-block auth-logo">
-                                    <img src="theme/images/jdrh-logo.svg" alt="" height="100">
+                                    <img src="theme/images/jdrh-logo.svg" alt="Logo JDRH" class="auth-logo-img">
                                 </a>
                             </div>
                         </div>
