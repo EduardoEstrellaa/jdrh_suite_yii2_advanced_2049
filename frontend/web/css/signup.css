@@ -30,6 +30,10 @@
     padding: 15px 20px;
 }
 
+.card-title{
+    color: white;
+}
+
 .equal-height-cards>.col-md-6 {
     display: flex;
 }

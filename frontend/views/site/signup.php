@@ -13,7 +13,6 @@ use kartik\select2\Select2;
 use frontend\assets\SignupAsset;
 use yii\helpers\Url;
 
-
 SignupAsset::register($this);
 
 // Generar la URL correcta según la configuración de Yii
@@ -24,53 +23,49 @@ $this->registerJs("const validateUrl = '$validateUrl';", \yii\web\View::POS_HEAD
 
 $this->title = 'Registro de Estudiantes';
 
-// ✅ Función inputWithIcon corregida manteniendo el addon en Select2
+// ✅ Función inputWithIcon CORREGIDA para Bootstrap 5
 function inputWithIcon($form, $model, $attribute, $iconClass, $options = [])
 {
-    // Para campos Select2 - MANTENIENDO EL ADDON
-    if (isset($options['select2']) && $options['select2']) {
-        return $form->field($model, $attribute)->widget(Select2::classname(), [
-            'data' => $options['select2']['data'],
-            'options' => [
-                'placeholder' => $options['select2']['placeholder'] ?? 'Selecciona...',
-                'class' => 'form-control'
-            ],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-            'addon' => [
-                'prepend' => [
-                    'content' => '<i class="' . $iconClass . '"></i>'
-                ]
-            ]
-        ])->label($model->getAttributeLabel($attribute));
-    }
-
-    // Para inputs normales
     $fieldOptions = [
-        'template' => '
-            <div class="form-field">
-                {label}
-                <div class="input-group">
-                    <span class="input-group-text"><i class="' . $iconClass . '"></i></span>
-                    {input}
-                </div>
-                <div class="invalid-feedback" id="signupform-' . $attribute . '-error"></div>
-                {hint}
+        'options' => ['class' => 'form-field mb-3'], // sin position-relative aquí
+        'errorOptions' => ['class' => 'invalid-feedback d-block'],
+        'labelOptions' => ['class' => 'form-label fw-semibold'],
+        'inputOptions' => ['class' => 'form-control ps-5'], // padding para el ícono
+        'template' => '{label}
+            <div class="icon-input-wrapper position-relative">
+                <i class="' . $iconClass . ' input-icon"></i>
+                {input}
             </div>
-        '
+            {error}', // el mensaje de error está fuera del icon-wrapper
     ];
 
-    $input = $form->field($model, $attribute, $fieldOptions);
-
-    if (isset($options['passwordInput']) && $options['passwordInput']) {
-        return $input->passwordInput(['class' => 'form-control']);
-    } elseif (isset($options['textInput']) && $options['textInput']['type'] === 'date') {
-        return $input->input('date', ['class' => 'form-control']);
-    } else {
-        return $input->textInput(['class' => 'form-control']);
+    // Widget Select2
+    if (isset($options['select2']) && $options['select2']) {
+        return $form->field($model, $attribute, $fieldOptions)
+            ->widget(Select2::class, [
+                'data' => $options['select2']['data'],
+                'options' => [
+                    'placeholder' => $options['select2']['placeholder'] ?? 'Selecciona...',
+                    'class' => 'form-control ps-5',
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '100%',
+                ],
+            ]);
     }
+
+    // Inputs normales
+    $input = $form->field($model, $attribute, $fieldOptions);
+    if (!empty($options['passwordInput'])) {
+        return $input->passwordInput();
+    } elseif (!empty($options['textInput']) && $options['textInput']['type'] === 'date') {
+        return $input->input('date');
+    }
+    return $input->textInput();
 }
+
+
 
 // Obtener listas
 $generoLista = Perfil::getGeneroLista();
@@ -172,3 +167,45 @@ $generacionesLista = Generaciones::getGeneracionesMap();
         <?php ActiveForm::end(); ?>
     </div>
 </div>
+
+<style>
+    /* Contenedor general */
+    .icon-input-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    /* Ícono fijo dentro del campo */
+    .icon-input-wrapper .input-icon {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+        color: #6c757d;
+        z-index: 10;
+        pointer-events: none;
+        font-size: 1rem;
+    }
+
+    /* Asegura que todos los campos tengan suficiente padding izquierdo */
+    .icon-input-wrapper .form-control,
+    .icon-input-wrapper .select2-selection {
+        padding-left: 2.3rem !important;
+    }
+
+    /* Para Select2: mantener altura y alineación */
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .select2-selection {
+        min-height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Cuando aparece el error, no afecta la posición del icono */
+    .form-field .invalid-feedback {
+        margin-top: 0.25rem;
+    }
+</style>

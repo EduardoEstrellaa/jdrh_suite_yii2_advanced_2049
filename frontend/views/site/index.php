@@ -1,52 +1,33 @@
 <?php
 
+use yii\helpers\Html;
+use common\models\PermisosHelpers;
+
+use yii\helpers\Url;
+
+
 /** @var yii\web\View $this */
 
-$this->title = 'My Yii Application';
+$this->title = 'JDRH - SUITE';
+
 ?>
+
 <div class="site-index">
-    <div class="p-5 mb-4 bg-transparent rounded-3">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-4">Congratulations!</h1>
-            <p class="fs-5 fw-light">You have successfully created your Yii-powered application.</p>
-            <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
-        </div>
-    </div>
+    <div class="container">
+        <center>
 
-    <div class="body-content">
 
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <IMG src=<?php echo Url::to('@web/img/jdrh-banner.jpg', true); ?> width="20%" height="30%" BORDER=0 ALT="Imagen de Enzabezado" ALIGN="center">
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+            <p></p>
 
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <p class="bienvenida">JDRH - SUITE es un sistema integral diseñado para acompañar a los estudiantes en su desarrollo académico y personal mediante el registro y seguimiento de sus tutorías. Su principal objetivo es centralizar la información relevante de cada alumno, permitiendo a los tutores conocer y monitorear de manera efectiva aspectos como hábitos, salud, situación socioeconómica y progreso académico.
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+                Con esta plataforma, se busca ofrecer un seguimiento personalizado que apoye al estudiante en su formación, detectando áreas de oportunidad y fomentando un acompañamiento cercano y continuo. Gracias a su diseño intuitivo y accesible, JDRH - SUITE facilita la recolección de información de manera organizada y confiable, promoviendo un entorno donde cada alumno recibe la atención que necesita para desarrollarse plenamente.
+            </p>
 
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <h3>¡Disfruta de tu visita!</h3>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
+        </center>
     </div>
 </div>

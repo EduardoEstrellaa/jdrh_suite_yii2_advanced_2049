@@ -63,12 +63,9 @@ $this->title = 'Login';
 
               <div>
                 <a href="index.php" class="d-inline-block auth-logo">
-                  <img src="assets/images/logo-light.png" alt="" height="20">
+                  <img src="theme/images/jdrh-logo.svg" alt="" height="100">
                 </a>
               </div>
-
-              <p class="mt-3 fs-15 fw-medium">SUITE - jDRH</p>
-
             </div>
 
           </div>
