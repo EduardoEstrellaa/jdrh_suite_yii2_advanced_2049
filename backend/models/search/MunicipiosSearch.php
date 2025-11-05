@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Municipios;
+use common\models\Municipios;
 
 /**
- * MunicipiosSearch represents the model behind the search form of `backend\models\Municipios`.
+ * MunicipiosSearch represents the model behind the search form of `common\models\Municipios`.
  */
 class MunicipiosSearch extends Municipios
 {
@@ -17,7 +17,7 @@ class MunicipiosSearch extends Municipios
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id', 'entidades_federativas_id'], 'integer'],
             [['nombre'], 'safe'],
         ];
     }
@@ -59,6 +59,7 @@ class MunicipiosSearch extends Municipios
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'entidades_federativas_id' => $this->entidades_federativas_id,
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre]);

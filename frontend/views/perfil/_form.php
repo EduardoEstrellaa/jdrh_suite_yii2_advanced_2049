@@ -2,36 +2,39 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use frontend\helpers\FormHelper;
+use frontend\assets\AppAsset;
 
-use  yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Perfil */
 /* @var $form yii\widgets\ActiveForm */
+
+AppAsset::register($this);
+
 ?>
 
-<div class="perfil-form">
+<div class="perfil-form container">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'nombre')->textInput(['maxlength' => 45]) ?>
+    <?= FormHelper::inputWithIcon($form, $model, 'nombre', 'fas fa-user') ?>
 
-    <?= $form->field($model, 'apellido')->textInput(['maxlength' => 45]) ?>
+    <?= FormHelper::inputWithIcon($form, $model, 'apellido', 'fas fa-user') ?>
 
-    <?php  echo  $form->field($model,'fecha_nacimiento')->widget(DatePicker::className(),[
-                                                                        'dateFormat'  =>  'yyyy-MM-dd',
-                                                                        'clientOptions'  =>  [
-                                                                        'yearRange'  =>  '-115:+0',
-                                                                        'changeYear'  =>  true]
-                                                        ])  ?>
+    <?= FormHelper::inputWithIcon($form, $model, 'fecha_nacimiento', 'fas fa-calendar-alt', ['type' => 'date']) ?>
 
-    <!-- <?= $form->field($model, 'fecha_nacimiento')->textInput() ?>
-    * por favor use el formato YYYY-MM-DD -->
+    <?= FormHelper::inputWithIcon($form, $model, 'genero_id', 'fas fa-venus-mars', [
+        'select2' => [
+            'data' => $model->generoLista,
+            'placeholder' => 'Seleccione el género'
+        ]
+    ]) ?>
 
-    <?= $form->field($model, 'genero_id')->dropDownList($model->generoLista, ['prompt' => 'Seleccione el genero' ]);?>
-
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <div class="form-group text-center mt-3">
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', [
+            'class' => $model->isNewRecord ? 'btn btn-success btn-lg' : 'btn btn-primary btn-lg'
+        ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
