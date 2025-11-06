@@ -23,15 +23,15 @@ $this->title = 'Expediente';
     <div class="accordion" id="expedienteAccordion">
 
         <!-- ===================== -->
-        <!-- SECCIÓN 1: DATOS GENERALES -->
+        <!-- SECCIÓN 1: DATOS PERSONALES -->
         <!-- ===================== -->
         <div class="accordion-item">
-            <h2 class="accordion-header" id="headingGeneral">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
-                    <i class="fas fa-folder-open text-primary me-2"></i> Datos Generales del Estudiante
+            <h2 class="accordion-header" id="headingDatosPersonales">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosPersonales" aria-expanded="true" aria-controls="collapseDatosPersonales">
+                    🧍‍♂️ I. DATOS PERSONALES
                 </button>
             </h2>
-            <div id="collapseGeneral" class="accordion-collapse collapse show" aria-labelledby="headingGeneral" data-bs-parent="#expedienteAccordion">
+            <div id="collapseDatosPersonales" class="accordion-collapse collapse show" aria-labelledby="headingDatosPersonales" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
 
                     <!-- ===================== -->
@@ -202,17 +202,145 @@ $this->title = 'Expediente';
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 2: OTRO APARTADO (VACÍO) -->
+        <!-- SECCIÓN 2: DATOS ACADÉMICOS -->
         <!-- ===================== -->
         <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOtro">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOtro" aria-expanded="false" aria-controls="collapseOtro">
-                    <i class="fas fa-file-alt text-info me-2"></i> Otro Apartado (Próximamente)
+            <h2 class="accordion-header" id="headingDatosAcademicos">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosAcademicos" aria-expanded="false" aria-controls="collapseDatosAcademicos">
+                    📚 II. DATOS ACADÉMICOS
                 </button>
             </h2>
-            <div id="collapseOtro" class="accordion-collapse collapse" aria-labelledby="headingOtro" data-bs-parent="#expedienteAccordion">
+            <div id="collapseDatosAcademicos" class="accordion-collapse collapse" aria-labelledby="headingDatosAcademicos" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Aquí podrás agregar más secciones del expediente, como datos escolares o familiares.</p>
+                    <p class="text-muted">Contenido de datos académicos próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 3: DATOS FAMILIARES -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDatosFamiliares">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosFamiliares" aria-expanded="false" aria-controls="collapseDatosFamiliares">
+                    👨‍👩‍👧 III. DATOS FAMILIARES
+                </button>
+            </h2>
+            <div id="collapseDatosFamiliares" class="accordion-collapse collapse" aria-labelledby="headingDatosFamiliares" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de datos familiares próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 4: SITUACIÓN SOCIOECONÓMICA -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSituacionSocioeconomica">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSituacionSocioeconomica" aria-expanded="false" aria-controls="collapseSituacionSocioeconomica">
+                    💰 IV. SITUACIÓN SOCIOECONÓMICA
+                </button>
+            </h2>
+            <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de situación socioeconómica próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 5: TRANSPORTE Y ACCESO -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTransporteAcceso">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTransporteAcceso" aria-expanded="false" aria-controls="collapseTransporteAcceso">
+                    🚗 V. TRANSPORTE Y ACCESO
+                </button>
+            </h2>
+            <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de transporte y acceso próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 6: SALUD -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSalud">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSalud" aria-expanded="false" aria-controls="collapseSalud">
+                    ⚕️ VI. SALUD
+                </button>
+            </h2>
+            <div id="collapseSalud" class="accordion-collapse collapse" aria-labelledby="headingSalud" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de salud próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 7: ALIMENTACIÓN -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAlimentacion">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAlimentacion" aria-expanded="false" aria-controls="collapseAlimentacion">
+                    🍽️ VII. ALIMENTACIÓN
+                </button>
+            </h2>
+            <div id="collapseAlimentacion" class="accordion-collapse collapse" aria-labelledby="headingAlimentacion" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de alimentación próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 8: ACTIVIDAD FÍSICA Y DEPORTE -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingActividadFisica">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseActividadFisica" aria-expanded="false" aria-controls="collapseActividadFisica">
+                    🏋️ VIII. ACTIVIDAD FÍSICA Y DEPORTE
+                </button>
+            </h2>
+            <div id="collapseActividadFisica" class="accordion-collapse collapse" aria-labelledby="headingActividadFisica" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de actividad física y deporte próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 9: HÁBITOS DE CONSUMO -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingHabitosConsumo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHabitosConsumo" aria-expanded="false" aria-controls="collapseHabitosConsumo">
+                    🚬 IX. HÁBITOS DE CONSUMO
+                </button>
+            </h2>
+            <div id="collapseHabitosConsumo" class="accordion-collapse collapse" aria-labelledby="headingHabitosConsumo" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de hábitos de consumo próximamente...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 10: RECREACIÓN Y USO DEL TIEMPO LIBRE -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingRecreacion">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecreacion" aria-expanded="false" aria-controls="collapseRecreacion">
+                    💻 X. RECREACIÓN Y USO DEL TIEMPO LIBRE
+                </button>
+            </h2>
+            <div id="collapseRecreacion" class="accordion-collapse collapse" aria-labelledby="headingRecreacion" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <p class="text-muted">Contenido de recreación y uso del tiempo libre próximamente...</p>
                 </div>
             </div>
         </div>
