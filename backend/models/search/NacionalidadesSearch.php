@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Nacionalidades;
+use common\models\Nacionalidades;
 
 /**
- * NacionalidadesSearch represents the model behind the search form of `backend\models\Nacionalidades`.
+ * NacionalidadesSearch represents the model behind the search form of `common\models\Nacionalidades`.
  */
 class NacionalidadesSearch extends Nacionalidades
 {
