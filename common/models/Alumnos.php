@@ -1,9 +1,6 @@
 <?php
 
-namespace backend\models;
-
-use frontend\models\Perfil;
-
+namespace common\models;
 
 use Yii;
 
