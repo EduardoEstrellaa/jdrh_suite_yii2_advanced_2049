@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\PlanEstudios;
+use common\models\PlanEstudios;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

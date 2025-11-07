@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Generaciones;
+use common\models\Generaciones;
 use backend\models\search\GeneracionesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

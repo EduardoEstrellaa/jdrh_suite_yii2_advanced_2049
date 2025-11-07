@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\PlanEstudios;
+use common\models\PlanEstudios;
 use backend\models\search\PlanEstudiosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

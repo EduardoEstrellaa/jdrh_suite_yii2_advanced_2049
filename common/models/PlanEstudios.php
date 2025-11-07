@@ -1,26 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "licenciaturas".
+ * This is the model class for table "plan_estudios".
  *
  * @property int $id
  * @property string $nombre
+ * @property int $anio
  * @property string $descripcion
  *
  * @property PlanLicenciaturas[] $planLicenciaturas
  */
-class Licenciaturas extends \yii\db\ActiveRecord
+class PlanEstudios extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'licenciaturas';
+        return 'plan_estudios';
     }
 
     /**
@@ -29,9 +30,9 @@ class Licenciaturas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'descripcion'], 'required'],
-            [['nombre'], 'string', 'max' => 250],
-            [['descripcion'], 'string', 'max' => 800],
+            [['nombre', 'anio', 'descripcion'], 'required'],
+            [['anio'], 'integer'],
+            [['nombre', 'descripcion'], 'string', 'max' => 250],
         ];
     }
 
@@ -43,6 +44,7 @@ class Licenciaturas extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
+            'anio' => 'Anio',
             'descripcion' => 'Descripcion',
         ];
     }
@@ -54,6 +56,6 @@ class Licenciaturas extends \yii\db\ActiveRecord
      */
     public function getPlanLicenciaturas()
     {
-        return $this->hasMany(PlanLicenciaturas::class, ['licenciaturas_id' => 'id']);
+        return $this->hasMany(PlanLicenciaturas::class, ['plan_estudios_id' => 'id']);
     }
 }
