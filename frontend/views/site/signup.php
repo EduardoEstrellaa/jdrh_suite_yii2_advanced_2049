@@ -6,8 +6,8 @@
 
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
-use backend\models\PlanLicenciaturas;
-use backend\models\Generaciones;
+use common\models\PlanLicenciaturas;
+use common\models\Generaciones;
 use frontend\models\Perfil;
 use kartik\select2\Select2;
 use frontend\assets\SignupAsset;
