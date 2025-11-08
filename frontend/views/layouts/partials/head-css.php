@@ -18,5 +18,3 @@ use yii\helpers\Url;
 
 <!-- Custom Sidebar -->
 <link href="<?= Url::base(true) ?>/theme/css/custom.css" rel="stylesheet" type="text/css" />
-
-<link href="<?= Url::base(true) ?>/css/signup.css" rel="stylesheet" type="text/css" />

@@ -18,7 +18,6 @@ class SignupAsset extends AssetBundle
     ];
 
     public $depends = [
-        'frontend\assets\AppAsset', // Asegurarse que Font Awesome y Bootstrap ya estén cargados
         'yii\web\YiiAsset',
         'kartik\select2\Select2Asset',
     ];

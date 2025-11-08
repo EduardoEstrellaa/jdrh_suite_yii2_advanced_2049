@@ -5,76 +5,73 @@
     --success-green: #28a745;
 }
 
-/* Estructura general */
-.site-signup {
-    padding-top: 20px;
-    padding-bottom: 40px;
+/* ===== ESPECIFICIDAD MÁXIMA ===== */
+html body .site-signup {
+    padding-top: 20px !important;
+    padding-bottom: 40px !important;
 }
 
-.site-signup h1 {
-    color: var(--title-h1);
-    font-weight: 700;
+html body .site-signup h1 {
+    color: var(--title-h1) !important;
+    font-weight: 700 !important;
     margin-bottom: 5px !important;
 }
 
-.card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+html body .card {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
 }
 
-.card-header {
-    background-color: var(--background-header);
-    color: white;
+html body .card-header {
+    background-color: var(--background-header) !important;
+    color: white !important;
     border-radius: 12px 12px 0 0 !important;
-    padding: 15px 20px;
+    padding: 15px 20px !important;
 }
 
-.card-title {
-    color: white;
+html body .card-title {
+    color: white !important;
 }
 
-.equal-height-cards>.col-md-6 {
-    display: flex;
+html body .equal-height-cards>.col-md-6 {
+    display: flex !important;
 }
 
-.equal-height-cards .card {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+html body .equal-height-cards .card {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
-
 
 /* Asegurar que los mensajes de error sean visibles */
-#form-signup .invalid-feedback {
+html body #form-signup .invalid-feedback {
     display: block !important;
-    width: 100%;
-    margin-top: 0.25rem;
-    font-size: 0.875em;
-    color: #dc3545;
+    width: 100% !important;
+    margin-top: 0.25rem !important;
+    font-size: 0.875em !important;
+    color: #dc3545 !important;
 }
 
 /* Ícono fijo dentro del campo */
-.icon-input-wrapper .input-icon {
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    transform: translateY(-50%);
-    color: #6c757d;
-    z-index: 10;
-    pointer-events: none;
-    font-size: 1rem;
+html body .icon-input-wrapper .input-icon {
+    position: absolute !important;
+    top: 50% !important;
+    left: 12px !important;
+    transform: translateY(-50%) !important;
+    color: #6c757d !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+    font-size: 1rem !important;
 }
 
 /* Asegura que todos los campos tengan suficiente padding izquierdo */
-.icon-input-wrapper .form-control,
-.icon-input-wrapper .select2-selection {
+html body .icon-input-wrapper .form-control,
+html body .icon-input-wrapper .select2-selection {
     padding-left: 2.3rem !important;
 }
 
-
-
-.select2-selection {
+html body .select2-selection {
     min-height: 38px !important;
     display: flex !important;
     align-items: center !important;

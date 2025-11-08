@@ -65,7 +65,7 @@ class SignupForm extends Model
             // Alumno
             [['matricula', 'plan_licenciaturas_id', 'generaciones_id'], 'required'],
             ['matricula', 'string', 'max' => 10],
-            ['matricula', 'unique', 'targetClass' => '\backend\models\Alumnos', 'message' => 'Esta matrícula ya está registrada.'],
+            ['matricula', 'unique', 'targetClass' => '\common\models\Alumnos', 'message' => 'Esta matrícula ya está registrada.'],
             [['plan_licenciaturas_id', 'generaciones_id'], 'integer'],
         ];
     }
