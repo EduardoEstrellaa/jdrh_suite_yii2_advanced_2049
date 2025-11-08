@@ -4,54 +4,51 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
 use common\models\DatosPersonales;
 use common\models\LugaresNacimiento;
 use common\models\DomiciliosActuales;
 use common\models\Municipios;
+use common\models\Alumnos;
+use common\services\ExpedienteService;
 
-/**
- * ExpedienteController implements the CRUD actions for DatosPersonales model.
- */
 class ExpedienteController extends Controller
 {
+    /** 
+     * Comportamientos del controlador.
+     */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'eliminar' => ['POST'],
-                        'municipios' => ['GET'],
-                    ],
+        return array_merge(parent::behaviors(), [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                    'municipios' => ['GET'],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
     /**
-     * Lista todos los expedientes del usuario actual.
+     * Redirige al usuario según el estado de su expediente.
      */
     public function actionIndex()
     {
-        $perfil = Yii::$app->user->identity->perfil;
-        if (!$perfil) {
-            throw new NotFoundHttpException('Perfil no encontrado para este usuario.');
+        $perfil = $this->getPerfil();
+
+        $expediente = DatosPersonales::find()
+            ->where(['perfil_id' => $perfil->id])
+            ->orderBy(['id' => SORT_DESC])
+            ->one();
+
+        if ($expediente) {
+            return $this->redirect(['update', 'id' => $expediente->id]);
         }
 
-        $query = DatosPersonales::find()->where(['perfil_id' => $perfil->id]);
-
-        return $this->render('index', [
-            'dataProvider' => new \yii\data\ActiveDataProvider([
-                'query' => $query,
-                'pagination' => ['pageSize' => 10],
-                'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
-            ]),
-        ]);
+        return $this->redirect(['create']);
     }
 
     /**
@@ -59,21 +56,24 @@ class ExpedienteController extends Controller
      */
     public function actionView($id)
     {
-        $perfil = Yii::$app->user->identity->perfil;
+        $perfil = $this->getPerfil();
         $datosPersonales = $this->findModel($id);
 
-        if (!$perfil || $datosPersonales->perfil_id != $perfil->id) {
-            throw new NotFoundHttpException('No puedes ver este expediente.');
+        if ($datosPersonales->perfil_id !== $perfil->id) {
+            throw new NotFoundHttpException(Yii::t('app', 'No puedes ver este expediente.'));
         }
 
+        $alumno = $this->findAlumno($perfil->id);
         $lugaresNacimiento = LugaresNacimiento::findOne(['perfil_id' => $perfil->id]);
         $domicilioActual = DomiciliosActuales::findOne(['perfil_id' => $perfil->id]);
 
         if (!$lugaresNacimiento || !$domicilioActual) {
-            Yii::$app->session->setFlash('warning', 'Algunas secciones del expediente no están completas.');
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'Algunas secciones del expediente no están completas.'));
         }
 
         return $this->render('view', [
+            'perfil' => $perfil,
+            'alumno' => $alumno,
             'datosPersonales' => $datosPersonales,
             'lugaresNacimiento' => $lugaresNacimiento,
             'domicilioActual' => $domicilioActual,
@@ -81,46 +81,36 @@ class ExpedienteController extends Controller
     }
 
     /**
-     * Crea un nuevo expediente con sus datos relacionados.
+     * Crea un nuevo expediente y sus secciones relacionadas.
      */
     public function actionCreate()
     {
-        $usuario = Yii::$app->user->identity;
-        $perfil = $usuario ? $usuario->perfil : null;
+        $perfil = $this->getPerfil();
 
-        $datosPersonales = new DatosPersonales();
-        $lugaresNacimiento = new LugaresNacimiento();
-        $domicilioActual = new DomiciliosActuales();
+        if (DatosPersonales::find()->where(['perfil_id' => $perfil->id])->exists()) {
+            Yii::$app->session->setFlash('info', Yii::t('app', 'Ya tienes un expediente creado.'));
+            $expediente = DatosPersonales::find()
+                ->where(['perfil_id' => $perfil->id])
+                ->orderBy(['id' => SORT_DESC])
+                ->one();
+            return $this->redirect(['update', 'id' => $expediente->id]);
+        }
 
-        if (
-            $datosPersonales->load(Yii::$app->request->post()) &&
-            $lugaresNacimiento->load(Yii::$app->request->post()) &&
-            $domicilioActual->load(Yii::$app->request->post())
-        ) {
-            if ($perfil) {
-                $datosPersonales->perfil_id = $perfil->id;
-                $lugaresNacimiento->perfil_id = $perfil->id;
-                $domicilioActual->perfil_id = $perfil->id;
-            }
-
-            $isValid = $datosPersonales->validate() &&
-                $lugaresNacimiento->validate() &&
-                $domicilioActual->validate();
-
-            if ($isValid) {
-                $datosPersonales->save(false);
-                $lugaresNacimiento->save(false);
-                $domicilioActual->save(false);
-
-                Yii::$app->session->setFlash('success', 'Expediente guardado correctamente.');
-                return $this->redirect(['index']);
+        $post = Yii::$app->request->post();
+        if ($post) {
+            $result = ExpedienteService::crearExpediente($perfil, $post);
+            if ($result) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Expediente guardado correctamente.'));
+                return $this->redirect(['view', 'id' => $result->id]);
             }
         }
 
         return $this->render('create', [
-            'datosPersonales' => $datosPersonales,
-            'lugaresNacimiento' => $lugaresNacimiento,
-            'domicilioActual' => $domicilioActual,
+            'perfil' => $perfil,
+            'alumno' => $this->findAlumno($perfil->id),
+            'datosPersonales' => new DatosPersonales(),
+            'lugaresNacimiento' => new LugaresNacimiento(),
+            'domicilioActual' => new DomiciliosActuales(),
         ]);
     }
 
@@ -129,39 +119,28 @@ class ExpedienteController extends Controller
      */
     public function actionUpdate($id)
     {
-        $perfil = Yii::$app->user->identity->perfil;
+        $perfil = $this->getPerfil();
         $datosPersonales = $this->findModel($id);
 
-        if ($datosPersonales->perfil_id != $perfil->id) {
-            throw new NotFoundHttpException('No puedes editar este expediente.');
+        if ($datosPersonales->perfil_id !== $perfil->id) {
+            throw new NotFoundHttpException(Yii::t('app', 'No puedes editar este expediente.'));
         }
 
-        $lugaresNacimiento = LugaresNacimiento::findOne(['perfil_id' => $perfil->id]);
-        $domicilioActual = DomiciliosActuales::findOne(['perfil_id' => $perfil->id]);
-
-        if (
-            $datosPersonales->load(Yii::$app->request->post()) &&
-            $lugaresNacimiento->load(Yii::$app->request->post()) &&
-            $domicilioActual->load(Yii::$app->request->post())
-        ) {
-            $isValid = $datosPersonales->validate() &&
-                $lugaresNacimiento->validate() &&
-                $domicilioActual->validate();
-
-            if ($isValid) {
-                $datosPersonales->save(false);
-                $lugaresNacimiento->save(false);
-                $domicilioActual->save(false);
-
-                Yii::$app->session->setFlash('success', 'Expediente actualizado correctamente.');
-                return $this->redirect(['index']);
+        $post = Yii::$app->request->post();
+        if ($post) {
+            $result = ExpedienteService::actualizarExpediente($perfil, $id, $post);
+            if ($result) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Expediente actualizado correctamente.'));
+                return $this->redirect(['view', 'id' => $result->id]);
             }
         }
 
         return $this->render('update', [
+            'perfil' => $perfil,
+            'alumno' => $this->findAlumno($perfil->id),
             'datosPersonales' => $datosPersonales,
-            'lugaresNacimiento' => $lugaresNacimiento,
-            'domicilioActual' => $domicilioActual,
+            'lugaresNacimiento' => LugaresNacimiento::findOne(['perfil_id' => $perfil->id]),
+            'domicilioActual' => DomiciliosActuales::findOne(['perfil_id' => $perfil->id]),
         ]);
     }
 
@@ -170,35 +149,32 @@ class ExpedienteController extends Controller
      */
     public function actionDelete($id)
     {
-        $perfil = Yii::$app->user->identity->perfil;
+        $perfil = $this->getPerfil();
         $datosPersonales = $this->findModel($id);
 
-        if ($datosPersonales->perfil_id != $perfil->id) {
-            throw new NotFoundHttpException('No puedes eliminar este expediente.');
+        if ($datosPersonales->perfil_id !== $perfil->id) {
+            throw new NotFoundHttpException(Yii::t('app', 'No puedes eliminar este expediente.'));
         }
 
-        LugaresNacimiento::deleteAll(['perfil_id' => $perfil->id]);
-        DomiciliosActuales::deleteAll(['perfil_id' => $perfil->id]);
-        $datosPersonales->delete();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            LugaresNacimiento::deleteAll(['perfil_id' => $perfil->id]);
+            DomiciliosActuales::deleteAll(['perfil_id' => $perfil->id]);
+            $datosPersonales->delete();
+            $transaction->commit();
 
-        Yii::$app->session->setFlash('success', 'Expediente eliminado correctamente.');
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Expediente eliminado correctamente.'));
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error($e->getMessage(), __METHOD__);
+            Yii::$app->session->setFlash('error', Yii::t('app', 'Ocurrió un error al eliminar el expediente.'));
+        }
+
         return $this->redirect(['index']);
     }
 
     /**
-     * Busca un modelo por ID.
-     */
-    protected function findModel($id)
-    {
-        if (($model = DatosPersonales::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('El expediente solicitado no existe.');
-    }
-
-    /**
-     * Devuelve los municipios de una entidad federativa (para AJAX).
+     * Devuelve los municipios de una entidad federativa (AJAX).
      */
     public function actionMunicipios($estado_id)
     {
@@ -211,11 +187,47 @@ class ExpedienteController extends Controller
             ->asArray()
             ->all();
 
-        $result = [];
-        foreach ($municipios as $m) {
-            $result[$m['id']] = $m['nombre'];
-        }
+        return array_column($municipios, 'nombre', 'id');
+    }
 
-        return $result;
+    /* ============================================================= */
+    /* 🔒 MÉTODOS AUXILIARES PRIVADOS                                */
+    /* ============================================================= */
+
+    /**
+     * Obtiene el perfil actual del usuario autenticado.
+     * @throws NotFoundHttpException
+     */
+    private function getPerfil()
+    {
+        $perfil = Yii::$app->user->identity->perfil ?? null;
+        if (!$perfil) {
+            throw new NotFoundHttpException(Yii::t('app', 'Perfil no encontrado.'));
+        }
+        return $perfil;
+    }
+
+    /**
+     * Busca un alumno por perfil con relaciones cargadas.
+     */
+    private function findAlumno($perfilId)
+    {
+        return Alumnos::find()
+            ->where(['perfil_id' => $perfilId])
+            ->with(['generaciones', 'planLicenciaturas.licenciaturas'])
+            ->one();
+    }
+
+    /**
+     * Busca un modelo de DatosPersonales por ID.
+     * @throws NotFoundHttpException
+     */
+    private function findModel($id)
+    {
+        $model = DatosPersonales::findOne($id);
+        if (!$model) {
+            throw new NotFoundHttpException(Yii::t('app', 'El expediente solicitado no existe.'));
+        }
+        return $model;
     }
 }

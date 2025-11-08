@@ -23,23 +23,129 @@ $this->title = 'Expediente';
     <div class="accordion" id="expedienteAccordion">
 
         <!-- ===================== -->
-        <!-- SECCIÓN 1: DATOS PERSONALES -->
+        <!-- SECCIÓN 1: DATOS ACADÉMICOS -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDatosAcademicos">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosAcademicos" aria-expanded="true" aria-controls="collapseDatosAcademicos">
+                    📚 I. DATOS ACADÉMICOS
+                </button>
+            </h2>
+            <div id="collapseDatosAcademicos" class="accordion-collapse collapse show" aria-labelledby="headingDatosAcademicos" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label"><strong>Matrícula</strong></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input type="text" class="form-control bg-light" value="<?= Html::encode($alumno->matricula ?? 'No asignada') ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label"><strong>Plan de Licenciatura</strong></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-book"></i></span>
+                                    <input type="text" class="form-control bg-light" value="<?= Html::encode($alumno->planLicenciaturas->licenciaturas->nombre ?? 'No asignado') ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label"><strong>Generación</strong></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-users"></i></span>
+                                    <input type="text" class="form-control bg-light" value="<?= Html::encode($alumno->generaciones->nombre ?? 'No asignada') ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 2: DATOS PERSONALES -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingDatosPersonales">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosPersonales" aria-expanded="true" aria-controls="collapseDatosPersonales">
-                    🧍‍♂️ I. DATOS PERSONALES
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosPersonales" aria-expanded="false" aria-controls="collapseDatosPersonales">
+                    🧍‍♂️ II. DATOS PERSONALES
                 </button>
             </h2>
-            <div id="collapseDatosPersonales" class="accordion-collapse collapse show" aria-labelledby="headingDatosPersonales" data-bs-parent="#expedienteAccordion">
+            <div id="collapseDatosPersonales" class="accordion-collapse collapse" aria-labelledby="headingDatosPersonales" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
 
                     <!-- ===================== -->
-                    <!-- DATOS PERSONALES -->
+                    <!-- INFORMACIÓN BÁSICA -->
                     <!-- ===================== -->
                     <h4 class="mb-3 mt-2">
                         <i class="fas fa-user text-primary"></i>
-                        <span class="text-secondary">Datos Personales</span>
+                        <span class="text-secondary">Información Básica</span>
+                    </h4>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $perfil, 'nombre', 'fa-user', [
+                                'inputOptions' => [
+                                    'class' => 'form-control bg-light',
+                                    'readonly' => true,
+                                    'value' => Html::encode($perfil->nombre ?? '')
+                                ]
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $perfil, 'apellido', 'fa-user', [
+                                'inputOptions' => [
+                                    'class' => 'form-control bg-light',
+                                    'readonly' => true,
+                                    'value' => Html::encode($perfil->apellido ?? '')
+                                ]
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $perfil, 'fecha_nacimiento', 'fa-calendar', [
+                                'inputOptions' => [
+                                    'class' => 'form-control bg-light',
+                                    'readonly' => true,
+                                    'value' => Html::encode($perfil->fecha_nacimiento ?? '')
+                                ]
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField($form, $perfil, 'generoNombre', 'fa-venus-mars', [
+                                'inputOptions' => [
+                                    'class' => 'form-control bg-light',
+                                    'readonly' => true,
+                                    'value' => Html::encode($perfil->generoNombre ?? '')
+                                ]
+                            ]) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField($form, $perfil, 'username', 'fa-at', [
+                                'inputOptions' => [
+                                    'class' => 'form-control bg-light',
+                                    'readonly' => true,
+                                    'value' => Html::encode($perfil->username ?? '')
+                                ]
+                            ]) ?>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+
+                    <!-- ===================== -->
+                    <!-- DATOS PERSONALES ADICIONALES -->
+                    <!-- ===================== -->
+                    <h4 class="mb-3">
+                        <i class="fas fa-address-card text-info"></i>
+                        <span class="text-secondary">Datos Personales Adicionales</span>
                     </h4>
 
                     <div class="row">
@@ -202,22 +308,6 @@ $this->title = 'Expediente';
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 2: DATOS ACADÉMICOS -->
-        <!-- ===================== -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingDatosAcademicos">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosAcademicos" aria-expanded="false" aria-controls="collapseDatosAcademicos">
-                    📚 II. DATOS ACADÉMICOS
-                </button>
-            </h2>
-            <div id="collapseDatosAcademicos" class="accordion-collapse collapse" aria-labelledby="headingDatosAcademicos" data-bs-parent="#expedienteAccordion">
-                <div class="accordion-body">
-                    <p class="text-muted">Contenido de datos académicos próximamente...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===================== -->
         <!-- SECCIÓN 3: DATOS FAMILIARES -->
         <!-- ===================== -->
         <div class="accordion-item">
@@ -367,6 +457,7 @@ $script = <<<JS
 JS;
 $this->registerJs($script, View::POS_BEGIN);
 $this->registerJsFile('@web/js/expediente-tutores.js', [
-    'depends' => [\yii\web\JqueryAsset::class]
+    'depends' => [AppAsset::class]
 ]);
+
 ?>
