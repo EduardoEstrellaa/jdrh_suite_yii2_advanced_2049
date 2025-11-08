@@ -20,22 +20,33 @@ class AppAsset extends AssetBundle
         'theme/css/custom.min.css',
     ];
     public $js = [
+        // 1. Bootstrap 5 (base)
         'theme/libs/bootstrap/js/bootstrap.bundle.min.js',
+
+        // 2. Utilidades del tema
         'theme/libs/node-waves/waves.min.js',
         'theme/libs/simplebar/simplebar.min.js',
+
+        // 3. Feather Icons (IMPORTANTE: debe ir ANTES de app.js)
         'theme/libs/feather-icons/feather.min.js',
+
+        // 4. Plugins
         'theme/js/pages/plugins/lord-icon-2.1.0.js',
         'theme/libs/apexcharts/apexcharts.min.js',
-        'theme/js/plugins.js',
-        'theme/js/pages/dashboard-projects.init.js',
         'theme/libs/jsvectormap/js/jsvectormap.min.js',
         'theme/libs/jsvectormap/maps/world-merc.js',
         'theme/libs/swiper/swiper-bundle.min.js',
         'theme/libs/flatpickr/flatpickr.min.js',
-        'theme/js/app.js',
         'theme/libs/particles.js/particles.js',
+
+        // 5. Scripts de inicialización (ANTES de app.js)
+        'theme/js/plugins.js',
+        'theme/js/pages/dashboard-projects.init.js',
         'theme/js/pages/particles.app.js',
-        'theme/js/pages/password-addon.init.js'
+        'theme/js/pages/password-addon.init.js',
+
+        // 6. App.js principal (debe ir ÚLTIMO)
+        'theme/js/app.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
