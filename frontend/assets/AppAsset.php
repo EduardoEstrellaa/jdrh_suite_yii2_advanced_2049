@@ -19,6 +19,8 @@ class AppAsset extends AssetBundle
         'theme/css/icons.min.css',
         'theme/css/app.min.css',
         'theme/css/custom.min.css',
+        'css/signup.css',
+
     ];
     public $js = [
 

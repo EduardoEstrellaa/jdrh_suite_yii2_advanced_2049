@@ -63,13 +63,13 @@ class Perfil extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'genero_id'], 'required'],
+            [['user_id', 'nombre', 'apellido', 'fecha_nacimiento', 'genero_id'], 'required'],
             [['user_id', 'genero_id'], 'integer'],
             [['genero_id'], 'in', 'range' => array_keys($this->getGeneroLista())],
             [['nombre', 'apellido'], 'string'],
             [['fecha_nacimiento', 'created_at', 'updated_at'], 'safe'],
-            [['fecha_nacimiento'], 'date', 'format' => 'Y-m-d'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['genero_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genero::class, 'targetAttribute' => ['genero_id' => 'id']],
         ];
     }
 
@@ -173,7 +173,7 @@ class Perfil extends \yii\db\ActiveRecord
      */
     public function getAlumnos()
     {
-        return $this->hasMany(Alumnos::class, ['perfil_id' => 'id']);
+        return $this->hasOne(Alumnos::class, ['perfil_id' => 'id']);
     }
 
     /**
@@ -226,5 +226,13 @@ class Perfil extends \yii\db\ActiveRecord
     public function getLugaresNacimientos()
     {
         return $this->hasMany(LugaresNacimiento::class, ['perfil_id' => 'id']);
+    }
+
+    /**
+     * Metodo de devuelve el nombre completo del perfil del usuario
+     */
+    public function getNombreCompleto()
+    {
+        return trim($this->nombre . ' ' . $this->apellido);
     }
 }
