@@ -153,11 +153,29 @@ $this->title = 'Expediente';
                             <?= InputHelper::iconTextField($form, $datosPersonales, 'curp', 'fa-id-card', [
                                 'inputOptions' => ['placeholder' => 'CURP...']
                             ]) ?>
+                            <div class="mt-1">
+                                <small class="text-muted">
+                                    <i class="fas fa-question-circle"></i>
+                                    ¿No sabes tu CURP?
+                                    <a href="https://www.gob.mx/curp/" target="_blank" class="text-primary">
+                                        Consúltala aquí
+                                    </a>
+                                </small>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <?= InputHelper::iconTextField($form, $datosPersonales, 'nss', 'fa-hospital-user', [
                                 'inputOptions' => ['placeholder' => 'NSS...']
                             ]) ?>
+                            <div class="mt-1">
+                                <small class="text-muted">
+                                    <i class="fas fa-question-circle"></i>
+                                    ¿No sabes tu NSS?
+                                    <a href="https://www.imss.gob.mx/tramites/imss02008" target="_blank" class="text-primary">
+                                        Consúltala aquí
+                                    </a>
+                                </small>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <?= InputHelper::iconTextField($form, $datosPersonales, 'rfc', 'fa-user-tag', [
@@ -233,7 +251,7 @@ $this->title = 'Expediente';
                         <div class="col-md-4">
                             <?= InputHelper::iconSelect2Field(
                                 $form,
-                                $domicilioActual,
+                                $domiciliosActuales,
                                 'entidades_federativas_id',
                                 'fa-map-marker-alt',
                                 EntidadesFederativas::getEntidadesFederativasMap(),
@@ -248,7 +266,7 @@ $this->title = 'Expediente';
                         <div class="col-md-4">
                             <?= InputHelper::iconSelect2Field(
                                 $form,
-                                $domicilioActual,
+                                $domiciliosActuales,
                                 'municipios_id',
                                 'fa-city',
                                 [],
@@ -262,7 +280,7 @@ $this->title = 'Expediente';
                             ) ?>
                         </div>
                         <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domicilioActual, 'localidad', 'fa-map-pin', [
+                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'localidad', 'fa-map-pin', [
                                 'inputOptions' => [
                                     'placeholder' => 'Localidad...',
                                     'id' => 'domiciliosactuales-localidad',
@@ -274,17 +292,17 @@ $this->title = 'Expediente';
 
                     <div class="row mt-3">
                         <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domicilioActual, 'calle', 'fa-road', [
+                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'calle', 'fa-road', [
                                 'inputOptions' => ['placeholder' => 'Calle...']
                             ]) ?>
                         </div>
                         <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domicilioActual, 'numero_exterior', 'fa-door-open', [
+                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'numero_exterior', 'fa-door-open', [
                                 'inputOptions' => ['placeholder' => 'Número exterior...']
                             ]) ?>
                         </div>
                         <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domicilioActual, 'numero_interior', 'fa-door-closed', [
+                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'numero_interior', 'fa-door-closed', [
                                 'inputOptions' => ['placeholder' => 'Número interior...']
                             ]) ?>
                         </div>
@@ -292,12 +310,12 @@ $this->title = 'Expediente';
 
                     <div class="row mt-3">
                         <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $domicilioActual, 'colonia', 'fa-map', [
+                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'colonia', 'fa-map', [
                                 'inputOptions' => ['placeholder' => 'Colonia...']
                             ]) ?>
                         </div>
                         <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $domicilioActual, 'codigo_postal', 'fa-envelope', [
+                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'codigo_postal', 'fa-envelope', [
                                 'inputOptions' => ['placeholder' => 'Código postal...']
                             ]) ?>
                         </div>

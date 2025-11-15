@@ -1,5 +1,5 @@
 // ============================
-// expediente-tutores.js (versión final limpia)
+// expediente-tutores.js (versión corregida)
 // ============================
 
 // IDs de los campos
@@ -38,11 +38,19 @@ function cargarMunicipios(estadoId, municipioId, tipo) {
         data: { estado_id: estadoId },
         success: function (municipios) {
             const municipioSelect = $('#' + municipioId);
+            const currentValue = municipioSelect.val(); // Guardar valor actual
+
             municipioSelect.empty();
             municipioSelect.append('<option value="">Selecciona municipio...</option>');
             $.each(municipios, function (id, nombre) {
                 municipioSelect.append('<option value="' + id + '">' + nombre + '</option>');
             });
+
+            // Restaurar valor anterior si existe
+            if (currentValue) {
+                municipioSelect.val(currentValue).trigger('change');
+            }
+
             municipioSelect.prop('disabled', false);
             municipioSelect.trigger('change.select2');
         }
@@ -58,15 +66,50 @@ function habilitarLocalidadPorTipo(tipo, habilitar) {
     }
 }
 
+// Verificar estado inicial de los campos
+function verificarEstadoInicial() {
+    // Para lugar de nacimiento
+    const entidadNacimiento = $('#' + ID_ENTIDAD_NACIMIENTO).val();
+    const municipioNacimiento = $('#' + ID_MUNICIPIO_NACIMIENTO).val();
+
+    if (entidadNacimiento && municipioNacimiento) {
+        $('#' + ID_MUNICIPIO_NACIMIENTO).prop('disabled', false);
+        habilitarLocalidadPorTipo('Lugar de Nacimiento', true);
+
+        // Cargar municipios para la entidad seleccionada
+        cargarMunicipios(entidadNacimiento, ID_MUNICIPIO_NACIMIENTO, 'Lugar de Nacimiento');
+    }
+
+    // Para domicilio actual
+    const entidadDomicilio = $('#' + ID_ENTIDAD_DOMICILIO).val();
+    const municipioDomicilio = $('#' + ID_MUNICIPIO_DOMICILIO).val();
+
+    if (entidadDomicilio && municipioDomicilio) {
+        $('#' + ID_MUNICIPIO_DOMICILIO).prop('disabled', false);
+        habilitarLocalidadPorTipo('Domicilio Actual', true);
+
+        // Cargar municipios para la entidad seleccionada
+        cargarMunicipios(entidadDomicilio, ID_MUNICIPIO_DOMICILIO, 'Domicilio Actual');
+    }
+}
+
 // Inicializar al cargar el documento
 $(document).ready(function () {
     if (typeof window.MUNICIPIOS_URL === 'undefined' || !window.MUNICIPIOS_URL) {
         return;
     }
 
-    // Asegurar que ambos combos de municipios estén deshabilitados al inicio
-    $('#' + ID_MUNICIPIO_NACIMIENTO).prop('disabled', true).trigger('change.select2');
-    $('#' + ID_MUNICIPIO_DOMICILIO).prop('disabled', true).trigger('change.select2');
+    // Verificar estado inicial antes de deshabilitar
+    verificarEstadoInicial();
+
+    // Solo deshabilitar si no tienen valor
+    if (!$('#' + ID_MUNICIPIO_NACIMIENTO).val()) {
+        $('#' + ID_MUNICIPIO_NACIMIENTO).prop('disabled', true).trigger('change.select2');
+    }
+
+    if (!$('#' + ID_MUNICIPIO_DOMICILIO).val()) {
+        $('#' + ID_MUNICIPIO_DOMICILIO).prop('disabled', true).trigger('change.select2');
+    }
 
     configurarEntidadFederativa(ID_ENTIDAD_NACIMIENTO, ID_MUNICIPIO_NACIMIENTO, 'Lugar de Nacimiento');
     configurarEntidadFederativa(ID_ENTIDAD_DOMICILIO, ID_MUNICIPIO_DOMICILIO, 'Domicilio Actual');

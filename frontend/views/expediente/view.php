@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var common\models\DatosPersonales $datosPersonales */
 /** @var common\models\LugaresNacimiento $lugaresNacimiento */
-/** @var common\models\DomiciliosActuales $domicilioActual */
+/** @var common\models\DomiciliosActuales $domiciliosActuales */
 
 $this->title = 'Expediente del Estudiante';
 $this->params['breadcrumbs'][] = ['label' => 'Expedientes', 'url' => ['index']];
@@ -19,14 +19,18 @@ $this->params['breadcrumbs'][] = $this->title;
     </h2>
 
     <div class="mb-4 text-center">
-        <?= Html::a('<i class="fas fa-edit"></i> Actualizar', ['update', 'id' => $datosPersonales->id], ['class' => 'btn btn-primary me-2']) ?>
-        <?= Html::a('<i class="fas fa-trash-alt"></i> Eliminar', ['delete', 'id' => $datosPersonales->id], [
+        <?= Html::a('Actualizar', ['update', 'perfil_id' => $perfil->id], ['class' => 'btn btn-primary me-2']) ?>
+        <?= Html::a('<i class="fas fa-trash-alt"></i> Eliminar', [
+            'delete',
+            'perfil_id' => $perfil->id
+        ], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => '¿Seguro que deseas eliminar este expediente?',
                 'method' => 'post',
             ],
         ]) ?>
+
         <?= Html::a('<i class="fas fa-arrow-left"></i> Regresar', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 
@@ -69,12 +73,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'entidades_federativas_id',
                 'label' => 'Entidad Federativa',
-                'value' => $lugaresNacimiento->entidadFederativa->nombre ?? 'No especificado',
+                'value' => $lugaresNacimiento->entidadesFederativas->nombre ?? 'No especificado',
             ],
             [
                 'attribute' => 'municipios_id',
                 'label' => 'Municipio',
-                'value' => $lugaresNacimiento->municipio->nombre ?? 'No especificado',
+                'value' => $lugaresNacimiento->municipios->nombre ?? 'No especificado',
             ],
             [
                 'attribute' => 'localidad',
@@ -92,17 +96,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <h4><i class="fas fa-home text-success"></i> Domicilio Actual</h4>
 
     <?= DetailView::widget([
-        'model' => $domicilioActual,
+        'model' => $domiciliosActuales,
         'attributes' => [
             [
                 'attribute' => 'entidades_federativas_id',
                 'label' => 'Entidad Federativa',
-                'value' => $domicilioActual->entidadFederativa->nombre ?? 'No especificado',
+                'value' => $domiciliosActuales->entidadesFederativas->nombre ?? 'No especificado',
             ],
             [
                 'attribute' => 'municipios_id',
                 'label' => 'Municipio',
-                'value' => $domicilioActual->municipio->nombre ?? 'No especificado',
+                'value' => $domiciliosActuales->municipios->nombre ?? 'No especificado',
             ],
             [
                 'attribute' => 'localidad',

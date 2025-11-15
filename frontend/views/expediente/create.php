@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /* @var yii\web\View $this */
 /* @var common\models\LugaresNacimiento $lugaresNacimiento */
-/* @var common\models\DomiciliosActuales $domicilioActual */
+/* @var common\models\DomiciliosActuales $domiciliosActuales */
 
 $this->title = 'Crear Expediente';
 $this->params['breadcrumbs'][] = ['label' => 'Expedientes', 'url' => ['index']];
@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'alumno' => $alumno,
         'datosPersonales' => $datosPersonales,
         'lugaresNacimiento' => $lugaresNacimiento,
-        'domicilioActual' => $domicilioActual,
+        'domiciliosActuales' => $domiciliosActuales,
     ]) ?>
 
 </div>

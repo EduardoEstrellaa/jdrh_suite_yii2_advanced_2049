@@ -7,11 +7,15 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use common\models\DatosPersonales;
-use common\models\LugaresNacimiento;
-use common\models\DomiciliosActuales;
-use common\models\Municipios;
-use common\models\Alumnos;
+use yii\filters\AccessControl;
+use common\models\{
+    Perfil,
+    DatosPersonales,
+    LugaresNacimiento,
+    DomiciliosActuales,
+    Municipios,
+    Alumnos
+};
 use common\services\ExpedienteService;
 
 class ExpedienteController extends Controller
@@ -22,6 +26,15 @@ class ExpedienteController extends Controller
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -38,136 +51,129 @@ class ExpedienteController extends Controller
     public function actionIndex()
     {
         $perfil = $this->getPerfil();
+        if (!$perfil) {
+            return $this->render('datos-incompletos', [
+                'titulo' => 'Información básica requerida',
+                'mensaje' => 'No se encontró un perfil asociado a tu cuenta.',
+                'boton' => 'Crear/Actualizar Perfil',
+                'urlAccion' => ['/perfil/create'],
+            ]);
+        }
 
-        $expediente = DatosPersonales::find()
-            ->where(['perfil_id' => $perfil->id])
-            ->orderBy(['id' => SORT_DESC])
-            ->one();
+        $alumno = $this->findAlumno($perfil->id);
+        if (!$alumno) {
+            return $this->render('datos-incompletos', [
+                'titulo' => 'Falta información académica',
+                'mensaje' => 'No se encontró información de alumno asociada a tu perfil.',
+                'boton' => 'Editar Perfil',
+                'urlAccion' => ['/perfil/update', 'id' => $perfil->id],
+            ]);
+        }
 
-        if ($expediente) {
-            return $this->redirect(['update', 'id' => $expediente->id]);
+        // ✅ MEJOR: Usar el servicio para verificar existencia
+        $models = ExpedienteService::getModelsForUpdate($perfil->id);
+
+        $existeExpediente = $models['datosPersonales']->isNewRecord === false
+            || $models['lugaresNacimiento']->isNewRecord === false
+            || $models['domiciliosActuales']->isNewRecord === false;
+
+        if ($existeExpediente) {
+            return $this->redirect(['view']);
         }
 
         return $this->redirect(['create']);
     }
 
     /**
-     * Muestra un expediente específico.
+     * Muestra el expediente del usuario autenticado.
      */
-    public function actionView($id)
+    public function actionView()
     {
-        $perfil = $this->getPerfil();
-        $datosPersonales = $this->findModel($id);
+        [$perfil, $alumno] = $this->checkPerfilAndAlumno();
 
-        if ($datosPersonales->perfil_id !== $perfil->id) {
-            throw new NotFoundHttpException(Yii::t('app', 'No puedes ver este expediente.'));
-        }
+        // Obtener modelos del servicio
+        $models = ExpedienteService::getModelsForUpdate($perfil->id);
 
-        $alumno = $this->findAlumno($perfil->id);
-        $lugaresNacimiento = LugaresNacimiento::findOne(['perfil_id' => $perfil->id]);
-        $domicilioActual = DomiciliosActuales::findOne(['perfil_id' => $perfil->id]);
-
-        if (!$lugaresNacimiento || !$domicilioActual) {
-            Yii::$app->session->setFlash('warning', Yii::t('app', 'Algunas secciones del expediente no están completas.'));
-        }
-
-        return $this->render('view', [
+        return $this->render('view', array_merge([
             'perfil' => $perfil,
             'alumno' => $alumno,
-            'datosPersonales' => $datosPersonales,
-            'lugaresNacimiento' => $lugaresNacimiento,
-            'domicilioActual' => $domicilioActual,
-        ]);
+        ], $models));
     }
 
     /**
-     * Crea un nuevo expediente y sus secciones relacionadas.
+     * Crea un nuevo expediente.
      */
     public function actionCreate()
     {
-        $perfil = $this->getPerfil();
-
-        if (DatosPersonales::find()->where(['perfil_id' => $perfil->id])->exists()) {
-            Yii::$app->session->setFlash('info', Yii::t('app', 'Ya tienes un expediente creado.'));
-            $expediente = DatosPersonales::find()
-                ->where(['perfil_id' => $perfil->id])
-                ->orderBy(['id' => SORT_DESC])
-                ->one();
-            return $this->redirect(['update', 'id' => $expediente->id]);
-        }
+        [$perfil, $alumno] = $this->checkPerfilAndAlumno();
 
         $post = Yii::$app->request->post();
         if ($post) {
-            $result = ExpedienteService::crearExpediente($perfil, $post);
-            if ($result) {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'Expediente guardado correctamente.'));
-                return $this->redirect(['view', 'id' => $result->id]);
+            if (ExpedienteService::crearExpediente($perfil, $post)) {
+                Yii::$app->session->setFlash('success', 'Expediente guardado correctamente.');
+                return $this->redirect(['view']);
             }
+            Yii::$app->session->setFlash('error', 'Error al guardar el expediente. Verifica los datos.');
         }
 
-        return $this->render('create', [
+        // 🔄 CAMBIO: Usar getModelsForCreate en lugar de getModelsForUpdate
+        $models = ExpedienteService::getModelsForCreate($perfil->id);
+
+        return $this->render('create', array_merge([
             'perfil' => $perfil,
-            'alumno' => $this->findAlumno($perfil->id),
-            'datosPersonales' => new DatosPersonales(),
-            'lugaresNacimiento' => new LugaresNacimiento(),
-            'domicilioActual' => new DomiciliosActuales(),
-        ]);
+            'alumno' => $alumno,
+        ], $models));
     }
+
 
     /**
      * Actualiza un expediente existente.
      */
-    public function actionUpdate($id)
+    public function actionUpdate($perfil_id)
     {
-        $perfil = $this->getPerfil();
-        $datosPersonales = $this->findModel($id);
-
-        if ($datosPersonales->perfil_id !== $perfil->id) {
-            throw new NotFoundHttpException(Yii::t('app', 'No puedes editar este expediente.'));
+        $perfil = Perfil::findOne($perfil_id);
+        if (!$perfil) {
+            throw new NotFoundHttpException('El perfil no existe.');
         }
 
-        $post = Yii::$app->request->post();
-        if ($post) {
-            $result = ExpedienteService::actualizarExpediente($perfil, $id, $post);
-            if ($result) {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'Expediente actualizado correctamente.'));
-                return $this->redirect(['view', 'id' => $result->id]);
+        $alumno = Alumnos::find()->where(['perfil_id' => $perfil_id])->one();
+
+        // Obtener modelos del servicio
+        $models = ExpedienteService::getModelsForUpdate($perfil_id);
+
+        // Procesar el formulario
+        if ($this->request->isPost) {
+            try {
+                if (ExpedienteService::actualizarExpediente($perfil_id, $this->request->post())) {
+                    Yii::$app->session->setFlash('success', 'Expediente actualizado correctamente.');
+                    return $this->redirect(['view', 'perfil_id' => $perfil_id]);
+                } else {
+                    Yii::$app->session->addFlash('error', 'Error al guardar el expediente. Verifica los datos.');
+                }
+            } catch (\Exception $e) {
+                Yii::$app->session->addFlash('error', 'Error al guardar: ' . $e->getMessage());
             }
         }
 
-        return $this->render('update', [
+        return $this->render('update', array_merge([
             'perfil' => $perfil,
-            'alumno' => $this->findAlumno($perfil->id),
-            'datosPersonales' => $datosPersonales,
-            'lugaresNacimiento' => LugaresNacimiento::findOne(['perfil_id' => $perfil->id]),
-            'domicilioActual' => DomiciliosActuales::findOne(['perfil_id' => $perfil->id]),
-        ]);
+            'alumno' => $alumno,
+        ], $models));
     }
 
     /**
      * Elimina un expediente y sus registros relacionados.
      */
-    public function actionDelete($id)
+    public function actionDelete($perfil_id)
     {
-        $perfil = $this->getPerfil();
-        $datosPersonales = $this->findModel($id);
+        [$perfil] = $this->checkPerfilAndAlumno($perfil_id);
 
-        if ($datosPersonales->perfil_id !== $perfil->id) {
-            throw new NotFoundHttpException(Yii::t('app', 'No puedes eliminar este expediente.'));
-        }
-
-        $transaction = Yii::$app->db->beginTransaction();
         try {
-            LugaresNacimiento::deleteAll(['perfil_id' => $perfil->id]);
-            DomiciliosActuales::deleteAll(['perfil_id' => $perfil->id]);
-            $datosPersonales->delete();
-            $transaction->commit();
-
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Expediente eliminado correctamente.'));
+            ExpedienteService::eliminarExpediente($perfil_id);
+            Yii::$app->session->setFlash('success', 'Expediente eliminado correctamente.');
         } catch (\Throwable $e) {
-            $transaction->rollBack();
             Yii::error($e->getMessage(), __METHOD__);
-            Yii::$app->session->setFlash('error', Yii::t('app', 'Ocurrió un error al eliminar el expediente.'));
+            Yii::$app->session->setFlash('error', 'Ocurrió un error al eliminar el expediente.');
         }
 
         return $this->redirect(['index']);
@@ -195,20 +201,38 @@ class ExpedienteController extends Controller
     /* ============================================================= */
 
     /**
-     * Obtiene el perfil actual del usuario autenticado.
-     * @throws NotFoundHttpException
+     * Obtiene el perfil del usuario autenticado.
      */
     private function getPerfil()
     {
-        $perfil = Yii::$app->user->identity->perfil ?? null;
-        if (!$perfil) {
-            throw new NotFoundHttpException(Yii::t('app', 'Perfil no encontrado.'));
-        }
-        return $perfil;
+        return Yii::$app->user->identity->perfil ?? null;
     }
 
     /**
-     * Busca un alumno por perfil con relaciones cargadas.
+     * Verifica que el perfil y el alumno existan y opcionalmente que coincida el perfil_id.
+     */
+    private function checkPerfilAndAlumno($perfil_id = null)
+    {
+        $perfil = $this->getPerfil();
+        if (!$perfil) {
+            Yii::$app->session->setFlash('error', 'No se encontró un perfil asociado a tu cuenta.');
+            return $this->redirect(['/perfil/create']);
+        }
+
+        if ($perfil_id && $perfil->id != $perfil_id) {
+            throw new NotFoundHttpException('No puedes acceder a este expediente.');
+        }
+
+        $alumno = $this->findAlumno($perfil->id);
+        if (!$alumno) {
+            Yii::$app->session->setFlash('error', 'No se encontró información de alumno asociada a tu perfil.');
+            return $this->redirect(['/perfil/update', 'id' => $perfil->id]);
+        }
+        return [$perfil, $alumno];
+    }
+
+    /**
+     * Busca un alumno por perfil.
      */
     private function findAlumno($perfilId)
     {
@@ -216,18 +240,5 @@ class ExpedienteController extends Controller
             ->where(['perfil_id' => $perfilId])
             ->with(['generaciones', 'planLicenciaturas.licenciaturas'])
             ->one();
-    }
-
-    /**
-     * Busca un modelo de DatosPersonales por ID.
-     * @throws NotFoundHttpException
-     */
-    private function findModel($id)
-    {
-        $model = DatosPersonales::findOne($id);
-        if (!$model) {
-            throw new NotFoundHttpException(Yii::t('app', 'El expediente solicitado no existe.'));
-        }
-        return $model;
     }
 }
