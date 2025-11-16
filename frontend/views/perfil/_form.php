@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use frontend\helpers\InputHelper;
-use frontend\assets\AppAsset;
+use frontend\assets\SignupAsset;
 use common\models\PlanLicenciaturas;
 use common\models\Generaciones;
 
@@ -12,7 +12,7 @@ use common\models\Generaciones;
 /* @var $alumno common\models\Alumnos */
 /* @var $form yii\widgets\ActiveForm */
 
-AppAsset::register($this);
+SignupAsset::register($this);
 
 // Listas para dropdowns
 $planLicenciaturasLista = PlanLicenciaturas::getPlanesLicenciaturasMap();
