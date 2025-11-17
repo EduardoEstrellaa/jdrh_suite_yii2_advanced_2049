@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\helpers;
+namespace common\helpers;
 
 use kartik\select2\Select2;
 use yii\helpers\Html;
