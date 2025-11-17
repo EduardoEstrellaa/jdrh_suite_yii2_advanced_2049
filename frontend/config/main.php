@@ -36,6 +36,12 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap5\BootstrapAsset' => false,
+                'yii\bootstrap5\BootstrapPluginAsset' => false,
+            ],
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
