@@ -69,7 +69,7 @@ function inputWithIcon($form, $model, $attribute, $iconClass, $options = [])
 
 // Obtener listas
 $generoLista = Perfil::getGeneroLista();
-$planLista = PlanLicenciaturas::getPlanesLicenciaturasMap();
+$planLicenciaturasLista = PlanLicenciaturas::getPlanesLicenciaturasMap();
 $generacionesLista = Generaciones::getGeneracionesMap();
 
 ?>
@@ -141,7 +141,7 @@ $generacionesLista = Generaciones::getGeneracionesMap();
                             <div class="col-md-4">
                                 <?= inputWithIcon($form, $model, 'plan_licenciaturas_id', 'fas fa-book-open', [
                                     'select2' => [
-                                        'data' => $planLista,
+                                        'data' => $planLicenciaturasLista,
                                         'placeholder' => 'Selecciona un plan'
                                     ]
                                 ]) ?>
