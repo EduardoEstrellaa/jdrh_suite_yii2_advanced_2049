@@ -2,9 +2,9 @@
 
 namespace frontend\assets;
 
-use yii\web\AssetBundle;
+use frontend\assets\AppAsset;
 
-class SignupAsset extends AssetBundle
+class SignupAsset extends AppAsset
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
@@ -17,8 +17,4 @@ class SignupAsset extends AssetBundle
         'js/signup.js',
     ];
 
-    public $depends = [
-        'yii\web\YiiAsset',
-        'kartik\select2\Select2Asset',
-    ];
 }
