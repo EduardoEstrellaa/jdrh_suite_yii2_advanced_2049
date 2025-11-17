@@ -183,7 +183,7 @@ class Perfil extends \yii\db\ActiveRecord
      */
     public function getAsignacionesTutores()
     {
-        return $this->hasMany(AsignacionesTutores::class, ['perfil_id' => 'id']);
+        return $this->hasOne(AsignacionesTutores::class, ['perfil_id' => 'id']);
     }
 
     /**
@@ -193,7 +193,7 @@ class Perfil extends \yii\db\ActiveRecord
      */
     public function getDatosGenerales()
     {
-        return $this->hasMany(DatosGenerales::class, ['perfil_id' => 'id']);
+        return $this->hasOne(DatosGenerales::class, ['perfil_id' => 'id']);
     }
 
     /**
@@ -203,7 +203,7 @@ class Perfil extends \yii\db\ActiveRecord
      */
     public function getDatosPersonales()
     {
-        return $this->hasMany(DatosPersonales::class, ['perfil_id' => 'id']);
+        return $this->hasOne(DatosPersonales::class, ['perfil_id' => 'id']);
     }
 
     /**
@@ -213,7 +213,7 @@ class Perfil extends \yii\db\ActiveRecord
      */
     public function getDomiciliosActuales()
     {
-        return $this->hasMany(DomiciliosActuales::class, ['perfil_id' => 'id']);
+        return $this->hasOne(DomiciliosActuales::class, ['perfil_id' => 'id']);
     }
 
 
@@ -225,7 +225,7 @@ class Perfil extends \yii\db\ActiveRecord
      */
     public function getLugaresNacimientos()
     {
-        return $this->hasMany(LugaresNacimiento::class, ['perfil_id' => 'id']);
+        return $this->hasOne(LugaresNacimiento::class, ['perfil_id' => 'id']);
     }
 
     /**
