@@ -2,13 +2,13 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use frontend\helpers\InputHelper;
-use frontend\assets\AppAsset;
+use common\helpers\InputHelper;
+use common\assets\ExpedienteAsset;
 use common\models\EntidadesFederativas;
 use yii\helpers\Url;
 use yii\web\View;
 
-AppAsset::register($this);
+ExpedienteAsset::register($this);
 
 $this->title = 'Expediente';
 ?>
@@ -473,9 +473,8 @@ $municipiosUrl = Url::to(['expediente/municipios'], true);
 $script = <<<JS
     window.MUNICIPIOS_URL = "{$municipiosUrl}";
 JS;
+
 $this->registerJs($script, View::POS_BEGIN);
-$this->registerJsFile('@web/js/expediente-tutores.js', [
-    'depends' => [AppAsset::class]
-]);
+
 
 ?>
