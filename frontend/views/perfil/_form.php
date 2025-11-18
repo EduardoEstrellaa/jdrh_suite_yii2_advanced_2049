@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\helpers\InputHelper;
-use frontend\assets\SignupAsset;
+use frontend\assets\PerfilFormAsset;
 use common\models\PlanLicenciaturas;
 use common\models\Generaciones;
 
@@ -12,9 +12,8 @@ use common\models\Generaciones;
 /* @var $alumno common\models\Alumnos */
 /* @var $form yii\widgets\ActiveForm */
 
-SignupAsset::register($this);
+PerfilFormAsset::register($this);
 
-// Listas para dropdowns
 $planLicenciaturasLista = PlanLicenciaturas::getPlanesLicenciaturasMap();
 $generacionesLista = Generaciones::getGeneracionesMap();
 
@@ -27,7 +26,7 @@ $generacionesLista = Generaciones::getGeneracionesMap();
     <!-- ===================== -->
     <!-- DATOS PERSONALES -->
     <!-- ===================== -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
         <div class="card-header">
             <h5 class="card-title mb-0"><i class="fas fa-user-circle"></i> Datos Personales</h5>
         </div>
@@ -64,7 +63,7 @@ $generacionesLista = Generaciones::getGeneracionesMap();
     <!-- ===================== -->
     <!-- DATOS ACADÉMICOS -->
     <!-- ===================== -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
         <div class="card-header">
             <h5 class="card-title mb-0"><i class="fas fa-graduation-cap"></i> Datos Académicos</h5>
         </div>
@@ -74,21 +73,18 @@ $generacionesLista = Generaciones::getGeneracionesMap();
                     <?= InputHelper::iconTextField($form, $alumno, 'matricula', 'fa-id-card', [
                         'inputOptions' => ['placeholder' => 'Ingresa tu matrícula...']
                     ]) ?>
-
                 </div>
 
                 <div class="col-md-4">
                     <?= InputHelper::iconSelect2Field($form, $alumno, 'plan_licenciaturas_id', 'fa-book', $planLicenciaturasLista, [
                         'placeholder' => 'Selecciona tu plan de licenciatura...'
                     ]) ?>
-
                 </div>
 
                 <div class="col-md-4">
                     <?= InputHelper::iconSelect2Field($form, $alumno, 'generaciones_id', 'fa-users', $generacionesLista, [
                         'placeholder' => 'Selecciona tu generación...'
                     ]) ?>
-
                 </div>
             </div>
         </div>
