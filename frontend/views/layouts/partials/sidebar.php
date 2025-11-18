@@ -48,6 +48,11 @@ use yii\helpers\Url;
                         <i class="ri-dashboard-2-line"></i> <span data-key="t-site">Panel de control</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="<?= Url::to(['expediente/index']); ?>">
+                        <i class="ri-file-list-line"></i> <span data-key="t-expediente">Mi Expediente</span>
+                    </a>
+                </li>
 
             </ul>
         </div>
