@@ -27,30 +27,30 @@ class PerfilController extends Controller
             [
                 'access' => [
                     'class' => \yii\filters\AccessControl::className(),
-                    'only' => ['index', 'view','create', 'update', 'delete'],
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
                     'rules' => [
                         [
                             'actions' => ['index', 'create', 'view',],
                             'allow' => true,
                             'roles' => ['@'],
                             'matchCallback' => function ($rule, $action) {
-                             return PermisosHelpers::requerirMinimoRol('Admin') 
-                             && PermisosHelpers::requerirEstado('Activo');
+                                return PermisosHelpers::requerirMinimoRol('Admin')
+                                    && PermisosHelpers::requerirEstado('Activo');
                             }
                         ],
-                         [
-                            'actions' => [ 'update', 'delete'],
+                        [
+                            'actions' => ['update', 'delete'],
                             'allow' => true,
                             'roles' => ['@'],
                             'matchCallback' => function ($rule, $action) {
-                             return PermisosHelpers::requerirMinimoRol('SuperUsuario') 
-                             && PermisosHelpers::requerirEstado('Activo');
+                                return PermisosHelpers::requerirMinimoRol('SuperUsuario')
+                                    && PermisosHelpers::requerirEstado('Activo');
                             }
                         ],
-                        
-                             
+
+
                     ],
-                         
+
                 ],
 
                 'verbs' => [
@@ -162,5 +162,28 @@ class PerfilController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    /**
+     * Muestra el perfil del usuario actualmente autenticado
+     */
+    public function actionMiPerfil()
+    {
+        // Obtener el ID del usuario logueado
+        $userId = Yii::$app->user->id;
+
+        // Buscar el perfil asociado al usuario
+        $model = Perfil::find()->where(['user_id' => $userId])->one();
+
+        if ($model === null) {
+            // Si no existe perfil, redirigir a crear uno
+            Yii::$app->session->setFlash('error', 'No tienes un perfil creado.');
+            return $this->redirect(['create']);
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+        ]);
     }
 }
