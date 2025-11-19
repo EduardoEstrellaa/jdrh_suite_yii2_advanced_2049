@@ -915,6 +915,12 @@ use common\models\PermisosHelpers;
                     </div>
                 </li>
 
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="<?= Url::to(['expediente/index']); ?>">
+                        <i class="ri-file-list-line"></i> <span data-key="t-expediente">Expedientes de los Alumnos</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
