@@ -3,56 +3,27 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\helpers\InputHelper;
-use common\models\Perfil;
 use backend\assets\PerfilFormAsset;
+use common\models\Perfil;
+
+
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Perfil */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $userList array Lista de usuarios sin perfil para el dropdown */
+
+$this->title = 'Crear Mi Perfil';
+$this->params['breadcrumbs'][] = ['label' => 'Mi Perfil', 'url' => ['mi-perfil']];
+$this->params['breadcrumbs'][] = $this->title;
+
 
 PerfilFormAsset::register($this);
 
 ?>
 
-<div class="perfil-form">
-
+<div class="perfil-create-mi-perfil">
     <?php $form = ActiveForm::begin(); ?>
 
-    <!-- ===================== -->
-    <!-- SELECCIÓN DE USUARIO -->
-    <!-- ===================== -->
-    <?php if (isset($userList)): ?>
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0"><i class="fas fa-user"></i> Selección de Usuario</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= InputHelper::iconSelect2Field(
-                            $form,
-                            $model,
-                            'user_id',
-                            'fa-users',
-                            $userList,
-                            [
-                                'placeholder' => 'Seleccione un usuario',
-                                'prompt' => '-- Seleccione un usuario --'
-                            ]
-                        ) ?>
-                        <small class="form-text text-muted">
-                            <i class="fas fa-info-circle"></i> Seleccione el usuario al que se le creará el perfil
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <!-- ===================== -->
-    <!-- DATOS PERSONALES -->
-    <!-- ===================== -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="card-title mb-0"><i class="fas fa-user-circle"></i> Datos Personales</h5>
@@ -89,11 +60,15 @@ PerfilFormAsset::register($this);
 
     <div class="form-group text-center mt-3">
         <?= Html::submitButton(
-            $model->isNewRecord ? '<i class="fas fa-save"></i> Crear Perfil' : '<i class="fas fa-sync-alt"></i> Actualizar Perfil',
-            ['class' => $model->isNewRecord ? 'btn btn-success btn-lg' : 'btn btn-primary btn-lg']
+            '<i class="fas fa-save"></i> Crear Mi Perfil',
+            ['class' => 'btn btn-success btn-lg']
+        ) ?>
+        <?= Html::a(
+            '<i class="fas fa-arrow-left"></i> Cancelar',
+            ['mi-perfil'],
+            ['class' => 'btn btn-outline-secondary btn-lg']
         ) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>
