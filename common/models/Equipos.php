@@ -45,6 +45,8 @@ class Equipos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['marca_id', 'modelos_id', 'estado_equipo_id'], 'required'],
+            [['marca_id', 'modelos_id', 'estado_equipo_id'], 'integer'],
             [['fecha_alta', 'numero_inventario', 'modelos_id', 'tipo_equipo_id', 'tipo_alta_id', 'estado_equipo_id'], 'required'],
             [['fecha_alta'], 'safe'],
             [['foto_equipo', 'foto_numero_inventario', 'foto_numero_serie', 'observaciones', 'especificaciones'], 'string'],
@@ -149,4 +151,12 @@ class Equipos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(TipoEquipo::class, ['id' => 'tipo_equipo_id']);
     }
+
+
+    public function getMarca()
+{
+    return $this->hasOne(Marcas::class, ['id' => 'marca_id']);
+}
+
+
 }

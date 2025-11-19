@@ -31,7 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'descripcion',
-            'marcas_id',
+            [
+              'attribute' => 'marcas_id',
+              'value' => function ($model) {
+            return $model->marcas ? $model->marcas->descripcion : '(Sin marca)';
+            },
+              'label' => 'Marca',
+],
+
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Modelos $model, $key, $index, $column) {

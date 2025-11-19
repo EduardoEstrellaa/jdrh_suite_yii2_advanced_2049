@@ -26,14 +26,13 @@ class EstadoEquipo extends \yii\db\ActiveRecord
      * {@inheritdoc}
      */
     public function rules()
-    {
-        return [
-            [['id', 'descripcion'], 'required'],
-            [['id'], 'integer'],
-            [['descripcion'], 'string', 'max' => 100],
-            [['id'], 'unique'],
-        ];
-    }
+{
+    return [
+        [['descripcion'], 'required'],
+        [['descripcion'], 'string', 'max' => 100],
+    ];
+}
+
 
     /**
      * {@inheritdoc}

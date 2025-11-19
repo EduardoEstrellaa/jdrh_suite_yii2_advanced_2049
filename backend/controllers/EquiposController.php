@@ -7,6 +7,15 @@ use backend\models\search\EquiposSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use common\models\Modelos;
+use common\models\EstadoEquipo;
+use common\models\Marcas;
+use common\models\TipoEquipo;
+use common\models\TipoAlta;
+
+
+
 
 /**
  * EquiposController implements the CRUD actions for Equipos model.
@@ -69,16 +78,28 @@ class EquiposController extends Controller
     {
         $model = new Equipos();
 
+         // listas para dropdown
+        $modelos = ArrayHelper::map(Modelos::find()->all(), 'id', 'descripcion');
+        $estados = ArrayHelper::map(EstadoEquipo::find()->all(), 'id', 'descripcion');
+        $marcas = ArrayHelper::map(Marcas::find()->all(), 'id', 'descripcion');
+        $tiposEquipo = ArrayHelper::map(TipoEquipo::find()->all(), 'id_tipo_equipo', 'descripcion');
+        $tiposAlta = ArrayHelper::map(TipoAlta::find()->all(), 'id', 'descripcion');
+
+
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } else {
-            $model->loadDefaultValues();
-        }
+        } 
 
         return $this->render('create', [
             'model' => $model,
+            'marcas' => $marcas,
+            'modelos' => [],
+            'estados' => $estados,
+            'tiposEquipo' => $tiposEquipo,
+            'tiposAlta' => $tiposAlta,
         ]);
     }
 
@@ -93,12 +114,20 @@ class EquiposController extends Controller
     {
         $model = $this->findModel($id);
 
+        // listas para dropdown
+        $modelos = ArrayHelper::map(Modelos::find()->all(), 'id', 'descripcion');
+        $estados = ArrayHelper::map(EstadoEquipo::find()->all(), 'id', 'descripcion');
+        $marcas = ArrayHelper::map(Marcas::find()->all(), 'id', 'descripcion');
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'marcas' => $marcas,
+            'modelos' => $modelos,
+            'estados' => $estados,
         ]);
     }
 
@@ -131,4 +160,23 @@ class EquiposController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+
+    public function actionListModelos($id)
+ {
+    $modelos = Modelos::find()
+        ->where(['marcas_id' => $id])
+        ->orderBy('descripcion')
+        ->all();
+
+    if (!empty($modelos)) {
+        foreach ($modelos as $modelo) {
+            echo "<option value='{$modelo->id}'>{$modelo->descripcion}</option>";
+        }
+    } else {
+        echo "<option value=''>No hay modelos disponibles</option>";
+    }
+ }
+ 
+
 }

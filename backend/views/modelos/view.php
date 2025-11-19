@@ -31,7 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'descripcion',
-            'marcas_id',
+            [
+            'label' => 'Marca',
+            'value' => $model->marcas ? $model->marcas->descripcion : '(Sin marca)',
+            ],
+
         ],
     ]) ?>
 
