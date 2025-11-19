@@ -373,26 +373,19 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Obtiene una lista de usuarios en formato clave-valor.
+     * Obtiene una lista de usuarios sin perfil en formato clave-valor.
      *
-     * Este método consulta todos los registros de usuarios y devuelve un arreglo
-     * donde la clave es el ID del usuario y el valor es una cadena con el nombre
-     * de usuario seguido del correo electrónico entre paréntesis.
+     * La clave es el ID del usuario y el valor es "username (email)".
      *
-     * Ejemplo de salida:
-     * [
-     *     1 => "juan123 (juan@example.com)",
-     *     2 => "maria456 (maria@example.com)",
-     *     ...
-     * ]
-     *
-     * @return array Un arreglo asociativo con el ID del usuario como clave y
-     *               "username (email)" como valor.
+     * @return array
      */
     public static function getUserList()
     {
+        // Consulta usuarios que no tienen perfil
         $usuarios = self::find()
-            ->select(['id', 'username', 'email'])
+            ->select(['user.id', 'user.username', 'user.email'])
+            ->joinWith('perfil', false) // LEFT JOIN con la tabla perfil
+            ->where(['perfil.id' => null]) // filtra solo usuarios sin perfil
             ->asArray()
             ->all();
 
