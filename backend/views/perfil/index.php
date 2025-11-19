@@ -23,9 +23,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Perfil', ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    ?>
 
-    <?php  echo Accordion::widget([
+    <?php  /* echo Accordion::widget([
                             'items' => [
                                 // equivalent to the above
                                 [
@@ -36,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                    // if you want to swap out .card-block with .list-group, you may use the following
                             ]
-                        ]);
-    ?> 
+                        ]); */
+    ?>
     <p></p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -46,8 +47,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            ['attribute'=>'perfilIdLink', 'format'=>'raw'],
-            ['attribute'=>'userLink', 'format'=>'raw'],
+            ['attribute' => 'perfilIdLink', 'format' => 'raw'],
+            ['attribute' => 'userLink', 'format' => 'raw'],
             //'user_id',
             'nombre:ntext',
             'apellido:ntext',
@@ -60,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Perfil $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>
