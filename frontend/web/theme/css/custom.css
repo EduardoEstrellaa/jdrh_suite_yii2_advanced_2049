@@ -1,0 +1,82 @@
+/*
+Template Name: Velzon - Admin & Dashboard Template
+Author: Themesbrand
+Website: https://themesbrand.com/
+Contact: support@themesbrand.com
+File: Custom CSS (Refactor)
+*/
+
+/* =========================================================
+   VARIABLES GLOBALES
+   ========================================================= */
+:root {
+    --topbar-bg: #611232;
+    --hover-color: #ffee003a;
+    --icon-color: #ffffff;
+    --dropdown-bg: #ffffff;
+    --dropdown-text: #000000;
+}
+
+/* =========================================================
+   TOPBAR - ESTILOS GENERALES
+   ========================================================= */
+#page-topbar,
+#page-topbar .d-flex.align-items-center,
+#page-topbar .header-item {
+    background-color: var(--topbar-bg) !important;
+}
+
+/* =========================================================
+   BOTONES DEL TOPBAR
+   ========================================================= */
+#page-topbar .btn-topbar.btn-ghost-secondary.rounded-circle:hover {
+    background-color: var(--hover-color) !important;
+    transition: background-color 0.3s ease;
+}
+
+/* Iconos */
+#page-topbar .btn-topbar i {
+    color: var(--icon-color) !important;
+}
+
+/* Eliminar estados azules predeterminados */
+#page-topbar .btn:focus,
+#page-topbar .btn.show {
+    background-color: var(--hover-color) !important;
+}
+
+/* =========================================================
+   DROPDOWNS GENERALES
+   ========================================================= */
+#page-topbar .dropdown-item {
+    color: var(--dropdown-text) !important;
+}
+
+#page-topbar .dropdown-item:hover {
+    background-color: var(--hover-color) !important;
+}
+
+/* =========================================================
+   DROPDOWN DE NOTIFICACIONES
+   ========================================================= */
+#page-topbar .dropdown-head.bg-primary {
+    background-color: var(--topbar-bg) !important;
+}
+
+/* =========================================================
+   DROPDOWN DE USUARIO
+   ========================================================= */
+
+/* Estado normal y abierto (sin fondo) */
+#page-topbar .topbar-user #page-header-user-dropdown,
+#page-topbar .topbar-user #page-header-user-dropdown.show,
+#page-topbar .topbar-user #page-header-user-dropdown.show:hover,
+#page-topbar .topbar-user #page-header-user-dropdown:focus,
+#page-header-user-dropdown[aria-expanded="true"] {
+    background-color: transparent !important;
+}
+
+
+html body .select2-selection {
+    display: flex !important;
+}

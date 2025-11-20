@@ -2,22 +2,21 @@
 
 namespace frontend\assets;
 
-use yii\web\AssetBundle;
+use common\assets\BaseThemeAsset;
 
 /**
- * Main frontend application asset bundle.
+ * Frontend application asset bundle.
  */
-class AppAsset extends AssetBundle
+class AppAsset extends BaseThemeAsset
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
-    public $css = [
-        'css/site.css',
-    ];
-    public $js = [
-    ];
-    public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap5\BootstrapAsset',
-    ];
+    public function init()
+    {
+        parent::init();
+
+        // Agregar CSS específico de frontend (se añade al array existente)
+        //$this->css[] = 'css/signup.css';
+
+        // Si necesitas agregar JS específico de frontend:
+        // $this->js[] = 'js/frontend-specific.js';
+    }
 }

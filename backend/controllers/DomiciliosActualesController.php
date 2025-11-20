@@ -2,11 +2,12 @@
 
 namespace backend\controllers;
 
-use backend\models\DomiciliosActuales;
+use common\models\DomiciliosActuales;
 use backend\models\search\DomiciliosActualesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii;
 
 /**
  * DomiciliosActualesController implements the CRUD actions for DomiciliosActuales model.

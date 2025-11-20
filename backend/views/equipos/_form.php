@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 
-
 /** @var yii\web\View $this */
 /** @var common\models\Equipos $model */
 /** @var yii\widgets\ActiveForm $form */
@@ -30,36 +29,41 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'especificaciones')->textarea(['rows' => 6]) ?>
 
+    <!-- Marca -->
     <?= $form->field($model, 'marca_id')->widget(Select2::classname(), [
-    'data' => $marcas,
-    'options' => ['placeholder' => 'Seleccione una marca...'],
-    'pluginOptions' => ['allowClear' => true], ]) ?>
+        'data' => $marcas,
+        'options' => ['placeholder' => 'Seleccione una marca...'],
+        'pluginOptions' => ['allowClear' => true],
+    ]) ?>
 
-
+    <!-- Modelo -->
     <?= $form->field($model, 'modelos_id')->dropDownList(
-    $modelos,
-    ['prompt' => 'Seleccione un modelo...']) ?>
+        $modelos,
+        ['prompt' => 'Seleccione un modelo...']
+    ) ?>
 
+    <!-- Tipo de Equipo -->
     <?= $form->field($model, 'tipo_equipo_id')->widget(Select2::classname(), [
-    'data' => $tiposEquipo,
-    'options' => ['placeholder' => 'Seleccione un tipo de equipo...'],
-    'pluginOptions' => ['allowClear' => true], ]) ?>
+        'data' => $tiposEquipo,
+        'options' => ['placeholder' => 'Seleccione un tipo de equipo...'],
+        'pluginOptions' => ['allowClear' => true],
+    ]) ?>
 
+    <!-- Tipo de Alta -->
+    <?= $form->field($model, 'tipo_alta_id')->widget(Select2::classname(), [
+        'data' => $tiposAlta,
+        'options' => ['placeholder' => 'Seleccione el tipo de alta...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]) ?>
 
-
-    <?= $form->field($model, 'id_alta')->widget(Select2::classname(), [
-    'data' => $tiposAlta,
-    'options' => ['placeholder' => 'Seleccione el tipo de alta...'],
-    'pluginOptions' => [
-        'allowClear' => true
-    ], ]) ?>
-
-
+    <!-- Estado del Equipo -->
     <?= $form->field($model, 'estado_equipo_id')->widget(Select2::classname(), [
-    'data' => $estados,
-    'options' => ['placeholder' => 'Seleccione estado...'],
-    'pluginOptions' => ['allowClear' => true], ]) ?>
-
+        'data' => $estados,
+        'options' => ['placeholder' => 'Seleccione estado...'],
+        'pluginOptions' => ['allowClear' => true],
+    ]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

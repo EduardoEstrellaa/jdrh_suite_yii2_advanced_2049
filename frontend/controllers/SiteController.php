@@ -213,6 +213,32 @@ class SiteController extends Controller
         ]);
     }
 
+
+    public function actionValidateSignup()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $model = new SignupForm();
+
+        // Cargar todos los datos del formulario
+        if ($model->load(Yii::$app->request->post())) {
+            // Validar solo los campos específicos si se proporcionan
+            $attributes = Yii::$app->request->post('validationAttributes', []);
+
+            if (!empty($attributes)) {
+                // Validar solo los atributos especificados
+                $model->validate($attributes);
+            } else {
+                // Validar todos los atributos
+                $model->validate();
+            }
+
+            return \yii\widgets\ActiveForm::validate($model);
+        }
+
+        return [];
+    }
+
     /**
      * Verify email address
      *

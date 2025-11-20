@@ -1,0 +1,25 @@
+.auth-page-content {
+    margin-top: -50px !important;
+}
+
+/* SOBRESCRIBIR EL FONDO */
+#auth-particles.auth-one-bg {
+    background-image: url('../img/jdrh-banner.jpg') !important;
+}
+
+.auth-one-bg .bg-overlay {
+    background: rgba(0, 0, 0, 0.5) !important;
+    /* Oscurecer menos para ver mejor la imagen */
+}
+
+.auth-logo-img {
+    height: 100px;
+    /* Desktop */
+}
+
+@media (max-width: 576px) {
+    .auth-logo-img {
+        height: 50px;
+        /* Móvil */
+    }
+}

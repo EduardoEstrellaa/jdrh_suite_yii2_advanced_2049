@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 22-10-2025 a las 02:21:28
+-- Tiempo de generación: 05-11-2025 a las 17:01:59
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.2.26
 
@@ -57,7 +57,15 @@ CREATE TABLE IF NOT EXISTS `alumnos` (
   KEY `fk_alumnos_perfil1_idx` (`perfil_id`),
   KEY `fk_alumnos_generaciones1_idx` (`generaciones_id`),
   KEY `fk_alumnos_plan_licenciaturas1_idx` (`plan_licenciaturas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alumnos`
+--
+
+INSERT INTO `alumnos` (`id`, `perfil_id`, `matricula`, `plan_licenciaturas_id`, `generaciones_id`) VALUES
+(9, 26, '21070053', 1, 1),
+(10, 27, '21070020', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -322,14 +330,12 @@ DROP TABLE IF EXISTS `alum_inscripciones`;
 CREATE TABLE IF NOT EXISTS `alum_inscripciones` (
   `id` int NOT NULL AUTO_INCREMENT,
   `alumnos_id` int NOT NULL,
+  `ciclos_semestres_id` int NOT NULL,
   `tipos_inscripciones_id` int NOT NULL,
-  `semestre_id` int NOT NULL,
-  `ciclos_escolares_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_inscripciones_alumnos_semestre1_idx` (`semestre_id`),
   KEY `fk_alumnos_inscripciones_alumnos1_idx` (`alumnos_id`),
   KEY `fk_alumnos_inscripciones_tipos_inscripciones1_idx` (`tipos_inscripciones_id`),
-  KEY `fk_alumnos_inscripciones_ciclos_escolares1_idx` (`ciclos_escolares_id`)
+  KEY `fk_alum_inscripciones_ciclos_semestres1_idx` (`ciclos_semestres_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -486,6 +492,24 @@ CREATE TABLE IF NOT EXISTS `alum_vivienda` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `asignacion`
+--
+
+DROP TABLE IF EXISTS `asignacion`;
+CREATE TABLE IF NOT EXISTS `asignacion` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `equipos_id` int NOT NULL,
+  `observaciones` text,
+  `fecha_asignacion` datetime NOT NULL,
+  `departamentos_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_asignacion_departamentos1_idx` (`departamentos_id`),
+  KEY `fk_asignacion_equipos1_idx` (`equipos_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `asignaciones_alumnos_grupos`
 --
 
@@ -508,15 +532,13 @@ CREATE TABLE IF NOT EXISTS `asignaciones_alumnos_grupos` (
 DROP TABLE IF EXISTS `asignaciones_grupos`;
 CREATE TABLE IF NOT EXISTS `asignaciones_grupos` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `semestres_id` int NOT NULL,
-  `ciclos_escolares_id` int NOT NULL,
+  `ciclos_semestres_id` int NOT NULL,
   `grupos_id` int NOT NULL,
   `asignaciones_tutores_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_asignacioes_grupos_grupos1_idx` (`grupos_id`),
   KEY `fk_asignacioes_grupos_asignaciones_tutores1_idx` (`asignaciones_tutores_id`),
-  KEY `fk_asignacioes_grupos_ciclos_escolares1_idx` (`ciclos_escolares_id`),
-  KEY `fk_asignaciones_grupos_semestres1_idx` (`semestres_id`)
+  KEY `fk_asignaciones_grupos_ciclos_semestres1_idx` (`ciclos_semestres_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -531,6 +553,24 @@ CREATE TABLE IF NOT EXISTS `asignaciones_tutores` (
   `perfil_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_asignaciones_tutores_perfil1_idx` (`perfil_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `baja_equipo`
+--
+
+DROP TABLE IF EXISTS `baja_equipo`;
+CREATE TABLE IF NOT EXISTS `baja_equipo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `equipos_id` int NOT NULL,
+  `observaciones` text NOT NULL,
+  `tipo_baja_id` int NOT NULL,
+  `fecha_baja` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_baja_equipo_equipos1_idx` (`equipos_id`),
+  KEY `fk_baja_equipo_tipo_baja1_idx` (`tipo_baja_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -556,6 +596,7 @@ DROP TABLE IF EXISTS `catalogo_alergias`;
 CREATE TABLE IF NOT EXISTS `catalogo_alergias` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
+  `descripcion` varchar(250) DEFAULT NULL,
   `tipo_alergias_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_catalogo_alergias_tipo_alergias1_idx` (`tipo_alergias_id`)
@@ -696,6 +737,7 @@ DROP TABLE IF EXISTS `catalogo_organizaciones`;
 CREATE TABLE IF NOT EXISTS `catalogo_organizaciones` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
+  `descripcion` varchar(250) DEFAULT NULL,
   `tipo_organizacion_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_catalogo_organizaciones_tipo_organizacion1_idx` (`tipo_organizacion_id`)
@@ -853,7 +895,29 @@ CREATE TABLE IF NOT EXISTS `ciclos_escolares` (
   `nombre` varchar(150) NOT NULL,
   `fecha_inicio` datetime NOT NULL,
   `fecha_fin` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  `periodo_texto` varchar(250) NOT NULL,
+  `estados_ciclos_escolares_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_ciclos_escolares_estados_ciclos_escolares1_idx` (`estados_ciclos_escolares_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ciclos_semestres`
+--
+
+DROP TABLE IF EXISTS `ciclos_semestres`;
+CREATE TABLE IF NOT EXISTS `ciclos_semestres` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ciclos_escolares_id` int NOT NULL,
+  `semestres_id` int NOT NULL,
+  `fecha_inicio_semestre` datetime NOT NULL,
+  `fecha_fin_semestre` datetime NOT NULL,
+  `periodo_texto_semestre` varchar(250) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_ciclos_semestres_semestres1_idx` (`semestres_id`),
+  KEY `fk_ciclos_semestres_ciclos_escolares1_idx` (`ciclos_escolares_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -893,6 +957,21 @@ CREATE TABLE IF NOT EXISTS `datos_personales` (
   `rfc` varchar(13) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_datos_personales_perfil1_idx` (`perfil_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `departamentos`
+--
+
+DROP TABLE IF EXISTS `departamentos`;
+CREATE TABLE IF NOT EXISTS `departamentos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  `edificios_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_departamentos_edificios1_idx` (`edificios_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -940,7 +1019,7 @@ CREATE TABLE IF NOT EXISTS `domicilios_actuales` (
   `perfil_id` int NOT NULL,
   `entidades_federativas_id` int NOT NULL,
   `municipios_id` int NOT NULL,
-  `localidades_id` int NOT NULL,
+  `localidad` varchar(45) DEFAULT NULL,
   `calle` varchar(150) NOT NULL,
   `numero_exterior` varchar(15) NOT NULL,
   `numero_interior` varchar(15) DEFAULT NULL,
@@ -949,9 +1028,8 @@ CREATE TABLE IF NOT EXISTS `domicilios_actuales` (
   PRIMARY KEY (`id`),
   KEY `fk_domicilios_actuales_entidades_federativas1_idx` (`entidades_federativas_id`),
   KEY `fk_domicilios_actuales_municipios1_idx` (`municipios_id`),
-  KEY `fk_domicilios_actuales_localidades1_idx` (`localidades_id`),
   KEY `fk_domicilios_actuales_perfil1_idx` (`perfil_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -969,6 +1047,19 @@ CREATE TABLE IF NOT EXISTS `edades_hijos` (
   `fecha_nacimiento` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_edades_hijos_alum_info_hijos1_idx` (`alum_info_hijos_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `edificios`
+--
+
+DROP TABLE IF EXISTS `edificios`;
+CREATE TABLE IF NOT EXISTS `edificios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -1017,6 +1108,43 @@ CREATE TABLE IF NOT EXISTS `entidades_federativas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `entidades_federativas`
+--
+
+INSERT INTO `entidades_federativas` (`id`, `nombre`) VALUES
+(1, 'Yucatán'),
+(2, 'Campeche'),
+(3, 'Quintana Roo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `equipos`
+--
+
+DROP TABLE IF EXISTS `equipos`;
+CREATE TABLE IF NOT EXISTS `equipos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fecha_alta` datetime NOT NULL,
+  `numero_inventario` varchar(50) NOT NULL,
+  `numero_serie` varchar(100) DEFAULT NULL,
+  `foto_equipo` text,
+  `foto_numero_inventario` text,
+  `foto_numero_serie` text,
+  `observaciones` text,
+  `especificaciones` text,
+  `modelos_id` int NOT NULL,
+  `tipo_equipo_id` int NOT NULL,
+  `tipo_alta_id` int NOT NULL,
+  `estado_equipo_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_equipos_modelos1_idx` (`modelos_id`),
+  KEY `fk_equipos_tipo_equipo1_idx` (`tipo_equipo_id`),
+  KEY `fk_equipos_tipo_alta1_idx` (`tipo_alta_id`),
+  KEY `fk_equipos_estado_equipo1_idx` (`estado_equipo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -1044,6 +1172,19 @@ INSERT INTO `estado` (`id`, `estado_nombre`, `estado_valor`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `estados_ciclos_escolares`
+--
+
+DROP TABLE IF EXISTS `estados_ciclos_escolares`;
+CREATE TABLE IF NOT EXISTS `estados_ciclos_escolares` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `estados_civiles`
 --
 
@@ -1052,6 +1193,19 @@ CREATE TABLE IF NOT EXISTS `estados_civiles` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estado_equipo`
+--
+
+DROP TABLE IF EXISTS `estado_equipo`;
+CREATE TABLE IF NOT EXISTS `estado_equipo` (
+  `id` int NOT NULL,
+  `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -1109,7 +1263,15 @@ CREATE TABLE IF NOT EXISTS `generaciones` (
   `anio_fin` datetime NOT NULL,
   `descripcion` varchar(250) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `generaciones`
+--
+
+INSERT INTO `generaciones` (`id`, `nombre`, `anio_inicio`, `anio_fin`, `descripcion`) VALUES
+(1, 'Generacion 2025 - 2029', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Esta generación corresponde a los estudiantes que iniciaron sus estudios en el año 2025 y culminarán en el 2029'),
+(2, 'Generacion 2026 - 2030', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Esta generación agrupa a los alumnos que comienzan su trayectoria académica en 2026 y concluirán en 2030');
 
 -- --------------------------------------------------------
 
@@ -1129,8 +1291,8 @@ CREATE TABLE IF NOT EXISTS `genero` (
 --
 
 INSERT INTO `genero` (`id`, `genero_nombre`) VALUES
-(1, 'masculino'),
-(2, 'femenino');
+(1, 'Masculino'),
+(2, 'Femenino');
 
 -- --------------------------------------------------------
 
@@ -1149,6 +1311,27 @@ CREATE TABLE IF NOT EXISTS `grupos` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `historial_traslado`
+--
+
+DROP TABLE IF EXISTS `historial_traslado`;
+CREATE TABLE IF NOT EXISTS `historial_traslado` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `equipos_id` int NOT NULL,
+  `motivo_traslado` varchar(250) DEFAULT NULL,
+  `departamento_origen_id` int DEFAULT NULL,
+  `departamento_destino_id` int NOT NULL,
+  `usuario_responsable` int DEFAULT NULL,
+  `fecha_traslado` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_historial_traslado_equipos1_idx` (`equipos_id`),
+  KEY `fk_historial_traslado_departamentos1_idx` (`departamento_origen_id`),
+  KEY `fk_historial_traslado_departamentos2_idx` (`departamento_destino_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `licenciaturas`
 --
 
@@ -1158,20 +1341,15 @@ CREATE TABLE IF NOT EXISTS `licenciaturas` (
   `nombre` varchar(250) NOT NULL,
   `descripcion` varchar(800) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Estructura de tabla para la tabla `localidades`
+-- Volcado de datos para la tabla `licenciaturas`
 --
 
-DROP TABLE IF EXISTS `localidades`;
-CREATE TABLE IF NOT EXISTS `localidades` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(150) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+INSERT INTO `licenciaturas` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Licenciatura en Educación Primaria Intercultural, Plurilingüe y Comunitaria', 'El Plan de Estudio es el documento base que enmarca el proceso de formación de maestras y maestros de educación preescolar para contextos indígenas, interculturales y plurilingües del Sistema Educativo Nacional. Describe las orientaciones fundamentales que permiten el mejor desarrollo de los contenidos curriculares en los contextos de la escuela normal y las escuelas de práctica, los elementos generales y específicos que lo conforman de acuerdo con los aportes de las teorías curriculares, ciencias de la educación y otras áreas del conocimiento, y con los enfoques y fundamentos del plan de estudios de educación básica enmarcados en la Nueva Escuela Mexicana.'),
+(2, 'Licenciatura en Educación Primaria', 'El Plan de Estudio es el documento base que enmarca el proceso de formación de maestras y maestros de educación primaria del Sistema Educativo Nacional. Describe las orientaciones fundamentales que permiten el mejor desarrollo de los contenidos curriculares en los contextos de la escuela normal y las escuelas de práctica, los elementos generales y específicos que lo conforman de acuerdo con los aportes de las teorías curriculares, ciencias de la educación y otras áreas del conocimiento, y con los enfoques y fundamentos del plan de estudios de educación básica enmarcados en la Nueva Escuela Mexicana.');
 
 -- --------------------------------------------------------
 
@@ -1181,16 +1359,28 @@ CREATE TABLE IF NOT EXISTS `localidades` (
 
 DROP TABLE IF EXISTS `lugares_nacimiento`;
 CREATE TABLE IF NOT EXISTS `lugares_nacimiento` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `perfil_id` int NOT NULL,
   `entidades_federativas_id` int NOT NULL,
   `municipios_id` int NOT NULL,
-  `localidades_id` int NOT NULL,
+  `localidad` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_lugares_nacimiento_entidades_federativas1_idx` (`entidades_federativas_id`),
   KEY `fk_lugares_nacimiento_municipios1_idx` (`municipios_id`),
-  KEY `fk_lugares_nacimiento_localidades1_idx` (`localidades_id`),
   KEY `fk_lugares_nacimiento_perfil1_idx` (`perfil_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `marcas`
+--
+
+DROP TABLE IF EXISTS `marcas`;
+CREATE TABLE IF NOT EXISTS `marcas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -1218,6 +1408,21 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `modelos`
+--
+
+DROP TABLE IF EXISTS `modelos`;
+CREATE TABLE IF NOT EXISTS `modelos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  `marcas_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_modelos_marcas1_idx` (`marcas_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `municipios`
 --
 
@@ -1225,8 +1430,25 @@ DROP TABLE IF EXISTS `municipios`;
 CREATE TABLE IF NOT EXISTS `municipios` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `entidades_federativas_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_municipios_entidades_federativas1_idx` (`entidades_federativas_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `municipios`
+--
+
+INSERT INTO `municipios` (`id`, `nombre`, `entidades_federativas_id`) VALUES
+(1, 'Mérida', 1),
+(2, 'Valladolid', 1),
+(3, 'Tizimín', 1),
+(4, 'Campeche', 2),
+(5, 'Carmen', 2),
+(6, 'Escárcega', 2),
+(7, 'Chetumal', 3),
+(8, 'Cancún', 3),
+(9, 'Playa del Carmen', 3);
 
 -- --------------------------------------------------------
 
@@ -1278,7 +1500,15 @@ CREATE TABLE IF NOT EXISTS `perfil` (
   PRIMARY KEY (`id`),
   KEY `genero_id_2` (`genero_id`),
   KEY `fk_perfil_user1_idx` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `perfil`
+--
+
+INSERT INTO `perfil` (`id`, `user_id`, `nombre`, `apellido`, `fecha_nacimiento`, `genero_id`, `created_at`, `updated_at`) VALUES
+(26, 26, 'Johana Yanet', 'Olivo Escobedo', '2000-09-11 00:00:00', 2, '2025-10-29 12:00:43', '2025-10-29 12:00:43'),
+(27, 27, 'Edgar Manuel', 'Poot Ku', '2000-07-20 00:00:00', 1, '2025-10-29 13:57:32', '2025-10-29 13:57:32');
 
 -- --------------------------------------------------------
 
@@ -1293,7 +1523,14 @@ CREATE TABLE IF NOT EXISTS `plan_estudios` (
   `anio` int NOT NULL,
   `descripcion` varchar(250) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `plan_estudios`
+--
+
+INSERT INTO `plan_estudios` (`id`, `nombre`, `anio`, `descripcion`) VALUES
+(1, 'Planes de Estudio 2022', 2022, 'Este plan de estudios establece la estructura académica, los objetivos formativos y las líneas curriculares que guían la formación profesional de los futuros docentes conforme a los lineamientos educativos vigentes.');
 
 -- --------------------------------------------------------
 
@@ -1309,7 +1546,14 @@ CREATE TABLE IF NOT EXISTS `plan_licenciaturas` (
   PRIMARY KEY (`id`),
   KEY `fk_plan_licenciatura_plan_estudios1_idx` (`plan_estudios_id`),
   KEY `fk_plan_licenciatura_licenciaturas1_idx` (`licenciaturas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `plan_licenciaturas`
+--
+
+INSERT INTO `plan_licenciaturas` (`id`, `plan_estudios_id`, `licenciaturas_id`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1360,7 +1604,7 @@ CREATE TABLE IF NOT EXISTS `rol` (
   `rol_nombre` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `rol_valor` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `rol`
@@ -1369,7 +1613,8 @@ CREATE TABLE IF NOT EXISTS `rol` (
 INSERT INTO `rol` (`id`, `rol_nombre`, `rol_valor`) VALUES
 (1, 'Usuario', 10),
 (2, 'Admin', 20),
-(7, 'SuperUsuario', 30);
+(7, 'SuperUsuario', 30),
+(8, 'Alumno', 11);
 
 -- --------------------------------------------------------
 
@@ -1382,7 +1627,9 @@ CREATE TABLE IF NOT EXISTS `semestres` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) NOT NULL,
-  PRIMARY KEY (`id`)
+  `tipo_semestres_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_semestres_tipo_semestres1_idx` (`tipo_semestres_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -1411,6 +1658,7 @@ DROP TABLE IF EXISTS `tiempo_recorrido_transporte`;
 CREATE TABLE IF NOT EXISTS `tiempo_recorrido_transporte` (
   `id` int NOT NULL AUTO_INCREMENT,
   `rango_tiempo` varchar(150) NOT NULL,
+  `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -1487,6 +1735,45 @@ CREATE TABLE IF NOT EXISTS `tipo_alergias` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipo_alta`
+--
+
+DROP TABLE IF EXISTS `tipo_alta`;
+CREATE TABLE IF NOT EXISTS `tipo_alta` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_baja`
+--
+
+DROP TABLE IF EXISTS `tipo_baja`;
+CREATE TABLE IF NOT EXISTS `tipo_baja` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_equipo`
+--
+
+DROP TABLE IF EXISTS `tipo_equipo`;
+CREATE TABLE IF NOT EXISTS `tipo_equipo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_gravedad`
 --
 
@@ -1506,6 +1793,20 @@ CREATE TABLE IF NOT EXISTS `tipo_gravedad` (
 
 DROP TABLE IF EXISTS `tipo_organizacion`;
 CREATE TABLE IF NOT EXISTS `tipo_organizacion` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) NOT NULL,
+  `descripcion` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_semestres`
+--
+
+DROP TABLE IF EXISTS `tipo_semestres`;
+CREATE TABLE IF NOT EXISTS `tipo_semestres` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
@@ -1586,7 +1887,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password_hash` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `password_reset_token` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `rol_id` smallint NOT NULL DEFAULT '1',
+  `rol_id` smallint NOT NULL DEFAULT '8',
   `estado_id` smallint NOT NULL DEFAULT '2',
   `tipo_usuario_id` smallint NOT NULL DEFAULT '1',
   `created_at` datetime NOT NULL,
@@ -1600,7 +1901,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `fk_user_rol1_idx` (`rol_id`),
   KEY `fk_user_estado1_idx` (`estado_id`),
   KEY `fk_user_tipo_usuario1_idx` (`tipo_usuario_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
@@ -1608,7 +1909,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `rol_id`, `estado_id`, `tipo_usuario_id`, `created_at`, `updated_at`, `verification_token`) VALUES
 (1, 'root', 'pQeZefuxsI0kiGxn_OKI6IXdBznTmWF9', '$2y$13$M0AvNyw666uh452dv5sdJOLimBesSgRNjdFTGZFCXEEf0rsnEVohm', NULL, 'root@root.com', 7, 1, 2, '2025-08-30 14:25:57', '2025-08-30 14:25:57', 'WnDqUcudrydqtx7rhS8QrZ5P8m-a8mMn_1756585557'),
-(2, 'johana.yoe', 'GqZduOgEPC11E7LNsOijpE8vfRCQuQNW', '$2y$13$Duf6LpXt64pPolHBJ/Dnku7/u/XOpC1JhNFMwz0xaai/RCxUNF9tm', NULL, 'johana.yoe@gmail.com', 1, 2, 1, '2025-10-21 14:40:05', '2025-10-21 14:50:19', 'niBMnPGMSbCnhaRxXgG6CNM7fUIRB2zX_1761079205');
+(26, 'johana.yoe', 'PzTemzgTZKveVWSHE6UTzF8lJqMbHWZ7', '$2y$13$axpISi3AcdTxLk1BuNc/H.tGKKoRdZ673ZjBLUiBQYfI.zbmOnYi.', NULL, 'johana.yoe@gmail.com', 8, 1, 1, '2025-10-29 12:00:43', '2025-10-29 12:00:43', 'XwGy3jBkvTHNEsy97WRRGLZVWZWmd1qp_1761760843'),
+(27, 'edgar.pk', '8--kH_qoncTCS59hBeDmp6dwi4GpMj8j', '$2y$13$WtKfqJPCo2vU.HQpVjC63eW7hlikmOlkF0hGDsmbaqzcJlKjKK5sW', NULL, 'edgar.pk@gmail.com', 8, 1, 2, '2025-10-29 13:57:32', '2025-10-29 14:00:45', 'QptF9hiXfzsUPrmYlK69yWng1jUC1fE0_1761767852');
 
 -- --------------------------------------------------------
 
@@ -1709,7 +2011,7 @@ ALTER TABLE `alergias`
 --
 ALTER TABLE `alumnos`
   ADD CONSTRAINT `fk_alumnos_generaciones1` FOREIGN KEY (`generaciones_id`) REFERENCES `generaciones` (`id`),
-  ADD CONSTRAINT `fk_alumnos_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`),
+  ADD CONSTRAINT `fk_alumnos_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_alumnos_plan_licenciaturas1` FOREIGN KEY (`plan_licenciaturas_id`) REFERENCES `plan_licenciaturas` (`id`);
 
 --
@@ -1815,10 +2117,9 @@ ALTER TABLE `alum_info_hijos`
 -- Filtros para la tabla `alum_inscripciones`
 --
 ALTER TABLE `alum_inscripciones`
+  ADD CONSTRAINT `fk_alum_inscripciones_ciclos_semestres1` FOREIGN KEY (`ciclos_semestres_id`) REFERENCES `ciclos_semestres` (`id`),
   ADD CONSTRAINT `fk_alumnos_inscripciones_alumnos1` FOREIGN KEY (`alumnos_id`) REFERENCES `alumnos` (`id`),
-  ADD CONSTRAINT `fk_alumnos_inscripciones_ciclos_escolares1` FOREIGN KEY (`ciclos_escolares_id`) REFERENCES `ciclos_escolares` (`id`),
-  ADD CONSTRAINT `fk_alumnos_inscripciones_tipos_inscripciones1` FOREIGN KEY (`tipos_inscripciones_id`) REFERENCES `tipos_inscripciones` (`id`),
-  ADD CONSTRAINT `fk_inscripciones_alumnos_semestre1` FOREIGN KEY (`semestre_id`) REFERENCES `semestres` (`id`);
+  ADD CONSTRAINT `fk_alumnos_inscripciones_tipos_inscripciones1` FOREIGN KEY (`tipos_inscripciones_id`) REFERENCES `tipos_inscripciones` (`id`);
 
 --
 -- Filtros para la tabla `alum_lugares_comer`
@@ -1880,6 +2181,13 @@ ALTER TABLE `alum_vivienda`
   ADD CONSTRAINT `fk_alum_vivienda_tipos_viviendas1` FOREIGN KEY (`tipos_viviendas_id`) REFERENCES `tipos_viviendas` (`id`);
 
 --
+-- Filtros para la tabla `asignacion`
+--
+ALTER TABLE `asignacion`
+  ADD CONSTRAINT `fk_asignacion_departamentos1` FOREIGN KEY (`departamentos_id`) REFERENCES `departamentos` (`id`),
+  ADD CONSTRAINT `fk_asignacion_equipos1` FOREIGN KEY (`equipos_id`) REFERENCES `equipos` (`id`);
+
+--
 -- Filtros para la tabla `asignaciones_alumnos_grupos`
 --
 ALTER TABLE `asignaciones_alumnos_grupos`
@@ -1891,15 +2199,21 @@ ALTER TABLE `asignaciones_alumnos_grupos`
 --
 ALTER TABLE `asignaciones_grupos`
   ADD CONSTRAINT `fk_asignacioes_grupos_asignaciones_tutores1` FOREIGN KEY (`asignaciones_tutores_id`) REFERENCES `asignaciones_tutores` (`id`),
-  ADD CONSTRAINT `fk_asignacioes_grupos_ciclos_escolares1` FOREIGN KEY (`ciclos_escolares_id`) REFERENCES `ciclos_escolares` (`id`),
   ADD CONSTRAINT `fk_asignacioes_grupos_grupos1` FOREIGN KEY (`grupos_id`) REFERENCES `grupos` (`id`),
-  ADD CONSTRAINT `fk_asignaciones_grupos_semestres1` FOREIGN KEY (`semestres_id`) REFERENCES `semestres` (`id`);
+  ADD CONSTRAINT `fk_asignaciones_grupos_ciclos_semestres1` FOREIGN KEY (`ciclos_semestres_id`) REFERENCES `ciclos_semestres` (`id`);
 
 --
 -- Filtros para la tabla `asignaciones_tutores`
 --
 ALTER TABLE `asignaciones_tutores`
   ADD CONSTRAINT `fk_asignaciones_tutores_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
+
+--
+-- Filtros para la tabla `baja_equipo`
+--
+ALTER TABLE `baja_equipo`
+  ADD CONSTRAINT `fk_baja_equipo_equipos1` FOREIGN KEY (`equipos_id`) REFERENCES `equipos` (`id`),
+  ADD CONSTRAINT `fk_baja_equipo_tipo_baja1` FOREIGN KEY (`tipo_baja_id`) REFERENCES `tipo_baja` (`id`);
 
 --
 -- Filtros para la tabla `catalogo_alergias`
@@ -1932,6 +2246,19 @@ ALTER TABLE `catalogo_tratamientos`
   ADD CONSTRAINT `fk_catalogo_tratamientos_tipos_tratamientos1` FOREIGN KEY (`tipos_tratamientos_id`) REFERENCES `tipos_tratamientos` (`id`);
 
 --
+-- Filtros para la tabla `ciclos_escolares`
+--
+ALTER TABLE `ciclos_escolares`
+  ADD CONSTRAINT `fk_ciclos_escolares_estados_ciclos_escolares1` FOREIGN KEY (`estados_ciclos_escolares_id`) REFERENCES `estados_ciclos_escolares` (`id`);
+
+--
+-- Filtros para la tabla `ciclos_semestres`
+--
+ALTER TABLE `ciclos_semestres`
+  ADD CONSTRAINT `fk_ciclos_semestres_ciclos_escolares1` FOREIGN KEY (`ciclos_escolares_id`) REFERENCES `ciclos_escolares` (`id`),
+  ADD CONSTRAINT `fk_ciclos_semestres_semestres1` FOREIGN KEY (`semestres_id`) REFERENCES `semestres` (`id`);
+
+--
 -- Filtros para la tabla `datos_generales`
 --
 ALTER TABLE `datos_generales`
@@ -1944,6 +2271,12 @@ ALTER TABLE `datos_generales`
 --
 ALTER TABLE `datos_personales`
   ADD CONSTRAINT `fk_datos_personales_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
+
+--
+-- Filtros para la tabla `departamentos`
+--
+ALTER TABLE `departamentos`
+  ADD CONSTRAINT `fk_departamentos_edificios1` FOREIGN KEY (`edificios_id`) REFERENCES `edificios` (`id`);
 
 --
 -- Filtros para la tabla `dependientes`
@@ -1964,7 +2297,6 @@ ALTER TABLE `deportes`
 --
 ALTER TABLE `domicilios_actuales`
   ADD CONSTRAINT `fk_domicilios_actuales_entidades_federativas1` FOREIGN KEY (`entidades_federativas_id`) REFERENCES `entidades_federativas` (`id`),
-  ADD CONSTRAINT `fk_domicilios_actuales_localidades1` FOREIGN KEY (`localidades_id`) REFERENCES `localidades` (`id`),
   ADD CONSTRAINT `fk_domicilios_actuales_municipios1` FOREIGN KEY (`municipios_id`) REFERENCES `municipios` (`id`),
   ADD CONSTRAINT `fk_domicilios_actuales_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
 
@@ -1990,13 +2322,41 @@ ALTER TABLE `enfermedades_cronicas`
   ADD CONSTRAINT `fk_enferm_cronica_catalogo_enferm_cronicas1` FOREIGN KEY (`catalogo_enferm_cronicas_id`) REFERENCES `catalogo_enferm_cronicas` (`id`);
 
 --
+-- Filtros para la tabla `equipos`
+--
+ALTER TABLE `equipos`
+  ADD CONSTRAINT `fk_equipos_estado_equipo1` FOREIGN KEY (`estado_equipo_id`) REFERENCES `estado_equipo` (`id`),
+  ADD CONSTRAINT `fk_equipos_modelos1` FOREIGN KEY (`modelos_id`) REFERENCES `modelos` (`id`),
+  ADD CONSTRAINT `fk_equipos_tipo_alta1` FOREIGN KEY (`tipo_alta_id`) REFERENCES `tipo_alta` (`id`),
+  ADD CONSTRAINT `fk_equipos_tipo_equipo1` FOREIGN KEY (`tipo_equipo_id`) REFERENCES `tipo_equipo` (`id`);
+
+--
+-- Filtros para la tabla `historial_traslado`
+--
+ALTER TABLE `historial_traslado`
+  ADD CONSTRAINT `fk_historial_traslado_departamentos1` FOREIGN KEY (`departamento_origen_id`) REFERENCES `departamentos` (`id`),
+  ADD CONSTRAINT `fk_historial_traslado_departamentos2` FOREIGN KEY (`departamento_destino_id`) REFERENCES `departamentos` (`id`),
+  ADD CONSTRAINT `fk_historial_traslado_equipos1` FOREIGN KEY (`equipos_id`) REFERENCES `equipos` (`id`);
+
+--
 -- Filtros para la tabla `lugares_nacimiento`
 --
 ALTER TABLE `lugares_nacimiento`
   ADD CONSTRAINT `fk_lugares_nacimiento_entidades_federativas1` FOREIGN KEY (`entidades_federativas_id`) REFERENCES `entidades_federativas` (`id`),
-  ADD CONSTRAINT `fk_lugares_nacimiento_localidades1` FOREIGN KEY (`localidades_id`) REFERENCES `localidades` (`id`),
   ADD CONSTRAINT `fk_lugares_nacimiento_municipios1` FOREIGN KEY (`municipios_id`) REFERENCES `municipios` (`id`),
   ADD CONSTRAINT `fk_lugares_nacimiento_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
+
+--
+-- Filtros para la tabla `modelos`
+--
+ALTER TABLE `modelos`
+  ADD CONSTRAINT `fk_modelos_marcas1` FOREIGN KEY (`marcas_id`) REFERENCES `marcas` (`id`);
+
+--
+-- Filtros para la tabla `municipios`
+--
+ALTER TABLE `municipios`
+  ADD CONSTRAINT `fk_municipios_entidades_federativas1` FOREIGN KEY (`entidades_federativas_id`) REFERENCES `entidades_federativas` (`id`);
 
 --
 -- Filtros para la tabla `organizaciones`
@@ -2009,7 +2369,7 @@ ALTER TABLE `organizaciones`
 -- Filtros para la tabla `perfil`
 --
 ALTER TABLE `perfil`
-  ADD CONSTRAINT `fk_perfil_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `fk_perfil_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `perfil_ibfk_1` FOREIGN KEY (`genero_id`) REFERENCES `genero` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -2034,6 +2394,12 @@ ALTER TABLE `problemas_salud`
   ADD CONSTRAINT `fk_problemas_salud_alum_estado_salud1` FOREIGN KEY (`alum_estado_salud_id`) REFERENCES `alum_estado_salud` (`id`),
   ADD CONSTRAINT `fk_problemas_salud_catalogo_problemas_salud1` FOREIGN KEY (`catalogo_problemas_salud_id`) REFERENCES `catalogo_problemas_salud` (`id`),
   ADD CONSTRAINT `fk_problemas_salud_tipo_gravedad1` FOREIGN KEY (`tipo_gravedad_id`) REFERENCES `tipo_gravedad` (`id`);
+
+--
+-- Filtros para la tabla `semestres`
+--
+ALTER TABLE `semestres`
+  ADD CONSTRAINT `fk_semestres_tipo_semestres1` FOREIGN KEY (`tipo_semestres_id`) REFERENCES `tipo_semestres` (`id`);
 
 --
 -- Filtros para la tabla `servicios_salud`

@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\PlanLicenciaturas;
+use common\models\PlanLicenciaturas;
 
 /**
- * PlanLicenciaturasSearch represents the model behind the search form of `backend\models\PlanLicenciaturas`.
+ * PlanLicenciaturasSearch represents the model behind the search form of `common\models\PlanLicenciaturas`.
  */
 class PlanLicenciaturasSearch extends PlanLicenciaturas
 {

@@ -2,36 +2,99 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
-use  yii\jui\DatePicker;
+use common\helpers\InputHelper;
+use frontend\assets\PerfilFormAsset;
+use common\models\PlanLicenciaturas;
+use common\models\Generaciones;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Perfil */
+/* @var $alumno common\models\Alumnos */
 /* @var $form yii\widgets\ActiveForm */
+
+PerfilFormAsset::register($this);
+
+$planLicenciaturasLista = PlanLicenciaturas::getPlanesLicenciaturasMap();
+$generacionesLista = Generaciones::getGeneracionesMap();
+
 ?>
 
-<div class="perfil-form">
+<div class="perfil-form container">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'nombre')->textInput(['maxlength' => 45]) ?>
+    <!-- ===================== -->
+    <!-- DATOS PERSONALES -->
+    <!-- ===================== -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0"><i class="fas fa-user-circle"></i> Datos Personales</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <?= InputHelper::iconTextField($form, $model, 'nombre', 'fa-user') ?>
+                </div>
+                <div class="col-md-6">
+                    <?= InputHelper::iconTextField($form, $model, 'apellido', 'fa-user') ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'apellido')->textInput(['maxlength' => 45]) ?>
+            <div class="row">
+                <div class="col-md-6">
+                    <?= InputHelper::iconTextField($form, $model, 'fecha_nacimiento', 'fa-calendar-alt', [
+                        'inputOptions' => ['type' => 'date']
+                    ]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= InputHelper::iconSelect2Field(
+                        $form,
+                        $model,
+                        'genero_id',
+                        'fa-venus-mars',
+                        $model->generoLista,
+                        ['placeholder' => 'Seleccione el género']
+                    ) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <?php  echo  $form->field($model,'fecha_nacimiento')->widget(DatePicker::className(),[
-                                                                        'dateFormat'  =>  'yyyy-MM-dd',
-                                                                        'clientOptions'  =>  [
-                                                                        'yearRange'  =>  '-115:+0',
-                                                                        'changeYear'  =>  true]
-                                                        ])  ?>
+    <!-- ===================== -->
+    <!-- DATOS ACADÉMICOS -->
+    <!-- ===================== -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0"><i class="fas fa-graduation-cap"></i> Datos Académicos</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <?= InputHelper::iconTextField($form, $alumno, 'matricula', 'fa-id-card', [
+                        'inputOptions' => ['placeholder' => 'Ingresa tu matrícula...']
+                    ]) ?>
+                </div>
 
-    <!-- <?= $form->field($model, 'fecha_nacimiento')->textInput() ?>
-    * por favor use el formato YYYY-MM-DD -->
+                <div class="col-md-4">
+                    <?= InputHelper::iconSelect2Field($form, $alumno, 'plan_licenciaturas_id', 'fa-book', $planLicenciaturasLista, [
+                        'placeholder' => 'Selecciona tu plan de licenciatura...'
+                    ]) ?>
+                </div>
 
-    <?= $form->field($model, 'genero_id')->dropDownList($model->generoLista, ['prompt' => 'Seleccione el genero' ]);?>
+                <div class="col-md-4">
+                    <?= InputHelper::iconSelect2Field($form, $alumno, 'generaciones_id', 'fa-users', $generacionesLista, [
+                        'placeholder' => 'Selecciona tu generación...'
+                    ]) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <div class="form-group text-center mt-3">
+        <?= Html::submitButton(
+            $model->isNewRecord ? '<i class="fas fa-save"></i> Crear Perfil' : '<i class="fas fa-sync-alt"></i> Actualizar Perfil',
+            ['class' => $model->isNewRecord ? 'btn btn-success btn-lg' : 'btn btn-primary btn-lg']
+        ) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Municipios;
+use common\models\Municipios;
 use backend\models\search\MunicipiosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

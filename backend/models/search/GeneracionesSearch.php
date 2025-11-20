@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Generaciones;
+use common\models\Generaciones;
 
 /**
- * GeneracionesSearch represents the model behind the search form of `backend\models\Generaciones`.
+ * GeneracionesSearch represents the model behind the search form of `common\models\Generaciones`.
  */
 class GeneracionesSearch extends Generaciones
 {

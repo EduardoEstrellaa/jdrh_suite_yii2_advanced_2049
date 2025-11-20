@@ -1,94 +1,67 @@
 <?php
 
-/** @var \yii\web\View $this */
+/** @var yii\web\View $this */
 /** @var string $content */
 
+use yii\helpers\Html;
+use yii\helpers\Url;
 use common\widgets\Alert;
+use yii\bootstrap5\Breadcrumbs;
 use frontend\assets\AppAsset;
-use yii\bootstrap5\Breadcrumbs;  //use  yii\widgets\Breadcrumbs;
-use yii\bootstrap5\Html;         //use  yii\helpers\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
-
-use frontend\assets\FontAwesomeAsset;
 
 AppAsset::register($this);
+
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
+<html lang="en" data-layout="horizontal" data-topbar="dark" data-sidebar-size="lg" data-sidebar="dark" data-sidebar-image="none" data-preloader="disable" data-layout-position="scrollable">
+
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <?php $this->registerCsrfMetaTags() ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <?= $this->render('partials/head-css') ?>
 </head>
-<body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
 
-<header>
-    <?php
-    NavBar::begin([
-        'brandLabel' => 'Sistema XXX',   //Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
-    ]);
+<body>
+    <?php $this->beginBody() ?>
 
-    $menuItems = [
-        ['label' => 'Inicio', 'url' => ['/site/index']],
-        //['label' => 'Acerca de', 'url' => ['/site/about']],
-        //['label' => 'Contacto', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        //$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-    }
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        <?= $this->render('partials/menu') ?>
 
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-        'items' => $menuItems,
-    ]);
-    if (Yii::$app->user->isGuest) {
-        //$menuItems[]  =  ['label'  =>  'Signup',  'url'  =>  ['/site/signup']];  //Se agrego
-        //$menuItems[]  =  ['label'  =>  'Login',  'url'  =>  ['/site/login']];    //Se agrego
 
-        echo Html::tag('div',Html::a('Registrarse',['/site/signup'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
-        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
+        <!-- Start right Content here -->
+        <div class="main-content">
 
-    } else {
-        echo Html::tag('div',Html::a('Perfil',['/perfil/view'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
-        
-        echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-            . Html::submitButton(
-                'Salir (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout text-decoration-none']
-            )
-            . Html::endForm();
-    }
-    NavBar::end();
+            <div class="page-content">
+                <div class="container-fluid">
+                    <?= Breadcrumbs::widget([
+                        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                    ]) ?>
+                    <?= Alert::widget() ?>
+                    <?= $content ?>
+                </div>
+                <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+            <?= $this->render('partials/footer') ?>
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <?php //= $this->render('partials/customizer') 
     ?>
-</header>
+    <?= $this->render('partials/vendor-scripts') ?>
 
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
 
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; I.S.C EDUARDO ALEXANDER ESTRELLA ESCOBEDO <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
-    </div>
-</footer>
-
-<?php $this->endBody() ?>
+    <?php $this->endBody() ?>
 </body>
+
 </html>
-<?php $this->endPage();
+<?php $this->endPage() ?>

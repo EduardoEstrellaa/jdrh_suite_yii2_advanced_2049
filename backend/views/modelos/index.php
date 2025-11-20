@@ -18,10 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Modelos', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Modelo', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -29,24 +27,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            'id_modelo',
             'descripcion',
+
             [
-              'attribute' => 'marcas_id',
-              'value' => function ($model) {
-            return $model->marcas ? $model->marcas->descripcion : '(Sin marca)';
-            },
-              'label' => 'Marca',
-],
+                'attribute' => 'id_marca',
+                'value' => function ($model) {
+                    return $model->marca ? $model->marca->descripcion : '(Sin marca)';
+                },
+                'label' => 'Marca',
+            ],
 
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Modelos $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                    return Url::toRoute([$action, 'id_modelo' => $model->id_modelo]);
+                }
             ],
         ],
     ]); ?>
-
 
 </div>

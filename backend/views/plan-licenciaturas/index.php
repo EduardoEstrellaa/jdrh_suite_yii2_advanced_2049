@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\PlanLicenciaturas;
+use common\models\PlanLicenciaturas;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
