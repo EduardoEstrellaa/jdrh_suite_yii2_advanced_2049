@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\DomiciliosActuales;
+use common\models\DomiciliosActuales;
 
 /**
- * DomiciliosActualesSearch represents the model behind the search form of `backend\models\DomiciliosActuales`.
+ * DomiciliosActualesSearch represents the model behind the search form of `common\models\DomiciliosActuales`.
  */
 class DomiciliosActualesSearch extends DomiciliosActuales
 {
@@ -17,8 +17,8 @@ class DomiciliosActualesSearch extends DomiciliosActuales
     public function rules()
     {
         return [
-            [['id', 'perfil_id', 'entidades_federativas_id', 'municipios_id', 'localidades_id'], 'integer'],
-            [['calle', 'numero_exterior', 'numero_interior', 'colonia', 'codigo_postal'], 'safe'],
+            [['id', 'perfil_id', 'entidades_federativas_id', 'municipios_id'], 'integer'],
+            [['localidad', 'calle', 'numero_exterior', 'numero_interior', 'colonia', 'codigo_postal'], 'safe'],
         ];
     }
 
@@ -62,10 +62,10 @@ class DomiciliosActualesSearch extends DomiciliosActuales
             'perfil_id' => $this->perfil_id,
             'entidades_federativas_id' => $this->entidades_federativas_id,
             'municipios_id' => $this->municipios_id,
-            'localidades_id' => $this->localidades_id,
         ]);
 
-        $query->andFilterWhere(['like', 'calle', $this->calle])
+        $query->andFilterWhere(['like', 'localidad', $this->localidad])
+            ->andFilterWhere(['like', 'calle', $this->calle])
             ->andFilterWhere(['like', 'numero_exterior', $this->numero_exterior])
             ->andFilterWhere(['like', 'numero_interior', $this->numero_interior])
             ->andFilterWhere(['like', 'colonia', $this->colonia])

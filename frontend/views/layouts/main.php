@@ -7,6 +7,13 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
+<<<<<<< HEAD
+=======
+use frontend\assets\AppAsset;
+
+AppAsset::register($this);
+
+>>>>>>> feature/Eduardo-Estrella
 
 ?>
 <?php $this->beginPage() ?>
@@ -54,10 +61,6 @@ use yii\bootstrap5\Breadcrumbs;
     <?php //= $this->render('partials/customizer') 
     ?>
     <?= $this->render('partials/vendor-scripts') ?>
-    <!-- App js -->
-    <script src="<?= Url::base(true) ?>/theme/libs/flatpickr/flatpickr.min.js"></script>
-    <script src="<?= Url::base(true) ?>/theme/libs/sweetalert2/sweetalert2.min.js"></script>
-    <script src="<?= Url::base(true) ?>/theme/js/app.js"></script>
 
 
     <?php $this->endBody() ?>

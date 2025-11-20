@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Nacionalidades;
+use common\models\Nacionalidades;
 use backend\models\search\NacionalidadesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

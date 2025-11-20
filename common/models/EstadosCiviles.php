@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "nacionalidades".
+ * This is the model class for table "estados_civiles".
  *
  * @property int $id
  * @property string $nombre
@@ -13,14 +13,14 @@ use Yii;
  *
  * @property DatosGenerales[] $datosGenerales
  */
-class Nacionalidades extends \yii\db\ActiveRecord
+class EstadosCiviles extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'nacionalidades';
+        return 'estados_civiles';
     }
 
     /**
@@ -29,11 +29,9 @@ class Nacionalidades extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'nombre'], 'required'],
-            [['id'], 'integer'],
+            [['nombre'], 'required'],
             [['nombre'], 'string', 'max' => 100],
             [['descripcion'], 'string', 'max' => 250],
-            [['id'], 'unique'],
         ];
     }
 
@@ -56,6 +54,6 @@ class Nacionalidades extends \yii\db\ActiveRecord
      */
     public function getDatosGenerales()
     {
-        return $this->hasMany(DatosGenerales::class, ['nacionalidades_id' => 'id']);
+        return $this->hasMany(DatosGenerales::class, ['estados_civiles_id' => 'id']);
     }
 }

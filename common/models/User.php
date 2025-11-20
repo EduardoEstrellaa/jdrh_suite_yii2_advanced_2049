@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 use Yii;
@@ -69,15 +70,15 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['estado_id', 'default', 'value' =>  ValorHelpers::getEstadoId('Pendiente')],
 
-            [['estado_id'],'in',  'range'=>array_keys($this->getEstadoLista())],
+            [['estado_id'], 'in',  'range' => array_keys($this->getEstadoLista())],
 
             ['rol_id', 'default', 'value' => 8],
 
-            [['rol_id'],'in',  'range'=>array_keys($this->getRolLista())],
+            [['rol_id'], 'in',  'range' => array_keys($this->getRolLista())],
 
             ['tipo_usuario_id', 'default', 'value' => 1],
 
-            [['tipo_usuario_id'],'in',  'range'=>array_keys($this->getTipoUsuarioLista())],
+            [['tipo_usuario_id'], 'in',  'range' => array_keys($this->getTipoUsuarioLista())],
 
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
@@ -202,7 +203,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
-    
+
     /**
      * Genera hash de password a partir de password y la establece en el modelo
      *
@@ -238,7 +239,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-     /* Generates new token for email verification
+    /* Generates new token for email verification
      */
     public function generateEmailVerificationToken()
     {
@@ -344,7 +345,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getPerfilLink()
     {
-        $url = Url::to(['perfil/view', 'id'=>$this->perfilId]);
+        $url = Url::to(['perfil/view', 'id' => $this->perfilId]);
         $opciones = [];
         return Html::a($this->perfil ? 'perfil' : 'ninguno', $url, $opciones);
     }
@@ -355,7 +356,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserIdLink()
     {
-        $url = Url::to(['user/update', 'id'=>$this->id]);
+        $url = Url::to(['user/update', 'id' => $this->id]);
         $opciones = [];
         return Html::a($this->id, $url, $opciones);
     }
@@ -366,8 +367,33 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserLink()
     {
-        $url = Url::to(['user/view', 'id'=>$this->id]);
+        $url = Url::to(['user/view', 'id' => $this->id]);
         $opciones = [];
         return Html::a($this->username, $url, $opciones);
+    }
+
+    /**
+     * Obtiene una lista de usuarios sin perfil en formato clave-valor.
+     *
+     * La clave es el ID del usuario y el valor es "username (email)".
+     *
+     * @return array
+     */
+    public static function getUserList()
+    {
+        // Consulta usuarios que no tienen perfil
+        $usuarios = self::find()
+            ->select(['user.id', 'user.username', 'user.email'])
+            ->joinWith('perfil', false) // LEFT JOIN con la tabla perfil
+            ->where(['perfil.id' => null]) // filtra solo usuarios sin perfil
+            ->asArray()
+            ->all();
+
+        $lista = [];
+        foreach ($usuarios as $usuario) {
+            $lista[$usuario['id']] = $usuario['username'] . ' (' . $usuario['email'] . ')';
+        }
+
+        return $lista;
     }
 }

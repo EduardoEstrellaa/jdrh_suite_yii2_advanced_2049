@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -92,7 +92,6 @@ class PlanLicenciaturas extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PlanSemestres::class, ['plan_licenciatura_id' => 'id']);
     }
-
 
     /**
      * Devuelve un mapa de planes de estudios con licenciaturas [id => "PlanEstudios - Licenciatura"].

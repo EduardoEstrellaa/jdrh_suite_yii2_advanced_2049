@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\PlanLicenciaturas;
+use common\models\PlanLicenciaturas;
 use backend\models\search\PlanLicenciaturasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

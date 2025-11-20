@@ -1,11 +1,9 @@
 <?php
 
-namespace backend\models;
-
-use frontend\models\Perfil;
-
+namespace common\models;
 
 use Yii;
+use common\models\LugaresNacimiento;
 
 /**
  * This is the model class for table "alumnos".
@@ -363,5 +361,15 @@ class Alumnos extends \yii\db\ActiveRecord
     public function getPlanLicenciaturas()
     {
         return $this->hasOne(PlanLicenciaturas::class, ['id' => 'plan_licenciaturas_id']);
+    }
+
+    /**
+     * Relación directa a LugaresNacimiento a través del perfil del alumno.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLugaresNacimiento()
+    {
+        return $this->hasOne(LugaresNacimiento::class, ['perfil_id' => 'perfil_id']);
     }
 }

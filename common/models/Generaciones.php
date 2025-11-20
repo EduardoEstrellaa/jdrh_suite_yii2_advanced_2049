@@ -1,10 +1,9 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-
 
 /**
  * This is the model class for table "generaciones".
@@ -63,7 +62,6 @@ class Generaciones extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Alumnos::class, ['generaciones_id' => 'id']);
     }
-
 
     /**
      * Devuelve un mapa de generaciones [id => nombre].

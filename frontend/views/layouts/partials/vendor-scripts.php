@@ -5,7 +5,6 @@ use yii\helpers\Url;
 
 ?>
 
-<script src="<?= Url::base(true) ?>/theme/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="<?= Url::base(true) ?>/theme/libs/simplebar/simplebar.min.js"></script>
 <script src="<?= Url::base(true) ?>/theme/libs/node-waves/waves.min.js"></script>
 <script src="<?= Url::base(true) ?>/theme/libs/feather-icons/feather.min.js"></script>
@@ -15,3 +14,4 @@ use yii\helpers\Url;
 <script src="<?= Url::base(true) ?>/theme/js/pages/dashboard-projects.init.js"></script>
 <script src="<?= Url::base(true) ?>/theme/libs/jsvectormap/js/jsvectormap.min.js"></script>
 <script src="<?= Url::base(true) ?>/theme/js/plugins.js"></script>
+<script src="<?= Url::base(true) ?>/theme/libs/sweetalert2/sweetalert2.min.js"></script>
