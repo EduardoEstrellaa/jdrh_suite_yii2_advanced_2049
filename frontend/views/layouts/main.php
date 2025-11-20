@@ -7,13 +7,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
-<<<<<<< HEAD
-=======
 use frontend\assets\AppAsset;
 
 AppAsset::register($this);
 
->>>>>>> feature/Eduardo-Estrella
 
 ?>
 <?php $this->beginPage() ?>
