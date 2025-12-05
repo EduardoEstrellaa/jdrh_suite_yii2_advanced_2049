@@ -56,4 +56,9 @@ class Nacionalidades extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DatosGenerales::class, ['nacionalidades_id' => 'id']);
     }
+
+    public static function getNacionalidadesMap()
+    {
+        return Nacionalidades::find()->select(['nombre', 'id'])->indexBy('id')->column();
+    }
 }
