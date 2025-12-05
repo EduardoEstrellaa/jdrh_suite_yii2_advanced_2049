@@ -5,6 +5,8 @@ use yii\widgets\ActiveForm;
 use common\helpers\InputHelper;
 use common\assets\ExpedienteAsset;
 use common\models\EntidadesFederativas;
+use common\models\EstadosCiviles;
+use common\models\Nacionalidades;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -141,11 +143,11 @@ $this->title = 'Expediente';
                     <hr class="my-4">
 
                     <!-- ===================== -->
-                    <!-- DATOS PERSONALES ADICIONALES -->
+                    <!-- DATOS PERSONALES -->
                     <!-- ===================== -->
                     <h4 class="mb-3">
                         <i class="fas fa-address-card text-info"></i>
-                        <span class="text-secondary">Datos Personales Adicionales</span>
+                        <span class="text-secondary">Datos Personales</span>
                     </h4>
 
                     <div class="row">
@@ -181,6 +183,73 @@ $this->title = 'Expediente';
                             <?= InputHelper::iconTextField($form, $datosPersonales, 'rfc', 'fa-user-tag', [
                                 'inputOptions' => ['placeholder' => 'RFC...']
                             ]) ?>
+                        </div>
+                    </div>
+
+
+
+                    <hr class="my-4">
+
+                    <!-- ===================== -->
+                    <!-- DATOS GENERALES -->
+                    <!-- ===================== -->
+                    <h4 class="mb-3 mt-4">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        <span class="text-secondary">Datos Generales</span>
+                    </h4>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_personal', 'fa-phone', [
+                                'inputOptions' => ['placeholder' => 'Teléfono personal...']
+                            ]) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_emergencia', 'fa-phone-alt', [
+                                'inputOptions' => ['placeholder' => 'Teléfono emergencia...']
+                            ]) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $datosGenerales, 'email_personal', 'fa-envelope', [
+                                'inputOptions' => ['placeholder' => 'Email personal...']
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $datosGenerales,
+                                'estados_civiles_id',
+                                'fa-ring',
+                                EstadosCiviles::getEstadosCivilesMap(),
+                                ['options' => ['placeholder' => 'Estado civil...']]
+                            ) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $datosGenerales,
+                                'nacionalidades_id',
+                                'fa-flag',
+                                Nacionalidades::getNacionalidadesMap(),
+                                ['options' => ['placeholder' => 'Nacionalidad...']]
+                            ) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $datosGenerales,
+                                'maya_hablante',
+                                'fa-language',
+                                [1 => 'Sí', 0 => 'No'],
+                                ['options' => ['placeholder' => '¿Habla maya?']]
+                            ) ?>
                         </div>
                     </div>
 
