@@ -6,6 +6,7 @@ use Yii;
 use common\models\DatosPersonales;
 use common\models\LugaresNacimiento;
 use common\models\DomiciliosActuales;
+use common\models\DatosGenerales;
 use yii\web\NotFoundHttpException;
 
 class ExpedienteService
@@ -18,22 +19,24 @@ class ExpedienteService
         $datosPersonales = new DatosPersonales(['perfil_id' => $perfil->id]);
         $lugaresNacimiento = new LugaresNacimiento(['perfil_id' => $perfil->id]);
         $domiciliosActuales = new DomiciliosActuales(['perfil_id' => $perfil->id]);
+        $datosGenerales = new DatosGenerales(['perfil_id' => $perfil->id]);
 
-        $datosPersonales->load($post);
-        $lugaresNacimiento->load($post);
-        $domiciliosActuales->load($post);
+        $models = [$datosPersonales, $lugaresNacimiento, $domiciliosActuales, $datosGenerales];
 
-        if (!$datosPersonales->validate() || !$lugaresNacimiento->validate() || !$domiciliosActuales->validate()) {
-            return false;
+        foreach ($models as $model) {
+            $model->load($post);
+            if (!$model->validate()) {
+                return false;
+            }
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $datosPersonales->save(false);
-            $lugaresNacimiento->save(false);
-            $domiciliosActuales->save(false);
+            foreach ($models as $model) {
+                $model->save(false);
+            }
             $transaction->commit();
-            return $datosPersonales;
+            return true;
         } catch (\Throwable $e) {
             $transaction->rollBack();
             Yii::error($e->getMessage(), __METHOD__);
@@ -50,6 +53,7 @@ class ExpedienteService
             'datosPersonales' => new DatosPersonales(['perfil_id' => $perfil_id]),
             'lugaresNacimiento' => new LugaresNacimiento(['perfil_id' => $perfil_id]),
             'domiciliosActuales' => new DomiciliosActuales(['perfil_id' => $perfil_id]),
+            'datosGenerales' => new DatosGenerales(['perfil_id' => $perfil_id]),
         ];
     }
 
@@ -62,58 +66,40 @@ class ExpedienteService
             'datosPersonales' => self::findOrCreateModel(DatosPersonales::class, $perfil_id),
             'lugaresNacimiento' => self::findOrCreateModel(LugaresNacimiento::class, $perfil_id),
             'domiciliosActuales' => self::findOrCreateModel(DomiciliosActuales::class, $perfil_id),
+            'datosGenerales' => self::findOrCreateModel(DatosGenerales::class, $perfil_id),
         ];
     }
-
     /**
      * Actualiza un expediente existente de forma transaccional.
      */
     public static function actualizarExpediente($perfilId, $post)
     {
-        // Buscar o crear modelos
         $datosPersonales = self::findOrCreateModel(DatosPersonales::class, $perfilId);
         $lugaresNacimiento = self::findOrCreateModel(LugaresNacimiento::class, $perfilId);
         $domiciliosActuales = self::findOrCreateModel(DomiciliosActuales::class, $perfilId);
+        $datosGenerales = self::findOrCreateModel(DatosGenerales::class, $perfilId);
+
+        $models = [$datosPersonales, $lugaresNacimiento, $domiciliosActuales, $datosGenerales];
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $success = true;
-
-            // Cargar y guardar cada modelo
-            if ($datosPersonales->load($post)) {
-                if (!$datosPersonales->save()) {
-                    $success = false;
-                    Yii::error('Error al guardar datos personales: ' . json_encode($datosPersonales->errors));
+            foreach ($models as $model) {
+                if ($model->load($post) && !$model->save()) {
+                    Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
+                    $transaction->rollBack();
+                    return false;
                 }
             }
 
-            if ($lugaresNacimiento->load($post)) {
-                if (!$lugaresNacimiento->save()) {
-                    $success = false;
-                    Yii::error('Error al guardar lugar de nacimiento: ' . json_encode($lugaresNacimiento->errors));
-                }
-            }
-
-            if ($domiciliosActuales->load($post)) {
-                if (!$domiciliosActuales->save()) {
-                    $success = false;
-                    Yii::error('Error al guardar domicilio actual: ' . json_encode($domiciliosActuales->errors));
-                }
-            }
-
-            if ($success) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-                return false;
-            }
-        } catch (\Exception $e) {
+            $transaction->commit();
+            return true;
+        } catch (\Throwable $e) {
             $transaction->rollBack();
-            Yii::error('Error al actualizar expediente: ' . $e->getMessage());
+            Yii::error($e->getMessage(), __METHOD__);
             throw $e;
         }
     }
+
 
     /**
      * Busca o crea un modelo
