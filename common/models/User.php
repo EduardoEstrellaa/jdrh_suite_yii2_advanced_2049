@@ -14,7 +14,7 @@ use  yii\helpers\ArrayHelper;
 use  backend\models\Estado;
 use  backend\models\TipoUsuario;
 use  backend\models\Rol;
-use  frontend\models\Perfil;
+use  common\models\Perfil;
 
 use  yii\helpers\Url;
 use  yii\helpers\Html;
