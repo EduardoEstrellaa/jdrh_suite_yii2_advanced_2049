@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumInfoHijos;
+use common\models\AlumInfoHijos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
