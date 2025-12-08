@@ -2,10 +2,14 @@
 
 namespace backend\controllers;
 
+use Yii;
+use yii\web\UploadedFile;
 use common\models\Equipos;
+use yii\data\ActiveDataProvider;
 use backend\models\search\EquiposSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use common\models\Modelos;
@@ -19,9 +23,6 @@ use common\models\TipoAlta;
  */
 class EquiposController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
     public function behaviors()
     {
         return array_merge(
@@ -39,13 +40,15 @@ class EquiposController extends Controller
 
     /**
      * Lists all Equipos models.
-     *
-     * @return string
      */
     public function actionIndex()
     {
         $searchModel = new EquiposSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        Yii::debug($dataProvider->query->createCommand()->rawSql, 'equipos-sql');
+
+        $dataProvider->sort->defaultOrder = ['id' => SORT_DESC];
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -55,9 +58,6 @@ class EquiposController extends Controller
 
     /**
      * Displays a single Equipos model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
@@ -68,58 +68,156 @@ class EquiposController extends Controller
 
     /**
      * Creates a new Equipos model.
-     * @return string|\yii\web\Response
      */
     public function actionCreate()
-    {
-        $model = new Equipos();
+{
+    $model = new Equipos();
 
-        // listas para dropdown
-        $modelos = ArrayHelper::map(Modelos::find()->all(), 'id', 'descripcion');
-        $estados = ArrayHelper::map(EstadoEquipo::find()->all(), 'id', 'descripcion');
-        $marcas = ArrayHelper::map(Marcas::find()->all(), 'id', 'descripcion');
-        $tiposEquipo = ArrayHelper::map(TipoEquipo::find()->all(), 'id_tipo_equipo', 'descripcion');
-        $tiposAlta = ArrayHelper::map(TipoAlta::find()->all(), 'id', 'descripcion');
+    // listas de dropdown
+    $modelos = ArrayHelper::map(Modelos::find()->all(), 'id', 'descripcion');
+    $estados = ArrayHelper::map(EstadoEquipo::find()->all(), 'id', 'descripcion');
+    $marcas = ArrayHelper::map(Marcas::find()->all(), 'id', 'descripcion');
+    $tiposEquipo = ArrayHelper::map(TipoEquipo::find()->all(), 'id', 'descripcion');
+    $tiposAlta = ArrayHelper::map(TipoAlta::find()->all(), 'id', 'descripcion');
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+    if ($this->request->isPost) {
+
+        $model->load(Yii::$app->request->post());
+
+        // FORMATO CORRECTO DE FECHA
+        if ($model->fecha_alta) {
+            $model->fecha_alta = str_replace('T', ' ', $model->fecha_alta) . ':00';
         }
 
-        return $this->render('create', [
-            'model' => $model,
-            'marcas' => $marcas,
-            'modelos' => [],
-            'estados' => $estados,
-            'tiposEquipo' => $tiposEquipo,
-            'tiposAlta' => $tiposAlta,
-        ]);
+        // Obtener archivos
+        $model->file_foto_equipo = UploadedFile::getInstance($model, 'file_foto_equipo');
+        $model->file_foto_numero_inventario = UploadedFile::getInstance($model, 'file_foto_numero_inventario');
+        $model->file_foto_numero_serie = UploadedFile::getInstance($model, 'file_foto_numero_serie');
+
+        if ($model->validate()) {
+
+            // Ruta pública
+            $path = Yii::getAlias('@frontend/web/uploads/equipos/');
+
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            // Foto del equipo
+            if ($model->file_foto_equipo) {
+                $filename = uniqid() . '_' . $model->file_foto_equipo->baseName . '.' . $model->file_foto_equipo->extension;
+                $model->file_foto_equipo->saveAs($path . $filename);
+                $model->foto_equipo = $filename;
+            }
+
+            // Foto número inventario
+            if ($model->file_foto_numero_inventario) {
+                $filename = uniqid() . '_' . $model->file_foto_numero_inventario->baseName . '.' . $model->file_foto_numero_inventario->extension;
+                $model->file_foto_numero_inventario->saveAs($path . $filename);
+                $model->foto_numero_inventario = $filename;
+            }
+
+            // Foto número serie
+            if ($model->file_foto_numero_serie) {
+                $filename = uniqid() . '_' . $model->file_foto_numero_serie->baseName . '.' . $model->file_foto_numero_serie->extension;
+                $model->file_foto_numero_serie->saveAs($path . $filename);
+                $model->foto_numero_serie = $filename;
+            }
+
+            $model->save(false);
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
     }
+
+    return $this->render('create', [
+        'model' => $model,
+        'marcas' => $marcas,
+        'modelos' => [],
+        'estados' => $estados,
+        'tiposEquipo' => $tiposEquipo,
+        'tiposAlta' => $tiposAlta,
+    ]);
+}
+
 
     /**
      * Updates an existing Equipos model.
      */
     public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
+{
+    $model = $this->findModel($id);
 
-        // listas para dropdown
-        $modelos = ArrayHelper::map(Modelos::find()->all(), 'id', 'descripcion');
-        $estados = ArrayHelper::map(EstadoEquipo::find()->all(), 'id', 'descripcion');
-        $marcas = ArrayHelper::map(Marcas::find()->all(), 'id', 'descripcion');
+    // Guardar nombres actuales
+    $fotoEquipoActual = $model->foto_equipo;
+    $fotoInventarioActual = $model->foto_numero_inventario;
+    $fotoSerieActual = $model->foto_numero_serie;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+    // listas
+    $modelos = ArrayHelper::map(Modelos::find()->all(), 'id', 'descripcion');
+    $estados = ArrayHelper::map(EstadoEquipo::find()->all(), 'id', 'descripcion');
+    $marcas = ArrayHelper::map(Marcas::find()->all(), 'id', 'descripcion');
+    $tiposEquipo = ArrayHelper::map(TipoEquipo::find()->all(), 'id', 'descripcion');
+    $tiposAlta = ArrayHelper::map(TipoAlta::find()->all(), 'id', 'descripcion');
+
+    if ($this->request->isPost && $model->load(Yii::$app->request->post())) {
+
+        // FORMATO CORRECTO DE FECHA
+        if ($model->fecha_alta) {
+            $model->fecha_alta = str_replace('T', ' ', $model->fecha_alta) . ':00';
         }
 
-        return $this->render('update', [
-            'model' => $model,
-            'marcas' => $marcas,
-            'modelos' => $modelos,
-            'estados' => $estados,
-        ]);
+        $path = Yii::getAlias('@frontend/web/uploads/equipos/');
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        // ARCHIVOS NUEVOS
+        $model->file_foto_equipo = UploadedFile::getInstance($model, 'file_foto_equipo');
+        $model->file_foto_numero_inventario = UploadedFile::getInstance($model, 'file_foto_numero_inventario');
+        $model->file_foto_numero_serie = UploadedFile::getInstance($model, 'file_foto_numero_serie');
+
+        // Foto equipo
+        if ($model->file_foto_equipo) {
+            $filename = uniqid() . '_' . $model->file_foto_equipo->baseName . '.' . $model->file_foto_equipo->extension;
+            $model->file_foto_equipo->saveAs($path . $filename);
+            $model->foto_equipo = $filename;
+        } else {
+            $model->foto_equipo = $fotoEquipoActual;
+        }
+
+        // Foto num inventario
+        if ($model->file_foto_numero_inventario) {
+            $filename = uniqid() . '_' . $model->file_foto_numero_inventario->baseName . '.' . $model->file_foto_numero_inventario->extension;
+            $model->file_foto_numero_inventario->saveAs($path . $filename);
+            $model->foto_numero_inventario = $filename;
+        } else {
+            $model->foto_numero_inventario = $fotoInventarioActual;
+        }
+
+        // Foto num serie
+        if ($model->file_foto_numero_serie) {
+            $filename = uniqid() . '_' . $model->file_foto_numero_serie->baseName . '.' . $model->file_foto_numero_serie->extension;
+            $model->file_foto_numero_serie->saveAs($path . $filename);
+            $model->foto_numero_serie = $filename;
+        } else {
+            $model->foto_numero_serie = $fotoSerieActual;
+        }
+
+        $model->save(false);
+        return $this->redirect(['view', 'id' => $model->id]);
     }
+
+    return $this->render('update', [
+        'model' => $model,
+        'marcas' => $marcas,
+        'modelos' => $modelos,
+        'estados' => $estados,
+        'tiposEquipo' => $tiposEquipo,
+        'tiposAlta' => $tiposAlta,
+    ]);
+}
+
 
     /**
      * Deletes an existing Equipos model.
@@ -131,31 +229,39 @@ class EquiposController extends Controller
     }
 
     /**
-     * Finds the Equipos model based on primary key.
+     * Finds Equipos model based on ID.
      */
     protected function findModel($id)
     {
         if (($model = Equipos::findOne(['id' => $id])) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    // Acción para traer modelos por marca (AJAX)
-    public function actionListModelos($id)
-    {
-        $modelos = Modelos::find()
-            ->where(['marcas_id' => $id])
-            ->orderBy('descripcion')
-            ->all();
+    /**
+     * Acción para DepDrop (modelos según marca)
+     */
+    public function actionListModelos()
+{
+    Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (!empty($modelos)) {
-            foreach ($modelos as $modelo) {
-                echo "<option value='{$modelo->id}'>{$modelo->descripcion}</option>";
-            }
-        } else {
-            echo "<option value=''>No hay modelos disponibles</option>";
-        }
+    $marca_id = Yii::$app->request->get('marca_id');
+
+    if (!$marca_id) {
+        return [];
     }
+
+    $modelos = Modelos::find()
+        ->where(['marcas_id' => $marca_id])
+        ->all();
+
+    $lista = [];
+    foreach ($modelos as $m) {
+        $lista[$m->id] = $m->descripcion;
+    }
+
+    return $lista;
+}
+
 }

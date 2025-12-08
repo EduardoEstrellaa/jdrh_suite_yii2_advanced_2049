@@ -19,11 +19,15 @@ use Yii;
  * @property int $marca_id
  * @property int $modelos_id
  * @property int $tipo_equipo_id
- * @property int $id_alta
+ * @property int $tipo_alta_id
  * @property int $estado_equipo_id
  */
 class Equipos extends \yii\db\ActiveRecord
 {
+    public $file_foto_equipo;
+    public $file_foto_numero_inventario;
+    public $file_foto_numero_serie;
+
     public static function tableName()
     {
         return 'equipos';
@@ -32,26 +36,23 @@ class Equipos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            // ✔ Tus reglas personalizadas (HEAD)
-            [['marca_id', 'modelos_id', 'estado_equipo_id', 'tipo_equipo_id', 'id_alta', 'numero_inventario'], 'required'],
-            [['marca_id', 'modelos_id', 'estado_equipo_id', 'tipo_equipo_id', 'id_alta'], 'integer'],
-
-            // Fecha de alta
+            [['marca_id', 'modelos_id', 'estado_equipo_id', 'tipo_equipo_id', 'tipo_alta_id', 'numero_inventario'], 'required'],
+            [['marca_id', 'modelos_id', 'estado_equipo_id', 'tipo_equipo_id', 'tipo_alta_id'], 'integer'],
             [['fecha_alta'], 'safe'],
-
-            // Textos largos
             [['foto_equipo', 'foto_numero_inventario', 'foto_numero_serie', 'observaciones', 'especificaciones'], 'string'],
-
-            // Campos simples
             [['numero_inventario'], 'string', 'max' => 50],
             [['numero_serie'], 'string', 'max' => 100],
-
-            // Relaciones
             [['estado_equipo_id'], 'exist', 'skipOnError' => true, 'targetClass' => EstadoEquipo::class, 'targetAttribute' => ['estado_equipo_id' => 'id']],
             [['modelos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Modelos::class, 'targetAttribute' => ['modelos_id' => 'id']],
-            [['id_alta'], 'exist', 'skipOnError' => true, 'targetClass' => TipoAlta::class, 'targetAttribute' => ['id_alta' => 'id']],
+            [['tipo_alta_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoAlta::class, 'targetAttribute' => ['tipo_alta_id' => 'id']],
             [['tipo_equipo_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoEquipo::class, 'targetAttribute' => ['tipo_equipo_id' => 'id']],
             [['marca_id'], 'exist', 'skipOnError' => true, 'targetClass' => Marcas::class, 'targetAttribute' => ['marca_id' => 'id']],
+
+            [['file_foto_equipo', 'file_foto_numero_inventario', 'file_foto_numero_serie'], 'file',
+                'skipOnEmpty' => true,
+                'extensions' => 'png, jpg, jpeg',
+                'maxSize' => 5 * 1024 * 1024,
+            ],
         ];
     }
 
@@ -70,24 +71,20 @@ class Equipos extends \yii\db\ActiveRecord
             'marca_id' => 'Marca',
             'modelos_id' => 'Modelo',
             'tipo_equipo_id' => 'Tipo de Equipo',
-            'id_alta' => 'Tipo de Alta',
+            'tipo_alta_id' => 'Tipo de Alta',
             'estado_equipo_id' => 'Estado del Equipo',
         ];
     }
 
-    public function getEstadoEquipo()
+    /** RELACIONES CORRECTAS */
+    public function getMarca()
     {
-        return $this->hasOne(EstadoEquipo::class, ['id' => 'estado_equipo_id']);
+        return $this->hasOne(Marcas::class, ['id' => 'marca_id']);
     }
 
-    public function getModelos()
+    public function getModelo()
     {
         return $this->hasOne(Modelos::class, ['id' => 'modelos_id']);
-    }
-
-    public function getTipoAlta()
-    {
-        return $this->hasOne(TipoAlta::class, ['id' => 'id_alta']);
     }
 
     public function getTipoEquipo()
@@ -95,9 +92,33 @@ class Equipos extends \yii\db\ActiveRecord
         return $this->hasOne(TipoEquipo::class, ['id' => 'tipo_equipo_id']);
     }
 
-    // ✔ Campo agregado por ti (HEAD)
-    public function getMarca()
+    public function getTipoAlta()
     {
-        return $this->hasOne(Marcas::class, ['id' => 'marca_id']);
+        return $this->hasOne(TipoAlta::class, ['id' => 'tipo_alta_id']);
+    }
+
+    public function getEstadoEquipo()
+    {
+        return $this->hasOne(EstadoEquipo::class, ['id' => 'estado_equipo_id']);
+    }
+
+    public function beforeValidate()
+    {
+        if (parent::beforeValidate()) {
+            if (empty($this->fecha_alta)) {
+                $this->fecha_alta = date('Y-m-d H:i:s');
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function getImageUrl($attribute)
+    {
+        if (!$this->$attribute) {
+            return null;
+        }
+
+        return Yii::getAlias('@frontendUrl') . "/uploads/equipos/" . $this->$attribute;
     }
 }
