@@ -2,8 +2,8 @@
 
 namespace common\models;
 
-use common\models\Perfil;
 use Yii;
+use common\models\Perfil;
 
 /**
  * This is the model class for table "datos_personales".
