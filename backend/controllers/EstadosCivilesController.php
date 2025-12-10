@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\EstadosCiviles;
+use common\models\EstadosCiviles;
 use backend\models\search\EstadosCivilesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
