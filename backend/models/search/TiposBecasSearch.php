@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TiposBecas;
+use common\models\TiposBecas;
 
 /**
- * TiposBecasSearch represents the model behind the search form of `backend\models\TiposBecas`.
+ * TiposBecasSearch represents the model behind the search form of `common\models\TiposBecas`.
  */
 class TiposBecasSearch extends TiposBecas
 {

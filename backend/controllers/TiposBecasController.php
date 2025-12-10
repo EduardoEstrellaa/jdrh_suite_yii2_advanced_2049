@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\TiposBecas;
+use common\models\TiposBecas;
 use backend\models\search\TiposBecasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
