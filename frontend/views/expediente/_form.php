@@ -4,9 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\helpers\InputHelper;
 use common\assets\ExpedienteAsset;
+use common\helpers\BooleanHelper;
 use common\models\EntidadesFederativas;
 use common\models\EstadosCiviles;
 use common\models\Nacionalidades;
+use common\models\TiposBecas;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -247,8 +249,10 @@ $this->title = 'Expediente';
                                 $datosGenerales,
                                 'maya_hablante',
                                 'fa-language',
-                                [1 => 'Sí', 0 => 'No'],
-                                ['options' => ['placeholder' => '¿Habla maya?']]
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Habla maya?'
+                                ]
                             ) ?>
                         </div>
                     </div>
@@ -405,7 +409,164 @@ $this->title = 'Expediente';
             </h2>
             <div id="collapseDatosFamiliares" class="accordion-collapse collapse" aria-labelledby="headingDatosFamiliares" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de datos familiares próximamente...</p>
+
+                    <h5 class="mb-3 mt-2">
+                        <i class="fas fa-user-friends text-primary"></i>
+                        <span class="text-secondary">Datos del Padre</span>
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_nombre', 'fa-male', [
+                                'inputOptions' => ['placeholder' => 'Nombre del padre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_paterno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_materno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido materno...']
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_ocupacion', 'fa-briefcase', [
+                                'inputOptions' => ['placeholder' => 'Ocupación del padre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDatosFamiliares,
+                                'padre_mayahablante',
+                                'fa-language',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Habla maya?'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3">
+                        <i class="fas fa-user-friends text-info"></i>
+                        <span class="text-secondary">Datos de la Madre</span>
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_nombre', 'fa-female', [
+                                'inputOptions' => ['placeholder' => 'Nombre de la madre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_paterno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_materno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido materno...']
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_ocupacion', 'fa-briefcase', [
+                                'inputOptions' => ['placeholder' => 'Ocupación de la madre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDatosFamiliares,
+                                'madre_mayahablante',
+                                'fa-language',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Habla maya?'
+                                ]
+                            ) ?>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 4: BECAS -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBecas">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBecas" aria-expanded="false" aria-controls="collapseBecas">
+                    🎓 IV. INFORMACIÓN DE BECAS
+                </button>
+            </h2>
+            <div id="collapseBecas" class="accordion-collapse collapse" aria-labelledby="headingBecas" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumBecas,
+                                'tiene_beca',
+                                'fa-graduation-cap',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Tiene beca?',
+                                    'options' => [
+                                        'id' => 'alumbecas-tiene_beca'
+                                    ]
+                                ]
+                            ) ?>
+                        </div>
+
+                        <div class="col-md-6" id="tipo-beca-container" style="display: none;">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumBecas,
+                                'tipos_becas_id',
+                                'fa-award',
+                                TiposBecas::getTiposBecasMap(),
+                                [
+                                    'options' => [
+                                        'placeholder' => 'Tipo de beca...',
+                                        'id' => 'alumbecas-tipos_becas_id'
+                                    ]
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3" id="otro-especificar-container" style="display: none;">
+                        <div class="col-md-12">
+                            <?= InputHelper::iconTextField($form, $alumBecas, 'otro_especificar', 'fa-edit', [
+                                'inputOptions' => [
+                                    'placeholder' => 'Especificar otro tipo de beca...',
+                                    'id' => 'alumbecas-otro_especificar'
+                                ]
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $this->registerJsFile('@web/js/expediente/expediente-becas.js', [
+                        'depends' => [\yii\web\JqueryAsset::class],
+                    ]);
+                    ?>
+
+
                 </div>
             </div>
         </div>
