@@ -7,25 +7,32 @@ use common\models\DatosPersonales;
 use common\models\LugaresNacimiento;
 use common\models\DomiciliosActuales;
 use common\models\DatosGenerales;
+use common\models\AlumBecas;
+use common\models\AlumDatosFamiliares;
 use yii\web\NotFoundHttpException;
 
 class ExpedienteService
 {
+    // Definir todos los modelos que componen el expediente
+    private static $modelClasses = [
+        'datosPersonales' => DatosPersonales::class,
+        'lugaresNacimiento' => LugaresNacimiento::class,
+        'domiciliosActuales' => DomiciliosActuales::class,
+        'datosGenerales' => DatosGenerales::class,
+        'alumBecas' => AlumBecas::class,
+        'alumDatosFamiliares' => AlumDatosFamiliares::class,
+    ];
+
     /**
      * Crea un expediente completo dentro de una transacción.
      */
-    public static function crearExpediente($perfil, $post)
+    public static function crearExpediente($perfil, $alumno, $post)
     {
-        $datosPersonales = new DatosPersonales(['perfil_id' => $perfil->id]);
-        $lugaresNacimiento = new LugaresNacimiento(['perfil_id' => $perfil->id]);
-        $domiciliosActuales = new DomiciliosActuales(['perfil_id' => $perfil->id]);
-        $datosGenerales = new DatosGenerales(['perfil_id' => $perfil->id]);
-
-        $models = [$datosPersonales, $lugaresNacimiento, $domiciliosActuales, $datosGenerales];
+        $models = self::initializeModelsForCreate($perfil, $alumno);
 
         foreach ($models as $model) {
-            $model->load($post);
-            if (!$model->validate()) {
+            if (!$model->load($post) || !$model->validate()) {
+                Yii::error("Error en validación: " . get_class($model) . " - " . json_encode($model->errors));
                 return false;
             }
         }
@@ -45,41 +52,11 @@ class ExpedienteService
     }
 
     /**
-     * Obtiene modelos nuevos para crear expediente
-     */
-    public static function getModelsForCreate($perfil_id)
-    {
-        return [
-            'datosPersonales' => new DatosPersonales(['perfil_id' => $perfil_id]),
-            'lugaresNacimiento' => new LugaresNacimiento(['perfil_id' => $perfil_id]),
-            'domiciliosActuales' => new DomiciliosActuales(['perfil_id' => $perfil_id]),
-            'datosGenerales' => new DatosGenerales(['perfil_id' => $perfil_id]),
-        ];
-    }
-
-    /**
-     * Obtiene los modelos para actualizar expediente
-     */
-    public static function getModelsForUpdate($perfil_id)
-    {
-        return [
-            'datosPersonales' => self::findOrCreateModel(DatosPersonales::class, $perfil_id),
-            'lugaresNacimiento' => self::findOrCreateModel(LugaresNacimiento::class, $perfil_id),
-            'domiciliosActuales' => self::findOrCreateModel(DomiciliosActuales::class, $perfil_id),
-            'datosGenerales' => self::findOrCreateModel(DatosGenerales::class, $perfil_id),
-        ];
-    }
-    /**
      * Actualiza un expediente existente de forma transaccional.
      */
-    public static function actualizarExpediente($perfilId, $post)
+    public static function actualizarExpediente($perfilId, $alumnoId, $post)
     {
-        $datosPersonales = self::findOrCreateModel(DatosPersonales::class, $perfilId);
-        $lugaresNacimiento = self::findOrCreateModel(LugaresNacimiento::class, $perfilId);
-        $domiciliosActuales = self::findOrCreateModel(DomiciliosActuales::class, $perfilId);
-        $datosGenerales = self::findOrCreateModel(DatosGenerales::class, $perfilId);
-
-        $models = [$datosPersonales, $lugaresNacimiento, $domiciliosActuales, $datosGenerales];
+        $models = self::getModelsForUpdate($perfilId, $alumnoId);
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -100,16 +77,65 @@ class ExpedienteService
         }
     }
 
+    /**
+     * Obtiene modelos nuevos para crear expediente
+     */
+    public static function getModelsForCreate($perfil, $alumno)
+    {
+        $models = [];
+
+        // Modelos con perfil_id
+        $models['datosPersonales'] = new DatosPersonales(['perfil_id' => $perfil->id]);
+        $models['lugaresNacimiento'] = new LugaresNacimiento(['perfil_id' => $perfil->id]);
+        $models['domiciliosActuales'] = new DomiciliosActuales(['perfil_id' => $perfil->id]);
+        $models['datosGenerales'] = new DatosGenerales(['perfil_id' => $perfil->id]);
+
+        // Modelos con alumnos_id
+        $models['alumBecas'] = new AlumBecas(['alumnos_id' => $alumno->id]);
+        $models['alumDatosFamiliares'] = new AlumDatosFamiliares(['alumnos_id' => $alumno->id]);
+
+        return $models;
+    }
+
+    /**
+     * Obtiene los modelos para actualizar expediente
+     */
+    public static function getModelsForUpdate($perfilId, $alumnoId)
+    {
+        $models = [];
+
+        // Modelos con perfil_id
+        $models['datosPersonales'] = self::findOrCreateModel(DatosPersonales::class, ['perfil_id' => $perfilId]);
+        $models['lugaresNacimiento'] = self::findOrCreateModel(LugaresNacimiento::class, ['perfil_id' => $perfilId]);
+        $models['domiciliosActuales'] = self::findOrCreateModel(DomiciliosActuales::class, ['perfil_id' => $perfilId]);
+        $models['datosGenerales'] = self::findOrCreateModel(DatosGenerales::class, ['perfil_id' => $perfilId]);
+
+        // Modelos con alumnos_id
+        $models['alumBecas'] = self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]);
+        $models['alumDatosFamiliares'] = self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]);
+
+        return $models;
+    }
+
+    /**
+     * Inicializa modelos para creación
+     */
+    private static function initializeModelsForCreate($perfil, $alumno)
+    {
+        return self::getModelsForCreate($perfil, $alumno);
+    }
 
     /**
      * Busca o crea un modelo
      */
-    private static function findOrCreateModel($className, $perfil_id)
+    private static function findOrCreateModel($className, $conditions)
     {
-        $model = $className::find()->where(['perfil_id' => $perfil_id])->one();
+        $model = $className::find()->where($conditions)->one();
         if (!$model) {
             $model = new $className();
-            $model->perfil_id = $perfil_id;
+            foreach ($conditions as $key => $value) {
+                $model->$key = $value;
+            }
         }
         return $model;
     }
@@ -117,13 +143,20 @@ class ExpedienteService
     /**
      * Elimina un expediente completo de forma transaccional.
      */
-    public static function eliminarExpediente($perfilId)
+    public static function eliminarExpediente($perfilId, $alumnoId)
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            // Eliminar modelos con perfil_id
             DatosPersonales::deleteAll(['perfil_id' => $perfilId]);
             LugaresNacimiento::deleteAll(['perfil_id' => $perfilId]);
             DomiciliosActuales::deleteAll(['perfil_id' => $perfilId]);
+            DatosGenerales::deleteAll(['perfil_id' => $perfilId]);
+
+            // Eliminar modelos con alumnos_id
+            AlumBecas::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumDatosFamiliares::deleteAll(['alumnos_id' => $alumnoId]);
+
             $transaction->commit();
             return true;
         } catch (\Throwable $e) {
@@ -131,5 +164,21 @@ class ExpedienteService
             Yii::error($e->getMessage(), __METHOD__);
             return false;
         }
+    }
+
+    /**
+     * Verifica si el expediente existe
+     */
+    public static function expedienteExiste($perfilId, $alumnoId)
+    {
+        $models = self::getModelsForUpdate($perfilId, $alumnoId);
+
+        foreach ($models as $model) {
+            if ($model->isNewRecord) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
