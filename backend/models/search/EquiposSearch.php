@@ -6,73 +6,63 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Equipos;
 
-/**
- * EquiposSearch represents the model behind the search form of `common\models\Equipos`.
- */
 class EquiposSearch extends Equipos
 {
-    /**
-     * {@inheritdoc}
-     */
+    public function beforeValidate()
+{
+    // NO aplicar la lógica del modelo padre en el search
+    return true;
+}
+
     public function rules()
     {
         return [
-            [['id', 'modelos_id', 'tipo_equipo_id', 'tipo_alta_id', 'estado_equipo_id'], 'integer'],
-            [['fecha_alta', 'numero_inventario', 'numero_serie', 'foto_equipo', 'foto_numero_inventario', 'foto_numero_serie', 'observaciones', 'especificaciones'], 'safe'],
+            [['id', 'modelos_id', 'tipo_equipo_id', 'tipo_alta_id', 'estado_equipo_id', 'marca_id'], 'integer'],
+            [['fecha_alta', 'numero_inventario', 'numero_serie', 'foto_equipo', 'foto_numero_inventario',
+              'foto_numero_serie', 'observaciones', 'especificaciones'], 'safe'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
         $query = Equipos::find();
 
-        // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
+        // FILTROS EXACTOS
         $query->andFilterWhere([
             'id' => $this->id,
-            'fecha_alta' => $this->fecha_alta,
             'modelos_id' => $this->modelos_id,
             'tipo_equipo_id' => $this->tipo_equipo_id,
             'tipo_alta_id' => $this->tipo_alta_id,
             'estado_equipo_id' => $this->estado_equipo_id,
+            'marca_id' => $this->marca_id,
         ]);
 
+        // FECHA (like)
+        if (!empty($this->fecha_alta)) {
+            $query->andFilterWhere(['like', 'fecha_alta', $this->fecha_alta]);
+        }
+
+        // FILTROS DE TEXTO
         $query->andFilterWhere(['like', 'numero_inventario', $this->numero_inventario])
-            ->andFilterWhere(['like', 'numero_serie', $this->numero_serie])
-            ->andFilterWhere(['like', 'foto_equipo', $this->foto_equipo])
-            ->andFilterWhere(['like', 'foto_numero_inventario', $this->foto_numero_inventario])
-            ->andFilterWhere(['like', 'foto_numero_serie', $this->foto_numero_serie])
-            ->andFilterWhere(['like', 'observaciones', $this->observaciones])
-            ->andFilterWhere(['like', 'especificaciones', $this->especificaciones]);
+              ->andFilterWhere(['like', 'numero_serie', $this->numero_serie])
+              ->andFilterWhere(['like', 'observaciones', $this->observaciones])
+              ->andFilterWhere(['like', 'especificaciones', $this->especificaciones]);
 
         return $dataProvider;
     }

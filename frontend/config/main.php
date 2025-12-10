@@ -11,7 +11,17 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+
     'components' => [
+
+        // ==== ALIASES PARA ARCHIVOS SUBIDOS ====
+        'aliases' => [
+    '@frontendUrl' => 'http://localhost/jdrh_suite_yii2_advanced_2049/frontend/web',
+    '@backendUrl'  => 'http://localhost/jdrh_suite_yii2_advanced_2049/backend/web',
+],
+
+
+
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
@@ -21,7 +31,6 @@ return [
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
         'log' => [
@@ -42,14 +51,15 @@ return [
                 'yii\bootstrap5\BootstrapPluginAsset' => false,
             ],
         ],
+
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-            ],
+            'rules' => [],
         ],
         */
     ],
+
     'params' => $params,
 ];
