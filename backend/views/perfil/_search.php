@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use frontend\models\Perfil;
+use common\models\Perfil;
 
 
 /** @var yii\web\View $this */

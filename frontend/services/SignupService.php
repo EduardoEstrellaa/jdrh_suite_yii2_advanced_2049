@@ -4,7 +4,7 @@ namespace frontend\services;
 
 use Yii;
 use common\models\User;
-use frontend\models\Perfil;
+use common\models\Perfil;
 use common\models\Alumnos;
 use yii\db\Exception;
 
