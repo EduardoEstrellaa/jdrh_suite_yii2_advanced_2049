@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\DatosPersonales;
+use common\models\DatosPersonales;
 
 /**
- * DatosPersonalesSearch represents the model behind the search form of `backend\models\DatosPersonales`.
+ * DatosPersonalesSearch represents the model behind the search form of `common\models\DatosPersonales`.
  */
 class DatosPersonalesSearch extends DatosPersonales
 {
