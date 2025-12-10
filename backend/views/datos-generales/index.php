@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\DatosGenerales;
+use common\models\DatosGenerales;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
