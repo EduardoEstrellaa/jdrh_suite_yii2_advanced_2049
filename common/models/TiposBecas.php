@@ -56,4 +56,21 @@ class TiposBecas extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AlumBecas::class, ['tipos_becas_id' => 'id']);
     }
+
+
+    /**
+     * Devuelve un mapa de tipos de becas [id => nombre].
+     *
+     * @return array<int, string> Mapa donde la clave es el ID del tipo de beca y el valor es su nombre.
+     */
+    public static function getTiposBecasMap(): array
+    {
+        $tiposBecas = self::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($tiposBecas, 'id', 'nombre');
+    }
 }
