@@ -1,4 +1,5 @@
 <?php
+// frontend/controllers/ExpedienteController.php
 
 namespace frontend\controllers;
 
@@ -50,34 +51,17 @@ class ExpedienteController extends Controller
      */
     public function actionIndex()
     {
-        $perfil = $this->getPerfil();
-        if (!$perfil) {
-            return $this->render('datos-incompletos', [
-                'titulo' => 'Información básica requerida',
-                'mensaje' => 'No se encontró un perfil asociado a tu cuenta.',
-                'boton' => 'Crear/Actualizar Perfil',
-                'urlAccion' => ['/perfil/create'],
-            ]);
+        $checkResult = $this->checkPerfilAndAlumno();
+
+        // Si checkPerfilAndAlumno retorna un Response (redirección), lo retornamos
+        if ($checkResult instanceof \yii\web\Response) {
+            return $checkResult;
         }
 
-        $alumno = $this->findAlumno($perfil->id);
-        if (!$alumno) {
-            return $this->render('datos-incompletos', [
-                'titulo' => 'Falta información académica',
-                'mensaje' => 'No se encontró información de alumno asociada a tu perfil.',
-                'boton' => 'Editar Perfil',
-                'urlAccion' => ['/perfil/update', 'id' => $perfil->id],
-            ]);
-        }
+        // Si llegamos aquí, checkResult es un array con [perfil, alumno]
+        [$perfil, $alumno] = $checkResult;
 
-        // ✅ MEJOR: Usar el servicio para verificar existencia
-        $models = ExpedienteService::getModelsForUpdate($perfil->id);
-
-        $existeExpediente = $models['datosPersonales']->isNewRecord === false
-            || $models['lugaresNacimiento']->isNewRecord === false
-            || $models['domiciliosActuales']->isNewRecord === false;
-
-        if ($existeExpediente) {
+        if (ExpedienteService::expedienteExiste($perfil->id, $alumno->id)) {
             return $this->redirect(['view']);
         }
 
@@ -89,10 +73,15 @@ class ExpedienteController extends Controller
      */
     public function actionView()
     {
-        [$perfil, $alumno] = $this->checkPerfilAndAlumno();
+        $checkResult = $this->checkPerfilAndAlumno();
 
-        // Obtener modelos del servicio
-        $models = ExpedienteService::getModelsForUpdate($perfil->id);
+        if ($checkResult instanceof \yii\web\Response) {
+            return $checkResult;
+        }
+
+        [$perfil, $alumno] = $checkResult;
+
+        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
 
         return $this->render('view', array_merge([
             'perfil' => $perfil,
@@ -105,19 +94,24 @@ class ExpedienteController extends Controller
      */
     public function actionCreate()
     {
-        [$perfil, $alumno] = $this->checkPerfilAndAlumno();
+        $checkResult = $this->checkPerfilAndAlumno();
+
+        if ($checkResult instanceof \yii\web\Response) {
+            return $checkResult;
+        }
+
+        [$perfil, $alumno] = $checkResult;
 
         $post = Yii::$app->request->post();
         if ($post) {
-            if (ExpedienteService::crearExpediente($perfil, $post)) {
+            if (ExpedienteService::crearExpediente($perfil, $alumno, $post)) {
                 Yii::$app->session->setFlash('success', 'Expediente guardado correctamente.');
                 return $this->redirect(['view']);
             }
             Yii::$app->session->setFlash('error', 'Error al guardar el expediente. Verifica los datos.');
         }
 
-        // 🔄 CAMBIO: Usar getModelsForCreate en lugar de getModelsForUpdate
-        $models = ExpedienteService::getModelsForCreate($perfil->id);
+        $models = ExpedienteService::getModelsForCreate($perfil, $alumno);
 
         return $this->render('create', array_merge([
             'perfil' => $perfil,
@@ -125,28 +119,26 @@ class ExpedienteController extends Controller
         ], $models));
     }
 
-
     /**
      * Actualiza un expediente existente.
      */
-    public function actionUpdate($perfil_id)
+    public function actionUpdate()
     {
-        $perfil = Perfil::findOne($perfil_id);
-        if (!$perfil) {
-            throw new NotFoundHttpException('El perfil no existe.');
+        $checkResult = $this->checkPerfilAndAlumno();
+
+        if ($checkResult instanceof \yii\web\Response) {
+            return $checkResult;
         }
 
-        $alumno = Alumnos::find()->where(['perfil_id' => $perfil_id])->one();
+        [$perfil, $alumno] = $checkResult;
 
-        // Obtener modelos del servicio
-        $models = ExpedienteService::getModelsForUpdate($perfil_id);
+        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
 
-        // Procesar el formulario
         if ($this->request->isPost) {
             try {
-                if (ExpedienteService::actualizarExpediente($perfil_id, $this->request->post())) {
+                if (ExpedienteService::actualizarExpediente($perfil->id, $alumno->id, $this->request->post())) {
                     Yii::$app->session->setFlash('success', 'Expediente actualizado correctamente.');
-                    return $this->redirect(['view', 'perfil_id' => $perfil_id]);
+                    return $this->redirect(['view']);
                 } else {
                     Yii::$app->session->addFlash('error', 'Error al guardar el expediente. Verifica los datos.');
                 }
@@ -164,12 +156,18 @@ class ExpedienteController extends Controller
     /**
      * Elimina un expediente y sus registros relacionados.
      */
-    public function actionDelete($perfil_id)
+    public function actionDelete()
     {
-        [$perfil] = $this->checkPerfilAndAlumno($perfil_id);
+        $checkResult = $this->checkPerfilAndAlumno();
+
+        if ($checkResult instanceof \yii\web\Response) {
+            return $checkResult;
+        }
+
+        [$perfil, $alumno] = $checkResult;
 
         try {
-            ExpedienteService::eliminarExpediente($perfil_id);
+            ExpedienteService::eliminarExpediente($perfil->id, $alumno->id);
             Yii::$app->session->setFlash('success', 'Expediente eliminado correctamente.');
         } catch (\Throwable $e) {
             Yii::error($e->getMessage(), __METHOD__);
@@ -209,18 +207,15 @@ class ExpedienteController extends Controller
     }
 
     /**
-     * Verifica que el perfil y el alumno existan y opcionalmente que coincida el perfil_id.
+     * Verifica que el perfil y el alumno existan.
+     * Retorna un array [perfil, alumno] si todo está bien, o un Response si hay que redirigir.
      */
-    private function checkPerfilAndAlumno($perfil_id = null)
+    private function checkPerfilAndAlumno()
     {
         $perfil = $this->getPerfil();
         if (!$perfil) {
             Yii::$app->session->setFlash('error', 'No se encontró un perfil asociado a tu cuenta.');
             return $this->redirect(['/perfil/create']);
-        }
-
-        if ($perfil_id && $perfil->id != $perfil_id) {
-            throw new NotFoundHttpException('No puedes acceder a este expediente.');
         }
 
         $alumno = $this->findAlumno($perfil->id);
