@@ -572,6 +572,122 @@ $this->title = 'Expediente';
         </div>
 
         <!-- ===================== -->
+        <!-- SECCIÓN 4: INFORMACIÓN DE HIJOS -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingHijos">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHijos" aria-expanded="false" aria-controls="collapseHijos">
+                    👶 IV. INFORMACIÓN DE HIJOS
+                </button>
+            </h2>
+
+            <div id="collapseHijos" class="accordion-collapse collapse" aria-labelledby="headingHijos" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body row g-3">
+
+                    <!-- Select tiene hijos -->
+                    <div class="col-md-6">
+                        <?= InputHelper::iconSelect2Field(
+                            $form,
+                            $alumInfoHijos,
+                            'tiene_hijos',
+                            'fa-baby',
+                            BooleanHelper::options(),
+                            [
+                                'placeholder' => '¿Tiene hijos?',
+                                'options' => ['id' => 'aluminfohijos-tiene_hijos']
+                            ]
+                        ) ?>
+                    </div>
+
+                    <!-- Cantidad de hijos -->
+                    <div class="col-md-6 d-none" id="campo-cantidad-hijos">
+                        <?= InputHelper::iconTextField(
+                            $form,
+                            $alumInfoHijos,
+                            'cantidad_hijos',
+                            'fa-hashtag',
+                            [
+                                'inputOptions' => [
+                                    'placeholder' => '¿Cuántos hijos tiene?',
+                                    'type' => 'number',
+                                    'min' => 1
+                                ]
+                            ]
+                        ) ?>
+                    </div>
+
+                    <div class="col-12 d-none" id="contenedor-hijos">
+                        <h5 class="mt-3">Información de cada hijo</h5>
+
+                        <div id="lista-hijos">
+                            <?php foreach ($edadesHijos as $i => $hijo): ?>
+                                <div class="row g-3 border p-2 mb-2 hijo-item">
+                                    <input type="hidden" name="EdadesHijos[<?= $i ?>][id]" value="<?= $hijo->id ?>">
+
+                                    <div class="col-md-3">
+                                        <?= InputHelper::iconFieldArray(
+                                            "EdadesHijos[$i][nombre]",
+                                            $hijo->nombre,
+                                            'fa-user',
+                                            'Nombre'
+                                        ) ?>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <?= InputHelper::iconFieldArray(
+                                            "EdadesHijos[$i][apellido_paterno]",
+                                            $hijo->apellido_paterno,
+                                            'fa-user-tag',
+                                            'Apellido paterno'
+                                        ) ?>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <?= InputHelper::iconFieldArray(
+                                            "EdadesHijos[$i][apellido_materno]",
+                                            $hijo->apellido_materno,
+                                            'fa-user-tag',
+                                            'Apellido materno'
+                                        ) ?>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <?= InputHelper::iconFieldArray(
+                                            "EdadesHijos[$i][fecha_nacimiento]",
+                                            $hijo->fecha_nacimiento,
+                                            'fa-calendar',
+                                            'Fecha de nacimiento',
+                                            ['inputOptions' => ['type' => 'date']]
+                                        ) ?>
+                                    </div>
+
+                                    <div class="col-md-1 d-flex align-items-center">
+                                        <button type="button" class="btn btn-danger btn-sm btn-eliminar-hijo">✖</button>
+                                    </div>
+                                </div>
+
+                            <?php endforeach ?>
+                        </div>
+                        
+
+                        <button type="button" class="btn btn-success btn-sm mt-2" id="btn-agregar-hijo">
+                            + Agregar hijo
+                        </button>
+                    </div>
+
+                    <?php
+                    $this->registerJsFile(
+                        '@web/js/expediente/expediente-hijos.js',
+                        ['depends' => [\yii\web\JqueryAsset::class]] // Si necesitas jQuery, sino puedes quitarlo
+                    );
+                    ?>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
         <!-- SECCIÓN 4: SITUACIÓN SOCIOECONÓMICA -->
         <!-- ===================== -->
         <div class="accordion-item">
