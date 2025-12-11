@@ -9,6 +9,8 @@ use common\models\DomiciliosActuales;
 use common\models\DatosGenerales;
 use common\models\AlumBecas;
 use common\models\AlumDatosFamiliares;
+use common\models\AlumInfoHijos;
+use common\models\EdadesHijos;
 use yii\web\NotFoundHttpException;
 
 class ExpedienteService
@@ -21,6 +23,7 @@ class ExpedienteService
         'datosGenerales' => DatosGenerales::class,
         'alumBecas' => AlumBecas::class,
         'alumDatosFamiliares' => AlumDatosFamiliares::class,
+        'alumInfoHijos' => AlumInfoHijos::class,      // NUEVO
     ];
 
     /**
@@ -32,24 +35,30 @@ class ExpedienteService
 
         foreach ($models as $model) {
             if (!$model->load($post) || !$model->validate()) {
-                Yii::error("Error en validación: " . get_class($model) . " - " . json_encode($model->errors));
                 return false;
             }
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+
             foreach ($models as $model) {
                 $model->save(false);
             }
+
+            if ($models['alumInfoHijos']->tiene_hijos == 1) {
+                HijosService::saveAll($models['alumInfoHijos']->id, $post);
+            }
+
             $transaction->commit();
             return true;
         } catch (\Throwable $e) {
             $transaction->rollBack();
-            Yii::error($e->getMessage(), __METHOD__);
+            Yii::error($e->getMessage());
             return false;
         }
     }
+
 
     /**
      * Actualiza un expediente existente de forma transaccional.
@@ -67,6 +76,15 @@ class ExpedienteService
                     return false;
                 }
             }
+
+            if ($models['alumInfoHijos']->tiene_hijos == 1) {
+                HijosService::saveAll($models['alumInfoHijos']->id, $post);
+            } else {
+                EdadesHijos::deleteAll(['alum_info_hijos_id' => $models['alumInfoHijos']->id]);
+                $models['alumInfoHijos']->cantidad_hijos = 0;
+                $models['alumInfoHijos']->save(false);
+            }
+
 
             $transaction->commit();
             return true;
@@ -93,6 +111,8 @@ class ExpedienteService
         // Modelos con alumnos_id
         $models['alumBecas'] = new AlumBecas(['alumnos_id' => $alumno->id]);
         $models['alumDatosFamiliares'] = new AlumDatosFamiliares(['alumnos_id' => $alumno->id]);
+        $models['alumInfoHijos'] = new AlumInfoHijos(['alumnos_id' => $alumno->id]);
+
 
         return $models;
     }
@@ -113,6 +133,7 @@ class ExpedienteService
         // Modelos con alumnos_id
         $models['alumBecas'] = self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]);
         $models['alumDatosFamiliares'] = self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]);
+        $models['alumInfoHijos'] = self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]);
 
         return $models;
     }
