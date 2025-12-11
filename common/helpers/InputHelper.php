@@ -163,4 +163,28 @@ class InputHelper
             'pluginOptions' => $finalPluginOptions,
         ]);
     }
+
+
+    /**
+     * Campo de texto con ícono para inputs DINÁMICOS (arrays), sin ActiveForm.
+     */
+    public static function iconFieldArray($name, $value, $icon, $placeholder = '', $options = [])
+    {
+        $inputOptions = $options['inputOptions'] ?? [];
+        $inputOptions = array_merge([
+            'class' => 'form-control',
+            'placeholder' => $placeholder,
+            'name' => $name,
+        ], $inputOptions);
+
+        return '
+        <div class="form-field mb-3">
+            <label class="form-label fw-semibold">' . Html::encode($placeholder) . '</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas ' . $icon . '"></i></span>
+                ' . Html::textInput($name, $value, $inputOptions) . '
+            </div>
+        </div>
+    ';
+    }
 }
