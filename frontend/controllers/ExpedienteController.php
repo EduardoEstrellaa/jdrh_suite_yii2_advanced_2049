@@ -15,7 +15,8 @@ use common\models\{
     LugaresNacimiento,
     DomiciliosActuales,
     Municipios,
-    Alumnos
+    Alumnos,
+    EdadesHijos
 };
 use common\services\ExpedienteService;
 
@@ -126,13 +127,16 @@ class ExpedienteController extends Controller
     {
         $checkResult = $this->checkPerfilAndAlumno();
 
-        if ($checkResult instanceof \yii\web\Response) {
+        if ($checkResult instanceof Response) {
             return $checkResult;
         }
 
         [$perfil, $alumno] = $checkResult;
 
         $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
+        $edadesHijos = EdadesHijos::findAll([
+            'alum_info_hijos_id' => $models['alumInfoHijos']->id
+        ]);
 
         if ($this->request->isPost) {
             try {
@@ -150,6 +154,7 @@ class ExpedienteController extends Controller
         return $this->render('update', array_merge([
             'perfil' => $perfil,
             'alumno' => $alumno,
+            'edadesHijos' => $edadesHijos,
         ], $models));
     }
 
