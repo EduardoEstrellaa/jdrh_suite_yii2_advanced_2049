@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoDependenciasEconomicas;
 
 /**
- * CatalogoDependenciasEconomicasSearch represents the model behind the search form of `backend\models\CatalogoDependenciasEconomicas`.
+ * CatalogoDependenciasEconomicasSearch represents the model behind the search form of `common\models\CatalogoDependenciasEconomicas`.
  */
 class CatalogoDependenciasEconomicasSearch extends CatalogoDependenciasEconomicas
 {
