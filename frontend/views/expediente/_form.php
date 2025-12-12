@@ -572,7 +572,7 @@ $this->title = 'Expediente';
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 4: INFORMACIÓN DE HIJOS -->
+        <!-- SECCIÓN 5: INFORMACIÓN DE HIJOS -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHijos">
