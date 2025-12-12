@@ -39,15 +39,25 @@ class ExpedienteService
             }
         }
 
+        // arriba del try en crearExpediente, justo después de validar modelos:
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             foreach ($models as $model) {
                 $model->save(false);
             }
 
-            if ($models['alumInfoHijos']->tiene_hijos == 1) {
+            $dataHijos = $post['EdadesHijos'] ?? [];
+            if ((int)$models['alumInfoHijos']->tiene_hijos === 1) {
+                if (count($dataHijos) < 1) {
+                    throw new \Exception('Captura al menos un hijo.');
+                }
+                $models['alumInfoHijos']->cantidad_hijos = count($dataHijos);
+                $models['alumInfoHijos']->save(false);
                 HijosService::saveAll($models['alumInfoHijos']->id, $post);
+            } else {
+                $models['alumInfoHijos']->cantidad_hijos = 0;
+                $models['alumInfoHijos']->save(false);
+                EdadesHijos::deleteAll(['alum_info_hijos_id' => $models['alumInfoHijos']->id]);
             }
 
             $transaction->commit();
@@ -77,13 +87,20 @@ class ExpedienteService
                 }
             }
 
-            if ($models['alumInfoHijos']->tiene_hijos == 1) {
+            $dataHijos = $post['EdadesHijos'] ?? [];
+            if ((int)$models['alumInfoHijos']->tiene_hijos === 1) {
+                if (count($dataHijos) < 1) {
+                    throw new \Exception('Captura al menos un hijo.');
+                }
+                $models['alumInfoHijos']->cantidad_hijos = count($dataHijos);
+                $models['alumInfoHijos']->save(false);
                 HijosService::saveAll($models['alumInfoHijos']->id, $post);
             } else {
-                EdadesHijos::deleteAll(['alum_info_hijos_id' => $models['alumInfoHijos']->id]);
                 $models['alumInfoHijos']->cantidad_hijos = 0;
                 $models['alumInfoHijos']->save(false);
+                EdadesHijos::deleteAll(['alum_info_hijos_id' => $models['alumInfoHijos']->id]);
             }
+
 
 
             $transaction->commit();

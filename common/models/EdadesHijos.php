@@ -33,6 +33,7 @@ class EdadesHijos extends \yii\db\ActiveRecord
     {
         return [
             [['alum_info_hijos_id', 'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento'], 'required'],
+            [['nombre', 'apellido_paterno', 'apellido_materno'], 'filter', 'filter' => 'trim'],
             [['alum_info_hijos_id'], 'integer'],
             [['fecha_nacimiento'], 'safe'],
             [['nombre', 'apellido_paterno', 'apellido_materno'], 'string', 'max' => 150],
