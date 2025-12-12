@@ -610,7 +610,8 @@ $this->title = 'Expediente';
                                 'inputOptions' => [
                                     'placeholder' => '¿Cuántos hijos tiene?',
                                     'type' => 'number',
-                                    'min' => 1
+                                    'min' => 1,
+                                    'max' => 10
                                 ]
                             ]
                         ) ?>
@@ -618,62 +619,38 @@ $this->title = 'Expediente';
 
                     <div class="col-12 d-none" id="contenedor-hijos">
                         <h5 class="mt-3">Información de cada hijo</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-2">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido paterno</th>
+                                        <th>Apellido materno</th>
+                                        <th>Fecha de nacimiento</th>
+                                        <th class="text-center" style="width:80px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-hijos">
+                                    <?php foreach ($edadesHijos as $i => $hijo): ?>
+                                        <tr class="hijo-item align-middle">
+                                            <input type="hidden" name="EdadesHijos[<?= $i ?>][id]" value="<?= $hijo->id ?>">
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][nombre]", $hijo->nombre, 'fa-user', '') ?></td>
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][apellido_paterno]", $hijo->apellido_paterno, 'fa-user-tag', '') ?></td>
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][apellido_materno]", $hijo->apellido_materno, 'fa-user-tag', '') ?></td>
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][fecha_nacimiento]", $hijo->fecha_nacimiento, 'fa-calendar', '', ['inputOptions' => ['type' => 'date', 'placeholder' => '']]) ?></td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm btn-eliminar-hijo">✖</button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach ?>
+                                </tbody>
 
-                        <div id="lista-hijos">
-                            <?php foreach ($edadesHijos as $i => $hijo): ?>
-                                <div class="row g-3 border p-2 mb-2 hijo-item">
-                                    <input type="hidden" name="EdadesHijos[<?= $i ?>][id]" value="<?= $hijo->id ?>">
-
-                                    <div class="col-md-3">
-                                        <?= InputHelper::iconFieldArray(
-                                            "EdadesHijos[$i][nombre]",
-                                            $hijo->nombre,
-                                            'fa-user',
-                                            'Nombre'
-                                        ) ?>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <?= InputHelper::iconFieldArray(
-                                            "EdadesHijos[$i][apellido_paterno]",
-                                            $hijo->apellido_paterno,
-                                            'fa-user-tag',
-                                            'Apellido paterno'
-                                        ) ?>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <?= InputHelper::iconFieldArray(
-                                            "EdadesHijos[$i][apellido_materno]",
-                                            $hijo->apellido_materno,
-                                            'fa-user-tag',
-                                            'Apellido materno'
-                                        ) ?>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <?= InputHelper::iconFieldArray(
-                                            "EdadesHijos[$i][fecha_nacimiento]",
-                                            $hijo->fecha_nacimiento,
-                                            'fa-calendar',
-                                            'Fecha de nacimiento',
-                                            ['inputOptions' => ['type' => 'date']]
-                                        ) ?>
-                                    </div>
-
-                                    <div class="col-md-1 d-flex align-items-center">
-                                        <button type="button" class="btn btn-danger btn-sm btn-eliminar-hijo">✖</button>
-                                    </div>
-                                </div>
-
-                            <?php endforeach ?>
+                            </table>
                         </div>
-                        
 
-                        <button type="button" class="btn btn-success btn-sm mt-2" id="btn-agregar-hijo">
-                            + Agregar hijo
-                        </button>
+                        <button type="button" class="btn btn-success btn-sm" id="btn-agregar-hijo">+ Agregar hijo</button>
                     </div>
+
 
                     <?php
                     $this->registerJsFile(
