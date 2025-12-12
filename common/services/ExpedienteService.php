@@ -39,6 +39,10 @@ class ExpedienteService
             }
         }
 
+        if (isset($models['alumBecas'])) {
+            self::normalizeBecaFields($models['alumBecas']);
+        }
+
         // arriba del try en crearExpediente, justo después de validar modelos:
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -46,19 +50,7 @@ class ExpedienteService
                 $model->save(false);
             }
 
-            $dataHijos = $post['EdadesHijos'] ?? [];
-            if ((int)$models['alumInfoHijos']->tiene_hijos === 1) {
-                if (count($dataHijos) < 1) {
-                    throw new \Exception('Captura al menos un hijo.');
-                }
-                $models['alumInfoHijos']->cantidad_hijos = count($dataHijos);
-                $models['alumInfoHijos']->save(false);
-                HijosService::saveAll($models['alumInfoHijos']->id, $post);
-            } else {
-                $models['alumInfoHijos']->cantidad_hijos = 0;
-                $models['alumInfoHijos']->save(false);
-                EdadesHijos::deleteAll(['alum_info_hijos_id' => $models['alumInfoHijos']->id]);
-            }
+            self::processHijos($models['alumInfoHijos'], $post);
 
             $transaction->commit();
             return true;
@@ -80,26 +72,20 @@ class ExpedienteService
         $transaction = Yii::$app->db->beginTransaction();
         try {
             foreach ($models as $model) {
-                if ($model->load($post) && !$model->save()) {
-                    Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
-                    $transaction->rollBack();
-                    return false;
+                if ($model->load($post)) {
+                    if ($model instanceof AlumBecas) {
+                        self::normalizeBecaFields($model);
+                    }
+
+                    if (!$model->save()) {
+                        Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
+                        $transaction->rollBack();
+                        return false;
+                    }
                 }
             }
 
-            $dataHijos = $post['EdadesHijos'] ?? [];
-            if ((int)$models['alumInfoHijos']->tiene_hijos === 1) {
-                if (count($dataHijos) < 1) {
-                    throw new \Exception('Captura al menos un hijo.');
-                }
-                $models['alumInfoHijos']->cantidad_hijos = count($dataHijos);
-                $models['alumInfoHijos']->save(false);
-                HijosService::saveAll($models['alumInfoHijos']->id, $post);
-            } else {
-                $models['alumInfoHijos']->cantidad_hijos = 0;
-                $models['alumInfoHijos']->save(false);
-                EdadesHijos::deleteAll(['alum_info_hijos_id' => $models['alumInfoHijos']->id]);
-            }
+            self::processHijos($models['alumInfoHijos'], $post);
 
 
 
@@ -176,6 +162,44 @@ class ExpedienteService
             }
         }
         return $model;
+    }
+
+    /**
+     * Normaliza los campos de beca cuando no corresponden.
+     */
+    private static function normalizeBecaFields(AlumBecas $alumBecas): void
+    {
+        if ((int)$alumBecas->tiene_beca !== 1) {
+            $alumBecas->tipos_becas_id = null;
+            $alumBecas->otro_especificar = null;
+            return;
+        }
+
+        if ((int)$alumBecas->tipos_becas_id !== 1) {
+            $alumBecas->otro_especificar = null;
+        }
+    }
+
+    /**
+     * Procesa la informaciГn de hijos: valida y persiste o elimina registros.
+     */
+    private static function processHijos(AlumInfoHijos $alumInfoHijos, array $post): void
+    {
+        $dataHijos = $post['EdadesHijos'] ?? [];
+
+        if ((int)$alumInfoHijos->tiene_hijos === 1) {
+            if (count($dataHijos) < 1) {
+                throw new \Exception('Captura al menos un hijo.');
+            }
+            $alumInfoHijos->cantidad_hijos = count($dataHijos);
+            $alumInfoHijos->save(false);
+            HijosService::saveAll($alumInfoHijos->id, $post);
+            return;
+        }
+
+        $alumInfoHijos->cantidad_hijos = 0;
+        $alumInfoHijos->save(false);
+        EdadesHijos::deleteAll(['alum_info_hijos_id' => $alumInfoHijos->id]);
     }
 
     /**
