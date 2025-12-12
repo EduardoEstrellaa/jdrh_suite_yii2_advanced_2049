@@ -15,6 +15,9 @@
         } else {
             $('#tipo-beca-container').hide();
             $('#otro-especificar-container').hide();
+            // Limpia selección y texto para evitar valores residuales en UI
+            $('#alumbecas-tipos_becas_id').val(null).trigger('change');
+            $('#alumbecas-otro_especificar').val('');
         }
     }
 
@@ -28,6 +31,7 @@
             $('#otro-especificar-container').show();
         } else {
             $('#otro-especificar-container').hide();
+            $('#alumbecas-otro_especificar').val('');
         }
     }
 
