@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "catalogo_bienes_personales".
@@ -33,6 +34,20 @@ class CatalogoBienesPersonales extends \yii\db\ActiveRecord
             [['nombre'], 'string', 'max' => 150],
             [['descripcion'], 'string', 'max' => 250],
         ];
+    }
+
+    /**
+     * Opciones para dropdown o checkboxes (id => nombre).
+     */
+    public static function dropdownOptions(): array
+    {
+        $records = static::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($records, 'id', 'nombre');
     }
 
     /**

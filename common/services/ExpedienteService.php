@@ -21,9 +21,11 @@ use common\models\AlumVivienda;
 use common\models\CatalogoBienesVivienda;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
+use common\models\AlumBienesPersonales;
 use common\services\support\DependientesManager;
 use common\services\support\HijosManager;
 use common\services\support\ViviendaBienesManager;
+use common\services\support\AlumBienesPersonalesManager;
 
 class ExpedienteService
 {
@@ -43,6 +45,7 @@ class ExpedienteService
             HijosManager::sync($models['alumInfoHijos'], $post);
             DependientesManager::sync($models['alumDependenEconomica'], $post);
             ViviendaBienesManager::sync($models['alumVivienda'], $post);
+            AlumBienesPersonalesManager::sync($alumno->id, $post);
             $transaction->commit();
             return true;
         } catch (DomainException $e) {
@@ -71,6 +74,7 @@ class ExpedienteService
             HijosManager::sync($models['alumInfoHijos'], $post);
             DependientesManager::sync($models['alumDependenEconomica'], $post);
             ViviendaBienesManager::sync($models['alumVivienda'], $post);
+            AlumBienesPersonalesManager::sync($alumnoId, $post);
             $transaction->commit();
             return true;
         } catch (DomainException $e) {
@@ -292,6 +296,7 @@ class ExpedienteService
             AlumDatosFamiliares::deleteAll(['alumnos_id' => $alumnoId]);
             AlumDependeEconomicamente::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTrabajo::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumBienesPersonales::deleteAll(['alumnos_id' => $alumnoId]);
             $alumDependen = AlumDependenEconomica::findOne(['alumnos_id' => $alumnoId]);
             if ($alumDependen) {
                 Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);

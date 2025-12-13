@@ -6,7 +6,9 @@ use DomainException;
 use Yii;
 use common\models\AlumDependenEconomica;
 use common\models\AlumInfoHijos;
+use common\models\AlumBienesPersonales;
 use common\models\AlumVivienda;
+use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\Dependientes;
@@ -40,6 +42,8 @@ class ExpedienteFacade
             'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
             'bienesSeleccionados' => [],
             'bienesOtro' => null,
+            'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
+            'bienesPersonalesSeleccionados' => [],
         ]);
     }
 
@@ -52,8 +56,9 @@ class ExpedienteFacade
         $dependientesData = $this->buildDependientesData($models['alumDependenEconomica']);
         $edadesHijos = $this->getEdadesHijos($models['alumInfoHijos']);
         $bienesData = $this->buildViviendaBienesData($models['alumVivienda']);
+        $bienesPersonalesData = $this->buildBienesPersonalesData($alumnoId);
 
-        return array_merge($models, $dependientesData, $bienesData, [
+        return array_merge($models, $dependientesData, $bienesData, $bienesPersonalesData, [
             'edadesHijos' => $edadesHijos,
             'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
             'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
@@ -61,6 +66,7 @@ class ExpedienteFacade
             'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
             'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
             'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
+            'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
         ]);
     }
 
@@ -104,7 +110,7 @@ class ExpedienteFacade
     /**
      * Construye informaciÇün de dependientes seleccionados y texto de "Otro".
      */
-    private function buildDependientesData(AlumDependenEconomica $alumDependenEconomica = null)
+    private function buildDependientesData(?AlumDependenEconomica $alumDependenEconomica = null)
     {
         if ($alumDependenEconomica === null || $alumDependenEconomica->isNewRecord) {
             return [
@@ -140,7 +146,7 @@ class ExpedienteFacade
     /**
      * Obtiene edades de hijos asociadas.
      */
-    private function getEdadesHijos(AlumInfoHijos $alumInfoHijos = null)
+    private function getEdadesHijos(?AlumInfoHijos $alumInfoHijos = null)
     {
         if ($alumInfoHijos === null || $alumInfoHijos->isNewRecord) {
             return [];
@@ -154,7 +160,7 @@ class ExpedienteFacade
     /**
      * Construye informaciГіn de bienes seleccionados y texto para "Otro".
      */
-    private function buildViviendaBienesData(AlumVivienda $alumVivienda = null): array
+    private function buildViviendaBienesData(?AlumVivienda $alumVivienda = null): array
     {
         if ($alumVivienda === null || $alumVivienda->isNewRecord) {
             return [
@@ -183,6 +189,23 @@ class ExpedienteFacade
         return [
             'bienesSeleccionados' => $seleccionados,
             'bienesOtro' => $bienesOtro,
+        ];
+    }
+
+    /**
+     * Construye informaciÃ³n de bienes personales seleccionados.
+     */
+    private function buildBienesPersonalesData(int $alumnoId): array
+    {
+        $seleccionados = AlumBienesPersonales::find()
+            ->select('catalogo_bienes_personales_id')
+            ->where(['alumnos_id' => $alumnoId])
+            ->column();
+
+        $seleccionados = array_map('intval', $seleccionados);
+
+        return [
+            'bienesPersonalesSeleccionados' => $seleccionados,
         ];
     }
 }

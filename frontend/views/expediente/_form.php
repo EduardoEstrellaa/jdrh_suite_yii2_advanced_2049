@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -40,6 +40,8 @@ $catalogoBienesOptions = $catalogoBienesOptions ?? [];
 $catalogoBienOtroId = $catalogoBienOtroId ?? null;
 $bienesSeleccionados = $bienesSeleccionados ?? [];
 $bienesOtro = $bienesOtro ?? null;
+$catalogoBienesPersonalesOptions = $catalogoBienesPersonalesOptions ?? [];
+$bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
 ?>
 
 <div class="expediente-form">
@@ -849,6 +851,7 @@ $bienesOtro = $bienesOtro ?? null;
                             ) ?>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -968,10 +971,38 @@ $bienesOtro = $bienesOtro ?? null;
                 </div>
             </div>
         </div>
-
-
-
         <!-- ===================== -->
+        <!-- SECCIÓN 8: BIENES PERSONALES -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBienesPersonales">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBienesPersonales" aria-expanded="false" aria-controls="collapseBienesPersonales">
+                    <i class="fas fa-user-check me-2 text-primary"></i> VIII. BIENES PERSONALES
+                </button>
+            </h2>
+            <div id="collapseBienesPersonales" class="accordion-collapse collapse" aria-labelledby="headingBienesPersonales" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <div class="row g-2">
+                        <?php foreach ($catalogoBienesPersonalesOptions as $id => $nombre): ?>
+                            <?php $checked = in_array((int)$id, $bienesPersonalesSeleccionados, true); ?>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-check">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input bienes-personales-checkbox"
+                                        name="BienesPersonales[ids][]"
+                                        value="<?= (int)$id ?>"
+                                        id="bien-personal-<?= (int)$id ?>"
+                                        <?= $checked ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="bien-personal-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- ===================== -->
         <!-- SECCIÓN 5: TRANSPORTE Y ACCESO -->
         <!-- ===================== -->
         <div class="accordion-item">
@@ -1111,3 +1142,8 @@ $this->registerJsFile(
 );
 
 ?>
+
+
+
+
+
