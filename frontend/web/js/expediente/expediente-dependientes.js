@@ -39,11 +39,13 @@
         $section.toggleClass('d-none', !show);
 
         if (!show) {
-            if (!init && toggleDependientes.lastValue === 1) {
-                $checkboxes.prop('checked', false).prop('required', false);
-                $otroContainer.addClass('d-none');
-                $otroInput.val('').prop('required', false).removeAttr('pattern');
-            }
+            $checkboxes.prop('checked', false).prop('required', false);
+            $otroContainer.addClass('d-none');
+            $otroInput
+                .val('')
+                .prop('required', false)
+                .removeAttr('pattern')
+                .get(0)?.setCustomValidity('');
             toggleDependientes.lastValue = 0;
             return;
         }

@@ -733,7 +733,7 @@ $dependientesOtro = $dependientesOtro ?? null;
                                     'placeholder' => '¿Tiene dependientes?',
                                     'id' => 'alumdependeneconomica-tiene_dependientes',
                                 ],
-                                ['allowClear' => false]
+                                ['allowClear' => true]
                             ) ?>
                         </div>
                     </div>
@@ -775,7 +775,7 @@ $dependientesOtro = $dependientesOtro ?? null;
                                     'placeholder' => '¿Tiene trabajo?',
                                     'id' => 'alumtrabajo-tiene_trabajo',
                                 ],
-                                ['allowClear' => false]
+                                ['allowClear' => true]
                             ) ?>
                         </div>
                     </div>
