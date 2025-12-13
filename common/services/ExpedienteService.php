@@ -17,8 +17,13 @@ use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumTrabajo;
+use common\models\AlumVivienda;
+use common\models\CatalogoBienesVivienda;
+use common\models\TiposViviendas;
+use common\models\ViviendaBienes;
 use common\services\support\DependientesManager;
 use common\services\support\HijosManager;
+use common\services\support\ViviendaBienesManager;
 
 class ExpedienteService
 {
@@ -37,6 +42,7 @@ class ExpedienteService
             self::saveModels($models);
             HijosManager::sync($models['alumInfoHijos'], $post);
             DependientesManager::sync($models['alumDependenEconomica'], $post);
+            ViviendaBienesManager::sync($models['alumVivienda'], $post);
             $transaction->commit();
             return true;
         } catch (DomainException $e) {
@@ -64,6 +70,7 @@ class ExpedienteService
             self::saveModels($models);
             HijosManager::sync($models['alumInfoHijos'], $post);
             DependientesManager::sync($models['alumDependenEconomica'], $post);
+            ViviendaBienesManager::sync($models['alumVivienda'], $post);
             $transaction->commit();
             return true;
         } catch (DomainException $e) {
@@ -97,6 +104,7 @@ class ExpedienteService
         $models['alumDependeEconomicamente'] = new AlumDependeEconomicamente(['alumnos_id' => $alumno->id]);
         $models['alumDependenEconomica'] = new AlumDependenEconomica(['alumnos_id' => $alumno->id]);
         $models['alumTrabajo'] = new AlumTrabajo(['alumnos_id' => $alumno->id]);
+        $models['alumVivienda'] = new AlumVivienda(['alumnos_id' => $alumno->id]);
 
         return $models;
     }
@@ -121,6 +129,7 @@ class ExpedienteService
         $models['alumDependeEconomicamente'] = self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]);
         $models['alumDependenEconomica'] = self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]);
         $models['alumTrabajo'] = self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]);
+        $models['alumVivienda'] = self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]);
 
         return $models;
     }
@@ -259,6 +268,10 @@ class ExpedienteService
         if ($model instanceof AlumTrabajo) {
             self::normalizeTrabajoFields($model);
         }
+
+        if ($model instanceof AlumVivienda) {
+            self::normalizeViviendaFields($model);
+        }
     }
 
     /**
@@ -284,6 +297,11 @@ class ExpedienteService
                 Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);
                 $alumDependen->delete();
             }
+            $alumVivienda = AlumVivienda::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumVivienda) {
+                ViviendaBienes::deleteAll(['alum_vivienda_id' => $alumVivienda->id]);
+                $alumVivienda->delete();
+            }
 
             $transaction->commit();
             return true;
@@ -305,11 +323,29 @@ class ExpedienteService
             if ($model instanceof AlumTrabajo) {
                 continue;
             }
+            if ($model instanceof AlumVivienda) {
+                continue;
+            }
             if ($model->isNewRecord) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Limpia campos de vivienda cuando no corresponden.
+     */
+    private static function normalizeViviendaFields(AlumVivienda $alumVivienda): void
+    {
+        if ((int)$alumVivienda->vives_casa_padres === 1) {
+            $alumVivienda->otro_especificar = null;
+        }
+
+        $otroId = TiposViviendas::getOtroId();
+        if ($otroId === null || (int)$alumVivienda->tipos_viviendas_id !== $otroId) {
+            $alumVivienda->otro_tipo_especificar = null;
+        }
     }
 }

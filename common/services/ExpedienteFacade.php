@@ -6,9 +6,13 @@ use DomainException;
 use Yii;
 use common\models\AlumDependenEconomica;
 use common\models\AlumInfoHijos;
+use common\models\AlumVivienda;
+use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
+use common\models\TiposViviendas;
+use common\models\ViviendaBienes;
 use common\services\support\OperationResult;
 
 /**
@@ -24,10 +28,18 @@ class ExpedienteFacade
         $models = ExpedienteService::getModelsForCreate($perfil, $alumno);
 
         return array_merge($models, [
+            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
+            'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
             'dependientes' => [],
             'dependientesSeleccionados' => [],
             'dependientesOtro' => null,
             'edadesHijos' => [],
+            'tiposViviendasMap' => TiposViviendas::dropdownOptions(),
+            'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
+            'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
+            'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
+            'bienesSeleccionados' => [],
+            'bienesOtro' => null,
         ]);
     }
 
@@ -39,9 +51,16 @@ class ExpedienteFacade
         $models = ExpedienteService::getModelsForUpdate($perfilId, $alumnoId);
         $dependientesData = $this->buildDependientesData($models['alumDependenEconomica']);
         $edadesHijos = $this->getEdadesHijos($models['alumInfoHijos']);
+        $bienesData = $this->buildViviendaBienesData($models['alumVivienda']);
 
-        return array_merge($models, $dependientesData, [
+        return array_merge($models, $dependientesData, $bienesData, [
             'edadesHijos' => $edadesHijos,
+            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
+            'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
+            'tiposViviendasMap' => TiposViviendas::dropdownOptions(),
+            'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
+            'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
+            'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
         ]);
     }
 
@@ -130,5 +149,40 @@ class ExpedienteFacade
         return EdadesHijos::findAll([
             'alum_info_hijos_id' => $alumInfoHijos->id,
         ]);
+    }
+
+    /**
+     * Construye informaciГіn de bienes seleccionados y texto para "Otro".
+     */
+    private function buildViviendaBienesData(AlumVivienda $alumVivienda = null): array
+    {
+        if ($alumVivienda === null || $alumVivienda->isNewRecord) {
+            return [
+                'bienesSeleccionados' => [],
+                'bienesOtro' => null,
+            ];
+        }
+
+        $bienes = ViviendaBienes::findAll([
+            'alum_vivienda_id' => $alumVivienda->id,
+        ]);
+
+        $seleccionados = [];
+        $bienesOtro = null;
+        $otroId = CatalogoBienesVivienda::getOtroId();
+
+        foreach ($bienes as $bien) {
+            $bienId = (int)$bien->catalogo_bienes_vivienda_id;
+            $seleccionados[] = $bienId;
+
+            if ($otroId !== null && $bienId === $otroId) {
+                $bienesOtro = $bien->otro_especificar;
+            }
+        }
+
+        return [
+            'bienesSeleccionados' => $seleccionados,
+            'bienesOtro' => $bienesOtro,
+        ];
     }
 }

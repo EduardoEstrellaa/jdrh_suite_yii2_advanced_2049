@@ -14,6 +14,9 @@ use common\models\AlumDependeEconomicamente;
 use common\models\AlumDependenEconomica;
 use common\models\Dependientes;
 use common\models\AlumTrabajo;
+use common\models\AlumVivienda;
+use common\models\CatalogoBienesVivienda;
+use common\models\TiposViviendas;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
 use yii\web\View;
@@ -22,15 +25,21 @@ ExpedienteAsset::register($this);
 
 $this->title = 'Expediente';
 
-$catalogoDependenciasOptions = CatalogoDependenciasEconomicas::dropdownOptions();
 $alumDependeEconomicamente = $alumDependeEconomicamente ?? new AlumDependeEconomicamente();
 $alumDependenEconomica = $alumDependenEconomica ?? new AlumDependenEconomica();
-$dependientes = $dependientes ?? [];
-$edadesHijos = $edadesHijos ?? [];
 $alumTrabajo = $alumTrabajo ?? new AlumTrabajo();
-$otroCatalogoDependenciaId = CatalogoDependenciasEconomicas::getOtroId();
+$alumVivienda = $alumVivienda ?? new AlumVivienda(['alumnos_id' => $alumno->id ?? null]);
+$catalogoDependenciasOptions = $catalogoDependenciasOptions ?? [];
+$otroCatalogoDependenciaId = $otroCatalogoDependenciaId ?? null;
+$dependientes = $dependientes ?? [];
 $dependientesSeleccionados = $dependientesSeleccionados ?? [];
 $dependientesOtro = $dependientesOtro ?? null;
+$tiposViviendasMap = $tiposViviendasMap ?? [];
+$tipoViviendaOtroId = $tipoViviendaOtroId ?? null;
+$catalogoBienesOptions = $catalogoBienesOptions ?? [];
+$catalogoBienOtroId = $catalogoBienOtroId ?? null;
+$bienesSeleccionados = $bienesSeleccionados ?? [];
+$bienesOtro = $bienesOtro ?? null;
 ?>
 
 <div class="expediente-form">
@@ -409,7 +418,6 @@ $dependientesOtro = $dependientesOtro ?? null;
                             ]) ?>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -593,7 +601,7 @@ $dependientesOtro = $dependientesOtro ?? null;
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHijos">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHijos" aria-expanded="false" aria-controls="collapseHijos">
-                    👶 IV. INFORMACIÓN DE HIJOS
+                    👶 V. INFORMACIÓN DE HIJOS
                 </button>
             </h2>
 
@@ -681,12 +689,12 @@ $dependientesOtro = $dependientesOtro ?? null;
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 4: SITUACIÓN SOCIOECONÓMICA -->
+        <!-- SECCIÓN 6: SITUACIÓN SOCIOECONÓMICA -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingSituacionSocioeconomica">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSituacionSocioeconomica" aria-expanded="false" aria-controls="collapseSituacionSocioeconomica">
-                    💰 IV. SITUACIÓN SOCIOECONÓMICA
+                    💰 VI. SITUACIÓN SOCIOECONÓMICA
                 </button>
             </h2>
             <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
@@ -848,6 +856,122 @@ $dependientesOtro = $dependientesOtro ?? null;
 
 
         <!-- ===================== -->
+        <!-- SECCIÓN 7: BIENES Y SERVICIOS DE LA VIVIENDA -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBienesServiciosVivienda">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBienesServiciosVivienda" aria-expanded="false" aria-controls="collapseBienesServiciosVivienda">
+                    <i class="fas fa-house-user me-2 text-success"></i> VII. BIENES Y SERVICIOS DE LA VIVIENDA
+                </button>
+            </h2>
+            <div id="collapseBienesServiciosVivienda" class="accordion-collapse collapse" aria-labelledby="headingBienesServiciosVivienda" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <h4 class="mb-3">
+                        <i class="fas fa-house-user text-success"></i>
+                        <span class="text-secondary">Vivienda</span>
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumVivienda,
+                                'vives_casa_padres',
+                                'fa-people-roof',
+                                BooleanHelper::options(),
+                                [
+                                    'options' => [
+                                        'placeholder' => 'Vives con tus padres?',
+                                        'id' => 'alumvivienda-vives_casa_padres',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= ((int)($alumVivienda->vives_casa_padres ?? 1) === 0) ? '' : 'd-none' ?>" id="vivienda-otro-vives-container">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumVivienda,
+                                'otro_especificar',
+                                'fa-user-friends',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica con quien vives...',
+                                        'id' => 'alumvivienda-otro_especificar',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumVivienda,
+                                'tipos_viviendas_id',
+                                'fa-building',
+                                $tiposViviendasMap,
+                                [
+                                    'options' => [
+                                        'placeholder' => 'Selecciona el tipo de vivienda...',
+                                        'id' => 'alumvivienda-tipos_viviendas_id',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= ($tipoViviendaOtroId !== null && (int)($alumVivienda->tipos_viviendas_id ?? 0) === $tipoViviendaOtroId) ? '' : 'd-none' ?>" id="vivienda-otro-tipo-container">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumVivienda,
+                                'otro_tipo_especificar',
+                                'fa-edit',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica otro tipo de vivienda...',
+                                        'id' => 'alumvivienda-otro_tipo_especificar',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $mostrarOtroBien = $catalogoBienOtroId !== null && in_array((int)$catalogoBienOtroId, $bienesSeleccionados, true);
+                    ?>
+                    <div class="mt-4">
+                        <h5 class="mb-2">
+                            <i class="fas fa-couch text-info"></i>
+                            <span class="text-secondary">Bienes con los que cuenta tu vivienda</span>
+                        </h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoBienesOptions as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $bienesSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input vivienda-bien-checkbox"
+                                            name="ViviendaBienes[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="vivienda-bien-<?= (int)$id ?>"
+                                            data-otro-id="<?= (int)$catalogoBienOtroId ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="vivienda-bien-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2 <?= $mostrarOtroBien ? '' : 'd-none' ?>" id="vivienda-bienes-otro-container">
+                            <input type="text" name="ViviendaBienes[otro_especificar]" id="vivienda-bienes-otro" class="form-control" placeholder="Especifica otro bien..." value="<?= Html::encode($bienesOtro ?? '') ?>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- ===================== -->
         <!-- SECCIÓN 5: TRANSPORTE Y ACCESO -->
         <!-- ===================== -->
         <div class="accordion-item">
@@ -967,6 +1091,8 @@ JS;
 $this->registerJs($script, View::POS_BEGIN);
 
 $this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
+$this->registerJsVar('TIPO_VIVIENDA_OTRO_ID', $tipoViviendaOtroId);
+$this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
@@ -977,6 +1103,10 @@ $this->registerJsFile(
 );
 $this->registerJsFile(
     '@web/js/expediente/expediente-trabajo.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-vivienda.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 

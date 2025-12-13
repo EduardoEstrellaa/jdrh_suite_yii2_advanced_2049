@@ -31,6 +31,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'dependientesOtro' => $dependientesOtro ?? null,
         'edadesHijos' => $edadesHijos,
         'alumTrabajo' => $alumTrabajo,
+        'alumVivienda' => $alumVivienda,
+        'catalogoDependenciasOptions' => $catalogoDependenciasOptions,
+        'otroCatalogoDependenciaId' => $otroCatalogoDependenciaId,
+        'tiposViviendasMap' => $tiposViviendasMap,
+        'tipoViviendaOtroId' => $tipoViviendaOtroId,
+        'catalogoBienesOptions' => $catalogoBienesOptions,
+        'catalogoBienOtroId' => $catalogoBienOtroId,
+        'bienesSeleccionados' => $bienesSeleccionados ?? [],
+        'bienesOtro' => $bienesOtro ?? null,
     ]) ?>
 
 </div>
