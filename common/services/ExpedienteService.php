@@ -11,6 +11,8 @@ use common\models\AlumBecas;
 use common\models\AlumDatosFamiliares;
 use common\models\AlumInfoHijos;
 use common\models\EdadesHijos;
+use common\models\AlumDependeEconomicamente;
+use common\models\CatalogoDependenciasEconomicas;
 use yii\web\NotFoundHttpException;
 
 class ExpedienteService
@@ -24,6 +26,7 @@ class ExpedienteService
         'alumBecas' => AlumBecas::class,
         'alumDatosFamiliares' => AlumDatosFamiliares::class,
         'alumInfoHijos' => AlumInfoHijos::class,      // NUEVO
+        'alumDependeEconomicamente' => AlumDependeEconomicamente::class,
     ];
 
     /**
@@ -39,9 +42,7 @@ class ExpedienteService
             }
         }
 
-        if (isset($models['alumBecas'])) {
-            self::normalizeBecaFields($models['alumBecas']);
-        }
+        self::normalizeModels($models);
 
         // arriba del try en crearExpediente, justo después de validar modelos:
         $transaction = Yii::$app->db->beginTransaction();
@@ -73,9 +74,7 @@ class ExpedienteService
         try {
             foreach ($models as $model) {
                 if ($model->load($post)) {
-                    if ($model instanceof AlumBecas) {
-                        self::normalizeBecaFields($model);
-                    }
+                    self::normalizeModel($model);
 
                     if (!$model->save()) {
                         Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
@@ -115,6 +114,7 @@ class ExpedienteService
         $models['alumBecas'] = new AlumBecas(['alumnos_id' => $alumno->id]);
         $models['alumDatosFamiliares'] = new AlumDatosFamiliares(['alumnos_id' => $alumno->id]);
         $models['alumInfoHijos'] = new AlumInfoHijos(['alumnos_id' => $alumno->id]);
+        $models['alumDependeEconomicamente'] = new AlumDependeEconomicamente(['alumnos_id' => $alumno->id]);
 
 
         return $models;
@@ -137,6 +137,7 @@ class ExpedienteService
         $models['alumBecas'] = self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]);
         $models['alumDatosFamiliares'] = self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]);
         $models['alumInfoHijos'] = self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]);
+        $models['alumDependeEconomicamente'] = self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]);
 
         return $models;
     }
@@ -181,6 +182,50 @@ class ExpedienteService
     }
 
     /**
+     * Limpia campos de dependencia económica cuando no aplica "Otro".
+     */
+    private static function normalizeDependenciaFields(AlumDependeEconomicamente $alumDependeEconomicamente): void
+    {
+        $otroId = CatalogoDependenciasEconomicas::getOtroId();
+        if ($otroId === null) {
+            $alumDependeEconomicamente->otro_especificar = null;
+            return;
+        }
+
+        if ((int)$alumDependeEconomicamente->catalogo_dependencias_economicas_id !== $otroId) {
+            $alumDependeEconomicamente->otro_especificar = null;
+        }
+    }
+
+    /**
+     * Normaliza modelos dependientes (becas/dependencia econÇümica) previo a guardar.
+     *
+     * @param array $models
+     */
+    private static function normalizeModels(array &$models): void
+    {
+        foreach ($models as $model) {
+            self::normalizeModel($model);
+        }
+    }
+
+    /**
+     * Normaliza un modelo concreto si aplica reglas especiales.
+     *
+     * @param mixed $model
+     */
+    private static function normalizeModel($model): void
+    {
+        if ($model instanceof AlumBecas) {
+            self::normalizeBecaFields($model);
+        }
+
+        if ($model instanceof AlumDependeEconomicamente) {
+            self::normalizeDependenciaFields($model);
+        }
+    }
+
+    /**
      * Procesa la informaciГn de hijos: valida y persiste o elimina registros.
      */
     private static function processHijos(AlumInfoHijos $alumInfoHijos, array $post): void
@@ -218,6 +263,7 @@ class ExpedienteService
             // Eliminar modelos con alumnos_id
             AlumBecas::deleteAll(['alumnos_id' => $alumnoId]);
             AlumDatosFamiliares::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumDependeEconomicamente::deleteAll(['alumnos_id' => $alumnoId]);
 
             $transaction->commit();
             return true;

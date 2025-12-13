@@ -9,12 +9,17 @@ use common\models\EntidadesFederativas;
 use common\models\EstadosCiviles;
 use common\models\Nacionalidades;
 use common\models\TiposBecas;
+use common\models\CatalogoDependenciasEconomicas;
+use common\models\AlumDependeEconomicamente;
 use yii\helpers\Url;
 use yii\web\View;
 
 ExpedienteAsset::register($this);
 
 $this->title = 'Expediente';
+
+$alumDependeEconomicamente = $alumDependeEconomicamente ?? new AlumDependeEconomicamente();
+$otroCatalogoDependenciaId = CatalogoDependenciasEconomicas::getOtroId();
 ?>
 
 <div class="expediente-form">
@@ -675,7 +680,35 @@ $this->title = 'Expediente';
             </h2>
             <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de situación socioeconómica próximamente...</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDependeEconomicamente,
+                                'catalogo_dependencias_economicas_id',
+                                'fa-hand-holding-usd',
+                                CatalogoDependenciasEconomicas::dropdownOptions(),
+                                [
+                                    'placeholder' => 'Selecciona de quien dependes',
+                                    'id' => 'alumdependeeconomicamente-catalogo_dependencias_economicas_id',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= ($alumDependeEconomicamente->catalogo_dependencias_economicas_id ?? null) === $otroCatalogoDependenciaId ? '' : 'd-none' ?>" id="otro-dependencia-container">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumDependeEconomicamente,
+                                'otro_especificar',
+                                'fa-edit',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica otra dependencia economica...',
+                                        'id' => 'alumdependeeconomicamente-otro_especificar'
+                                    ]
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -799,5 +832,10 @@ JS;
 
 $this->registerJs($script, View::POS_BEGIN);
 
+$this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-dependencia.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
 
 ?>
