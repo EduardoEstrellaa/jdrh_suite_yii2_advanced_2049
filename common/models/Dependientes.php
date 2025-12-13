@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -31,10 +31,9 @@ class Dependientes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'alum_dependen_economica_id', 'catalogo_dependencias_economicas_id'], 'required'],
-            [['id', 'alum_dependen_economica_id', 'catalogo_dependencias_economicas_id'], 'integer'],
+            [['alum_dependen_economica_id', 'catalogo_dependencias_economicas_id'], 'required'],
+            [['alum_dependen_economica_id', 'catalogo_dependencias_economicas_id'], 'integer'],
             [['otro_especificar'], 'string', 'max' => 250],
-            [['id'], 'unique'],
             [['alum_dependen_economica_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlumDependenEconomica::class, 'targetAttribute' => ['alum_dependen_economica_id' => 'id']],
             [['catalogo_dependencias_economicas_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoDependenciasEconomicas::class, 'targetAttribute' => ['catalogo_dependencias_economicas_id' => 'id']],
         ];

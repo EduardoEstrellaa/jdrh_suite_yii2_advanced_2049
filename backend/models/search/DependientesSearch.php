@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Dependientes;
+use common\models\Dependientes;
 
 /**
- * DependientesSearch represents the model behind the search form of `backend\models\Dependientes`.
+ * DependientesSearch represents the model behind the search form of `common\models\Dependientes`.
  */
 class DependientesSearch extends Dependientes
 {

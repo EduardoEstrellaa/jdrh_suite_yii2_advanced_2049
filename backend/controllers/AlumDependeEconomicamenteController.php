@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\AlumDependeEconomicamente;
+use common\models\AlumDependeEconomicamente;
 use backend\models\search\AlumDependeEconomicamenteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
