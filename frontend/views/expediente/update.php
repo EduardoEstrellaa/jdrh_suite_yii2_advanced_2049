@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /* @var yii\web\View $this */
 /* @var common\models\LugaresNacimiento $lugaresNacimiento */
-/* @var common\models\DomiciliosActuales $domicilisoActuales */
+/* @var common\models\DomiciliosActuales $domiciliosActuales */
 
 $this->title = 'Actualizar Expediente';
 $this->params['breadcrumbs'][] = ['label' => 'Expedientes', 'url' => ['index']];
@@ -25,7 +25,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'alumBecas' => $alumBecas,
         'alumInfoHijos' => $alumInfoHijos,
         'alumDependeEconomicamente' => $alumDependeEconomicamente,
+        'alumDependenEconomica' => $alumDependenEconomica,
+        'dependientes' => $dependientes ?? [],
+        'dependientesSeleccionados' => $dependientesSeleccionados ?? [],
+        'dependientesOtro' => $dependientesOtro ?? null,
         'edadesHijos' => $edadesHijos,
+        'alumTrabajo' => $alumTrabajo,
     ]) ?>
 
 </div>

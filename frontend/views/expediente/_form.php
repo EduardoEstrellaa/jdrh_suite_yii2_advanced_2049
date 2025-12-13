@@ -11,6 +11,10 @@ use common\models\Nacionalidades;
 use common\models\TiposBecas;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumDependeEconomicamente;
+use common\models\AlumDependenEconomica;
+use common\models\Dependientes;
+use common\models\AlumTrabajo;
+use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -18,8 +22,15 @@ ExpedienteAsset::register($this);
 
 $this->title = 'Expediente';
 
+$catalogoDependenciasOptions = CatalogoDependenciasEconomicas::dropdownOptions();
 $alumDependeEconomicamente = $alumDependeEconomicamente ?? new AlumDependeEconomicamente();
+$alumDependenEconomica = $alumDependenEconomica ?? new AlumDependenEconomica();
+$dependientes = $dependientes ?? [];
+$edadesHijos = $edadesHijos ?? [];
+$alumTrabajo = $alumTrabajo ?? new AlumTrabajo();
 $otroCatalogoDependenciaId = CatalogoDependenciasEconomicas::getOtroId();
+$dependientesSeleccionados = $dependientesSeleccionados ?? [];
+$dependientesOtro = $dependientesOtro ?? null;
 ?>
 
 <div class="expediente-form">
@@ -709,9 +720,132 @@ $otroCatalogoDependenciaId = CatalogoDependenciasEconomicas::getOtroId();
                             ) ?>
                         </div>
                     </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDependenEconomica,
+                                'tiene_dependientes',
+                                'fa-user-friends',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Tiene dependientes?',
+                                    'id' => 'alumdependeneconomica-tiene_dependientes',
+                                ],
+                                ['allowClear' => false]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php $mostrarDependientes = (int)($alumDependenEconomica->tiene_dependientes ?? 0) === 1; ?>
+                    <div class="mt-3 <?= $mostrarDependientes ? '' : 'd-none' ?>" id="dependientes-section">
+                        <div class="row g-2">
+                            <?php foreach ($catalogoDependenciasOptions as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $dependientesSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input dependiente-checkbox"
+                                            name="Dependientes[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="dependiente-<?= (int)$id ?>"
+                                            data-otro-id="<?= (int)$otroCatalogoDependenciaId ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="dependiente-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2 <?= $otroCatalogoDependenciaId !== null && in_array((int)$otroCatalogoDependenciaId, $dependientesSeleccionados, true) ? '' : 'd-none' ?>" id="otro-dependiente-container">
+                            <input type="text" name="Dependientes[otro_especificar]" id="dependientes-otro" class="form-control" placeholder="<?= Yii::t('app', 'Especificar otro...') ?>" value="<?= Html::encode($dependientesOtro ?? '') ?>">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumTrabajo,
+                                'tiene_trabajo',
+                                'fa-briefcase',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Tiene trabajo?',
+                                    'id' => 'alumtrabajo-tiene_trabajo',
+                                ],
+                                ['allowClear' => false]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php $mostrarTrabajo = (int)($alumTrabajo->tiene_trabajo ?? 0) === 1; ?>
+                    <div class="row g-3 mt-2 <?= $mostrarTrabajo ? '' : 'd-none' ?>" id="trabajo-section">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'nombre_empresa',
+                                'fa-building',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Nombre de la empresa...',
+                                        'id' => 'alumtrabajo-nombre_empresa',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'puesto_ocupacion',
+                                'fa-user-tie',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Puesto u ocupación...',
+                                        'id' => 'alumtrabajo-puesto_ocupacion',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'horario_entrada',
+                                'fa-clock',
+                                [
+                                    'inputOptions' => [
+                                        'type' => 'time',
+                                        'placeholder' => 'Hora de entrada',
+                                        'id' => 'alumtrabajo-horario_entrada',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'horario_salida',
+                                'fa-clock',
+                                [
+                                    'inputOptions' => [
+                                        'type' => 'time',
+                                        'placeholder' => 'Hora de salida',
+                                        'id' => 'alumtrabajo-horario_salida',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
 
         <!-- ===================== -->
         <!-- SECCIÓN 5: TRANSPORTE Y ACCESO -->
@@ -835,6 +969,14 @@ $this->registerJs($script, View::POS_BEGIN);
 $this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-dependientes.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-trabajo.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 

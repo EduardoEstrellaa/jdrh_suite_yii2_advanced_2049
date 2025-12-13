@@ -2,6 +2,7 @@
 
 namespace common\services;
 
+use DomainException;
 use Yii;
 use common\models\DatosPersonales;
 use common\models\LugaresNacimiento;
@@ -10,25 +11,17 @@ use common\models\DatosGenerales;
 use common\models\AlumBecas;
 use common\models\AlumDatosFamiliares;
 use common\models\AlumInfoHijos;
-use common\models\EdadesHijos;
 use common\models\AlumDependeEconomicamente;
+use common\models\AlumDependenEconomica;
+use common\models\Dependientes;
+use common\models\EdadesHijos;
 use common\models\CatalogoDependenciasEconomicas;
-use yii\web\NotFoundHttpException;
+use common\models\AlumTrabajo;
+use common\services\support\DependientesManager;
+use common\services\support\HijosManager;
 
 class ExpedienteService
 {
-    // Definir todos los modelos que componen el expediente
-    private static $modelClasses = [
-        'datosPersonales' => DatosPersonales::class,
-        'lugaresNacimiento' => LugaresNacimiento::class,
-        'domiciliosActuales' => DomiciliosActuales::class,
-        'datosGenerales' => DatosGenerales::class,
-        'alumBecas' => AlumBecas::class,
-        'alumDatosFamiliares' => AlumDatosFamiliares::class,
-        'alumInfoHijos' => AlumInfoHijos::class,      // NUEVO
-        'alumDependeEconomicamente' => AlumDependeEconomicamente::class,
-    ];
-
     /**
      * Crea un expediente completo dentro de una transacción.
      */
@@ -36,32 +29,26 @@ class ExpedienteService
     {
         $models = self::initializeModelsForCreate($perfil, $alumno);
 
-        foreach ($models as $model) {
-            if (!$model->load($post) || !$model->validate()) {
-                return false;
-            }
-        }
-
+        self::loadAndValidate($models, $post);
         self::normalizeModels($models);
 
-        // arriba del try en crearExpediente, justo después de validar modelos:
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            foreach ($models as $model) {
-                $model->save(false);
-            }
-
-            self::processHijos($models['alumInfoHijos'], $post);
-
+            self::saveModels($models);
+            HijosManager::sync($models['alumInfoHijos'], $post);
+            DependientesManager::sync($models['alumDependenEconomica'], $post);
             $transaction->commit();
             return true;
+        } catch (DomainException $e) {
+            $transaction->rollBack();
+            Yii::warning($e->getMessage(), __METHOD__);
+            throw $e;
         } catch (\Throwable $e) {
             $transaction->rollBack();
-            Yii::error($e->getMessage());
-            return false;
+            Yii::error($e->getMessage(), __METHOD__);
+            throw $e;
         }
     }
-
 
     /**
      * Actualiza un expediente existente de forma transaccional.
@@ -72,24 +59,17 @@ class ExpedienteService
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            foreach ($models as $model) {
-                if ($model->load($post)) {
-                    self::normalizeModel($model);
-
-                    if (!$model->save()) {
-                        Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
-                        $transaction->rollBack();
-                        return false;
-                    }
-                }
-            }
-
-            self::processHijos($models['alumInfoHijos'], $post);
-
-
-
+            self::loadModels($models, $post);
+            self::normalizeModels($models);
+            self::saveModels($models);
+            HijosManager::sync($models['alumInfoHijos'], $post);
+            DependientesManager::sync($models['alumDependenEconomica'], $post);
             $transaction->commit();
             return true;
+        } catch (DomainException $e) {
+            $transaction->rollBack();
+            Yii::warning($e->getMessage(), __METHOD__);
+            throw $e;
         } catch (\Throwable $e) {
             $transaction->rollBack();
             Yii::error($e->getMessage(), __METHOD__);
@@ -115,7 +95,8 @@ class ExpedienteService
         $models['alumDatosFamiliares'] = new AlumDatosFamiliares(['alumnos_id' => $alumno->id]);
         $models['alumInfoHijos'] = new AlumInfoHijos(['alumnos_id' => $alumno->id]);
         $models['alumDependeEconomicamente'] = new AlumDependeEconomicamente(['alumnos_id' => $alumno->id]);
-
+        $models['alumDependenEconomica'] = new AlumDependenEconomica(['alumnos_id' => $alumno->id]);
+        $models['alumTrabajo'] = new AlumTrabajo(['alumnos_id' => $alumno->id]);
 
         return $models;
     }
@@ -138,6 +119,8 @@ class ExpedienteService
         $models['alumDatosFamiliares'] = self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]);
         $models['alumInfoHijos'] = self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]);
         $models['alumDependeEconomicamente'] = self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]);
+        $models['alumDependenEconomica'] = self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]);
+        $models['alumTrabajo'] = self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]);
 
         return $models;
     }
@@ -163,6 +146,42 @@ class ExpedienteService
             }
         }
         return $model;
+    }
+
+    /**
+     * Carga y valida múltiples modelos; lanza excepción si alguno falla.
+     */
+    private static function loadAndValidate(array $models, array $post): void
+    {
+        foreach ($models as $model) {
+            if (!$model->load($post) || !$model->validate()) {
+                throw new DomainException('Validación fallida en ' . get_class($model));
+            }
+        }
+    }
+
+    /**
+     * Carga modelos sin validar; se usa en actualización para mantener datos previos.
+     */
+    private static function loadModels(array $models, array $post): void
+    {
+        foreach ($models as $model) {
+            $model->load($post);
+        }
+    }
+
+    /**
+     * Guarda todos los modelos sin repetir transacciones.
+     */
+    private static function saveModels(array $models): void
+    {
+        foreach ($models as $model) {
+            self::normalizeModel($model);
+            if (!$model->save()) {
+                Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
+                throw new DomainException('No se pudo guardar ' . get_class($model));
+            }
+        }
     }
 
     /**
@@ -198,7 +217,20 @@ class ExpedienteService
     }
 
     /**
-     * Normaliza modelos dependientes (becas/dependencia econÇümica) previo a guardar.
+     * Limpia campos de trabajo cuando no aplica.
+     */
+    private static function normalizeTrabajoFields(AlumTrabajo $alumTrabajo): void
+    {
+        if ((int)$alumTrabajo->tiene_trabajo !== 1) {
+            $alumTrabajo->nombre_empresa = null;
+            $alumTrabajo->puesto_ocupacion = null;
+            $alumTrabajo->horario_entrada = null;
+            $alumTrabajo->horario_salida = null;
+        }
+    }
+
+    /**
+     * Normaliza modelos dependientes (becas/dependencia económica) previo a guardar.
      *
      * @param array $models
      */
@@ -223,28 +255,10 @@ class ExpedienteService
         if ($model instanceof AlumDependeEconomicamente) {
             self::normalizeDependenciaFields($model);
         }
-    }
 
-    /**
-     * Procesa la informaciГn de hijos: valida y persiste o elimina registros.
-     */
-    private static function processHijos(AlumInfoHijos $alumInfoHijos, array $post): void
-    {
-        $dataHijos = $post['EdadesHijos'] ?? [];
-
-        if ((int)$alumInfoHijos->tiene_hijos === 1) {
-            if (count($dataHijos) < 1) {
-                throw new \Exception('Captura al menos un hijo.');
-            }
-            $alumInfoHijos->cantidad_hijos = count($dataHijos);
-            $alumInfoHijos->save(false);
-            HijosService::saveAll($alumInfoHijos->id, $post);
-            return;
+        if ($model instanceof AlumTrabajo) {
+            self::normalizeTrabajoFields($model);
         }
-
-        $alumInfoHijos->cantidad_hijos = 0;
-        $alumInfoHijos->save(false);
-        EdadesHijos::deleteAll(['alum_info_hijos_id' => $alumInfoHijos->id]);
     }
 
     /**
@@ -264,6 +278,12 @@ class ExpedienteService
             AlumBecas::deleteAll(['alumnos_id' => $alumnoId]);
             AlumDatosFamiliares::deleteAll(['alumnos_id' => $alumnoId]);
             AlumDependeEconomicamente::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumTrabajo::deleteAll(['alumnos_id' => $alumnoId]);
+            $alumDependen = AlumDependenEconomica::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumDependen) {
+                Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);
+                $alumDependen->delete();
+            }
 
             $transaction->commit();
             return true;
@@ -282,6 +302,9 @@ class ExpedienteService
         $models = self::getModelsForUpdate($perfilId, $alumnoId);
 
         foreach ($models as $model) {
+            if ($model instanceof AlumTrabajo) {
+                continue;
+            }
             if ($model->isNewRecord) {
                 return false;
             }

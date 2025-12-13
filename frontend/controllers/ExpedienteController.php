@@ -6,23 +6,29 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\{
-    Perfil,
-    DatosPersonales,
-    LugaresNacimiento,
-    DomiciliosActuales,
-    Municipios,
-    Alumnos,
-    EdadesHijos
-};
+use frontend\components\PerfilAlumnoResolver;
+use common\models\Municipios;
+use common\services\ExpedienteFacade;
 use common\services\ExpedienteService;
 
 class ExpedienteController extends Controller
 {
-    /** 
+    /** @var PerfilAlumnoResolver */
+    private $perfilAlumnoResolver;
+
+    /** @var ExpedienteFacade */
+    private $expedienteFacade;
+
+    public function __construct($id, $module, PerfilAlumnoResolver $perfilAlumnoResolver, ExpedienteFacade $expedienteFacade, $config = [])
+    {
+        $this->perfilAlumnoResolver = $perfilAlumnoResolver;
+        $this->expedienteFacade = $expedienteFacade;
+        parent::__construct($id, $module, $config);
+    }
+
+    /**
      * Comportamientos del controlador.
      */
     public function behaviors()
@@ -48,21 +54,16 @@ class ExpedienteController extends Controller
     }
 
     /**
-     * Redirige al usuario según el estado de su expediente.
+     * Redirige al usuario segun el estado de su expediente.
      */
     public function actionIndex()
     {
-        $checkResult = $this->checkPerfilAndAlumno();
-
-        // Si checkPerfilAndAlumno retorna un Response (redirección), lo retornamos
-        if ($checkResult instanceof \yii\web\Response) {
-            return $checkResult;
+        $resolved = $this->perfilAlumnoResolver->resolve($this);
+        if ($resolved->redirect instanceof Response) {
+            return $resolved->redirect;
         }
 
-        // Si llegamos aquí, checkResult es un array con [perfil, alumno]
-        [$perfil, $alumno] = $checkResult;
-
-        if (ExpedienteService::expedienteExiste($perfil->id, $alumno->id)) {
+        if (ExpedienteService::expedienteExiste($resolved->perfil->id, $resolved->alumno->id)) {
             return $this->redirect(['view']);
         }
 
@@ -74,19 +75,16 @@ class ExpedienteController extends Controller
      */
     public function actionView()
     {
-        $checkResult = $this->checkPerfilAndAlumno();
-
-        if ($checkResult instanceof \yii\web\Response) {
-            return $checkResult;
+        $resolved = $this->perfilAlumnoResolver->resolve($this);
+        if ($resolved->redirect instanceof Response) {
+            return $resolved->redirect;
         }
 
-        [$perfil, $alumno] = $checkResult;
-
-        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
+        $models = $this->expedienteFacade->getUpdateData($resolved->perfil->id, $resolved->alumno->id);
 
         return $this->render('view', array_merge([
-            'perfil' => $perfil,
-            'alumno' => $alumno,
+            'perfil' => $resolved->perfil,
+            'alumno' => $resolved->alumno,
         ], $models));
     }
 
@@ -95,28 +93,26 @@ class ExpedienteController extends Controller
      */
     public function actionCreate()
     {
-        $checkResult = $this->checkPerfilAndAlumno();
-
-        if ($checkResult instanceof \yii\web\Response) {
-            return $checkResult;
+        $resolved = $this->perfilAlumnoResolver->resolve($this);
+        if ($resolved->redirect instanceof Response) {
+            return $resolved->redirect;
         }
-
-        [$perfil, $alumno] = $checkResult;
 
         $post = Yii::$app->request->post();
         if ($post) {
-            if (ExpedienteService::crearExpediente($perfil, $alumno, $post)) {
-                Yii::$app->session->setFlash('success', 'Expediente guardado correctamente.');
+            $result = $this->expedienteFacade->create($resolved->perfil, $resolved->alumno, $post);
+            if ($result->isOk()) {
+                Yii::$app->session->setFlash('success', $result->message() ?: 'Expediente guardado correctamente.');
                 return $this->redirect(['view']);
             }
-            Yii::$app->session->setFlash('error', 'Error al guardar el expediente. Verifica los datos.');
+            Yii::$app->session->setFlash('error', $result->message() ?: 'Error al guardar el expediente. Verifica los datos.');
         }
 
-        $models = ExpedienteService::getModelsForCreate($perfil, $alumno);
+        $models = $this->expedienteFacade->getCreateData($resolved->perfil, $resolved->alumno);
 
         return $this->render('create', array_merge([
-            'perfil' => $perfil,
-            'alumno' => $alumno,
+            'perfil' => $resolved->perfil,
+            'alumno' => $resolved->alumno,
         ], $models));
     }
 
@@ -125,36 +121,25 @@ class ExpedienteController extends Controller
      */
     public function actionUpdate()
     {
-        $checkResult = $this->checkPerfilAndAlumno();
-
-        if ($checkResult instanceof Response) {
-            return $checkResult;
+        $resolved = $this->perfilAlumnoResolver->resolve($this);
+        if ($resolved->redirect instanceof Response) {
+            return $resolved->redirect;
         }
 
-        [$perfil, $alumno] = $checkResult;
-
-        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
-        $edadesHijos = EdadesHijos::findAll([
-            'alum_info_hijos_id' => $models['alumInfoHijos']->id
-        ]);
+        $models = $this->expedienteFacade->getUpdateData($resolved->perfil->id, $resolved->alumno->id);
 
         if ($this->request->isPost) {
-            try {
-                if (ExpedienteService::actualizarExpediente($perfil->id, $alumno->id, $this->request->post())) {
-                    Yii::$app->session->setFlash('success', 'Expediente actualizado correctamente.');
-                    return $this->redirect(['view']);
-                } else {
-                    Yii::$app->session->addFlash('error', 'Error al guardar el expediente. Verifica los datos.');
-                }
-            } catch (\Exception $e) {
-                Yii::$app->session->addFlash('error', 'Error al guardar: ' . $e->getMessage());
+            $result = $this->expedienteFacade->update($resolved->perfil->id, $resolved->alumno->id, $this->request->post());
+            if ($result->isOk()) {
+                Yii::$app->session->setFlash('success', $result->message() ?: 'Expediente actualizado correctamente.');
+                return $this->redirect(['view']);
             }
+            Yii::$app->session->addFlash('error', $result->message() ?: 'Error al guardar el expediente. Verifica los datos.');
         }
 
         return $this->render('update', array_merge([
-            'perfil' => $perfil,
-            'alumno' => $alumno,
-            'edadesHijos' => $edadesHijos,
+            'perfil' => $resolved->perfil,
+            'alumno' => $resolved->alumno,
         ], $models));
     }
 
@@ -163,20 +148,17 @@ class ExpedienteController extends Controller
      */
     public function actionDelete()
     {
-        $checkResult = $this->checkPerfilAndAlumno();
-
-        if ($checkResult instanceof \yii\web\Response) {
-            return $checkResult;
+        $resolved = $this->perfilAlumnoResolver->resolve($this);
+        if ($resolved->redirect instanceof Response) {
+            return $resolved->redirect;
         }
 
-        [$perfil, $alumno] = $checkResult;
-
         try {
-            ExpedienteService::eliminarExpediente($perfil->id, $alumno->id);
+            ExpedienteService::eliminarExpediente($resolved->perfil->id, $resolved->alumno->id);
             Yii::$app->session->setFlash('success', 'Expediente eliminado correctamente.');
         } catch (\Throwable $e) {
             Yii::error($e->getMessage(), __METHOD__);
-            Yii::$app->session->setFlash('error', 'Ocurrió un error al eliminar el expediente.');
+            Yii::$app->session->setFlash('error', 'Ocurrio un error al eliminar el expediente.');
         }
 
         return $this->redirect(['index']);
@@ -197,48 +179,5 @@ class ExpedienteController extends Controller
             ->all();
 
         return array_column($municipios, 'nombre', 'id');
-    }
-
-    /* ============================================================= */
-    /* 🔒 MÉTODOS AUXILIARES PRIVADOS                                */
-    /* ============================================================= */
-
-    /**
-     * Obtiene el perfil del usuario autenticado.
-     */
-    private function getPerfil()
-    {
-        return Yii::$app->user->identity->perfil ?? null;
-    }
-
-    /**
-     * Verifica que el perfil y el alumno existan.
-     * Retorna un array [perfil, alumno] si todo está bien, o un Response si hay que redirigir.
-     */
-    private function checkPerfilAndAlumno()
-    {
-        $perfil = $this->getPerfil();
-        if (!$perfil) {
-            Yii::$app->session->setFlash('error', 'No se encontró un perfil asociado a tu cuenta.');
-            return $this->redirect(['/perfil/create']);
-        }
-
-        $alumno = $this->findAlumno($perfil->id);
-        if (!$alumno) {
-            Yii::$app->session->setFlash('error', 'No se encontró información de alumno asociada a tu perfil.');
-            return $this->redirect(['/perfil/update', 'id' => $perfil->id]);
-        }
-        return [$perfil, $alumno];
-    }
-
-    /**
-     * Busca un alumno por perfil.
-     */
-    private function findAlumno($perfilId)
-    {
-        return Alumnos::find()
-            ->where(['perfil_id' => $perfilId])
-            ->with(['generaciones', 'planLicenciaturas.licenciaturas'])
-            ->one();
     }
 }
