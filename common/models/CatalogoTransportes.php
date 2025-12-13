@@ -1,25 +1,25 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "tiempo_recorrido_transporte".
+ * This is the model class for table "catalogo_transportes".
  *
  * @property int $id
- * @property string $rango_tiempo
+ * @property string $nombre
  *
  * @property AlumTransportes[] $alumTransportes
  */
-class TiempoRecorridoTransporte extends \yii\db\ActiveRecord
+class CatalogoTransportes extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'tiempo_recorrido_transporte';
+        return 'catalogo_transportes';
     }
 
     /**
@@ -28,8 +28,8 @@ class TiempoRecorridoTransporte extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['rango_tiempo'], 'required'],
-            [['rango_tiempo'], 'string', 'max' => 150],
+            [['nombre'], 'required'],
+            [['nombre'], 'string', 'max' => 150],
         ];
     }
 
@@ -40,7 +40,7 @@ class TiempoRecorridoTransporte extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'rango_tiempo' => 'Rango Tiempo',
+            'nombre' => 'Nombre',
         ];
     }
 
@@ -51,6 +51,6 @@ class TiempoRecorridoTransporte extends \yii\db\ActiveRecord
      */
     public function getAlumTransportes()
     {
-        return $this->hasMany(AlumTransportes::class, ['tiempo_recorrido_transporte_id' => 'id']);
+        return $this->hasMany(AlumTransportes::class, ['catalogo_transportes_id' => 'id']);
     }
 }

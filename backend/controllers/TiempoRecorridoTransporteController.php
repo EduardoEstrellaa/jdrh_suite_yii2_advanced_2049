@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\TiempoRecorridoTransporte;
+use common\models\TiempoRecorridoTransporte;
 use backend\models\search\TiempoRecorridoTransporteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

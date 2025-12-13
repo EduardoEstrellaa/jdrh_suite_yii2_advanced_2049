@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\TiempoRecorridoTransporte;
+use common\models\TiempoRecorridoTransporte;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'rango_tiempo',
+            'descripcion',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, TiempoRecorridoTransporte $model, $key, $index, $column) {

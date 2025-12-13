@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\TiempoRecorridoTransporte $model */
+/** @var common\models\TiempoRecorridoTransporte $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Tiempo Recorrido Transportes'), 'url' => ['index']];
@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'rango_tiempo',
+            'descripcion',
         ],
     ]) ?>
 
