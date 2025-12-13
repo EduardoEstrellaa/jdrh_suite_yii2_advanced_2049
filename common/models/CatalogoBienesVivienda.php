@@ -1,26 +1,26 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "catalogo_servicios_vivienda".
+ * This is the model class for table "catalogo_bienes_vivienda".
  *
  * @property int $id
  * @property string $nombre
  * @property string|null $descripcion
  *
- * @property ViviendaServicios[] $viviendaServicios
+ * @property ViviendaBienes[] $viviendaBienes
  */
-class CatalogoServiciosVivienda extends \yii\db\ActiveRecord
+class CatalogoBienesVivienda extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'catalogo_servicios_vivienda';
+        return 'catalogo_bienes_vivienda';
     }
 
     /**
@@ -48,12 +48,12 @@ class CatalogoServiciosVivienda extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[ViviendaServicios]].
+     * Gets query for [[ViviendaBienes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getViviendaServicios()
+    public function getViviendaBienes()
     {
-        return $this->hasMany(ViviendaServicios::class, ['catalogo_servicios_vivienda_id' => 'id']);
+        return $this->hasMany(ViviendaBienes::class, ['catalogo_bienes_vivienda_id' => 'id']);
     }
 }
