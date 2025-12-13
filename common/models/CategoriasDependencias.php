@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "categorias_dependencias".
@@ -46,6 +47,21 @@ class CategoriasDependencias extends \yii\db\ActiveRecord
             'descripcion' => 'Descripcion',
         ];
     }
+
+    /**
+     * Opciones para dropdown de categorías de dependencias.
+     */
+    public static function dropdownOptions(): array
+    {
+        $records = static::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($records, 'id', 'nombre');
+    }
+
 
     /**
      * Gets query for [[CatalogoDependenciasEconomicas]].

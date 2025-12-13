@@ -32,7 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nombre',
             'descripcion',
-            'categorias_dependencias_id',
+            [
+                'label' => Yii::t('app', 'Categoria Dependencia'),
+                'value' => $model->categoriasDependencias->nombre ?? null,
+            ],
         ],
     ]) ?>
 
