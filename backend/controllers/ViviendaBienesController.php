@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\ViviendaBienes;
+use common\models\ViviendaBienes;
 use backend\models\search\ViviendaBienesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
