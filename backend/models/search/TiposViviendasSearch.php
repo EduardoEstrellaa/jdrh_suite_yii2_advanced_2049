@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TiposViviendas;
+use common\models\TiposViviendas;
 
 /**
- * TiposViviendasSearch represents the model behind the search form of `backend\models\TiposViviendas`.
+ * TiposViviendasSearch represents the model behind the search form of `common\models\TiposViviendas`.
  */
 class TiposViviendasSearch extends TiposViviendas
 {

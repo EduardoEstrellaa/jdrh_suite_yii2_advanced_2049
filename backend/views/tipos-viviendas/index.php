@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\TiposViviendas;
+use common\models\TiposViviendas;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
