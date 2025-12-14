@@ -42,6 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'bienesOtro' => $bienesOtro ?? null,
         'catalogoBienesPersonalesOptions' => $catalogoBienesPersonalesOptions,
         'bienesPersonalesSeleccionados' => $bienesPersonalesSeleccionados ?? [],
+        'alumTransportes' => $alumTransportes,
+        'catalogoTransportesMap' => $catalogoTransportesMap,
+        'tiemposRecorridoMap' => $tiemposRecorridoMap,
     ]) ?>
 
 </div>

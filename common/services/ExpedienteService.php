@@ -17,6 +17,7 @@ use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumTrabajo;
+use common\models\AlumTransportes;
 use common\models\AlumVivienda;
 use common\models\CatalogoBienesVivienda;
 use common\models\TiposViviendas;
@@ -109,6 +110,7 @@ class ExpedienteService
         $models['alumDependenEconomica'] = new AlumDependenEconomica(['alumnos_id' => $alumno->id]);
         $models['alumTrabajo'] = new AlumTrabajo(['alumnos_id' => $alumno->id]);
         $models['alumVivienda'] = new AlumVivienda(['alumnos_id' => $alumno->id]);
+        $models['alumTransportes'] = new AlumTransportes(['alumnos_id' => $alumno->id]);
 
         return $models;
     }
@@ -134,6 +136,7 @@ class ExpedienteService
         $models['alumDependenEconomica'] = self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]);
         $models['alumTrabajo'] = self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]);
         $models['alumVivienda'] = self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]);
+        $models['alumTransportes'] = self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]);
 
         return $models;
     }
@@ -297,6 +300,7 @@ class ExpedienteService
             AlumDependeEconomicamente::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTrabajo::deleteAll(['alumnos_id' => $alumnoId]);
             AlumBienesPersonales::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
             $alumDependen = AlumDependenEconomica::findOne(['alumnos_id' => $alumnoId]);
             if ($alumDependen) {
                 Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);
@@ -329,6 +333,9 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumVivienda) {
+                continue;
+            }
+            if ($model instanceof AlumTransportes) {
                 continue;
             }
             if ($model->isNewRecord) {

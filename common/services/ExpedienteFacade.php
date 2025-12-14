@@ -7,12 +7,15 @@ use Yii;
 use common\models\AlumDependenEconomica;
 use common\models\AlumInfoHijos;
 use common\models\AlumBienesPersonales;
+use common\models\AlumTransportes;
 use common\models\AlumVivienda;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
+use common\models\TiempoRecorridoTransporte;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\services\support\OperationResult;
@@ -44,6 +47,8 @@ class ExpedienteFacade
             'bienesOtro' => null,
             'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
             'bienesPersonalesSeleccionados' => [],
+            'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
+            'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
         ]);
     }
 
@@ -67,6 +72,8 @@ class ExpedienteFacade
             'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
             'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
             'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
+            'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
+            'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
         ]);
     }
 

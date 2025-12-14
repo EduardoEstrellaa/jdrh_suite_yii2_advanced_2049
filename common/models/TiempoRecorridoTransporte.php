@@ -48,6 +48,20 @@ class TiempoRecorridoTransporte extends \yii\db\ActiveRecord
     }
 
     /**
+     * Returns a map for dropdowns keyed by id.
+     *
+     * @return array
+     */
+    public static function dropdownOptions(): array
+    {
+        return static::find()
+            ->select('rango_tiempo')
+            ->indexBy('id')
+            ->orderBy('rango_tiempo')
+            ->column();
+    }
+
+    /**
      * Gets query for [[AlumTransportes]].
      *
      * @return \yii\db\ActiveQuery

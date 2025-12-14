@@ -16,7 +16,10 @@ use common\models\Dependientes;
 use common\models\AlumTrabajo;
 use common\models\AlumVivienda;
 use common\models\CatalogoBienesVivienda;
+use common\models\AlumTransportes;
+use common\models\CatalogoTransportes;
 use common\models\TiposViviendas;
+use common\models\TiempoRecorridoTransporte;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
 use yii\web\View;
@@ -29,6 +32,7 @@ $alumDependeEconomicamente = $alumDependeEconomicamente ?? new AlumDependeEconom
 $alumDependenEconomica = $alumDependenEconomica ?? new AlumDependenEconomica();
 $alumTrabajo = $alumTrabajo ?? new AlumTrabajo();
 $alumVivienda = $alumVivienda ?? new AlumVivienda(['alumnos_id' => $alumno->id ?? null]);
+$alumTransportes = $alumTransportes ?? new AlumTransportes(['alumnos_id' => $alumno->id ?? null]);
 $catalogoDependenciasOptions = $catalogoDependenciasOptions ?? [];
 $otroCatalogoDependenciaId = $otroCatalogoDependenciaId ?? null;
 $dependientes = $dependientes ?? [];
@@ -42,6 +46,8 @@ $bienesSeleccionados = $bienesSeleccionados ?? [];
 $bienesOtro = $bienesOtro ?? null;
 $catalogoBienesPersonalesOptions = $catalogoBienesPersonalesOptions ?? [];
 $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
+$catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
+$tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
 ?>
 
 <div class="expediente-form">
@@ -1002,18 +1008,39 @@ $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
                 </div>
             </div>
         </div>
-<!-- ===================== -->
-        <!-- SECCIÓN 5: TRANSPORTE Y ACCESO -->
+        <!-- ===================== -->
+        <!-- SECCIÓN 9: TRANSPORTE Y ACCESO -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingTransporteAcceso">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTransporteAcceso" aria-expanded="false" aria-controls="collapseTransporteAcceso">
-                    🚗 V. TRANSPORTE Y ACCESO
+                    🚗 IX. TRANSPORTE Y ACCESO
                 </button>
             </h2>
             <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
-                <div class="accordion-body">
-                    <p class="text-muted">Contenido de transporte y acceso próximamente...</p>
+                <div class="accordion-body row g-3">
+                    <div class="col-md-6">
+                        <?= InputHelper::iconSelect2Field(
+                            $form,
+                            $alumTransportes,
+                            'catalogo_transportes_id',
+                            'fa-bus',
+                            $catalogoTransportesMap,
+                            ['placeholder' => 'Medio de transporte...']
+                        ) ?>
+                        <small class="text-muted">Selecciona cómo llegas a la escuela y cuánto tardas.</small>
+
+                    </div>
+                    <div class="col-md-6">
+                        <?= InputHelper::iconSelect2Field(
+                            $form,
+                            $alumTransportes,
+                            'tiempo_recorrido_transporte_id',
+                            'fa-stopwatch',
+                            $tiemposRecorridoMap,
+                            ['placeholder' => 'Tiempo de recorrido...']
+                        ) ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1142,8 +1169,3 @@ $this->registerJsFile(
 );
 
 ?>
-
-
-
-
-

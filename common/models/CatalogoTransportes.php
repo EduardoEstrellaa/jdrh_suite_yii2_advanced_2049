@@ -45,6 +45,20 @@ class CatalogoTransportes extends \yii\db\ActiveRecord
     }
 
     /**
+     * Returns a map for dropdowns keyed by id.
+     *
+     * @return array
+     */
+    public static function dropdownOptions(): array
+    {
+        return static::find()
+            ->select('nombre')
+            ->indexBy('id')
+            ->orderBy('nombre')
+            ->column();
+    }
+
+    /**
      * Gets query for [[AlumTransportes]].
      *
      * @return \yii\db\ActiveQuery
