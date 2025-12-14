@@ -1,26 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "catalogo_problemas_salud".
+ * This is the model class for table "tipo_gravedad".
  *
  * @property int $id
  * @property string $nombre
  * @property string|null $descripcion
  *
+ * @property Alergias[] $alergias
  * @property ProblemasSalud[] $problemasSaluds
  */
-class CatalogoProblemasSalud extends \yii\db\ActiveRecord
+class TipoGravedad extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'catalogo_problemas_salud';
+        return 'tipo_gravedad';
     }
 
     /**
@@ -48,12 +49,22 @@ class CatalogoProblemasSalud extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Alergias]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAlergias()
+    {
+        return $this->hasMany(Alergias::class, ['tipo_gravedad_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[ProblemasSaluds]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getProblemasSaluds()
     {
-        return $this->hasMany(ProblemasSalud::class, ['catalogo_problemas_salud_id' => 'id']);
+        return $this->hasMany(ProblemasSalud::class, ['tipo_gravedad_id' => 'id']);
     }
 }

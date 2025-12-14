@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\AlumEstadoSalud;
+use common\models\AlumEstadoSalud;
 use backend\models\search\AlumEstadoSaludSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
