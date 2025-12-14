@@ -44,6 +44,10 @@ $catalogoBienesOptions = $catalogoBienesOptions ?? [];
 $catalogoBienOtroId = $catalogoBienOtroId ?? null;
 $bienesSeleccionados = $bienesSeleccionados ?? [];
 $bienesOtro = $bienesOtro ?? null;
+$catalogoServiciosViviendaOptions = $catalogoServiciosViviendaOptions ?? [];
+$catalogoServicioOtroId = $catalogoServicioOtroId ?? null;
+$serviciosSeleccionados = $serviciosSeleccionados ?? [];
+$serviciosOtro = $serviciosOtro ?? null;
 $catalogoBienesPersonalesOptions = $catalogoBienesPersonalesOptions ?? [];
 $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
 $catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
@@ -974,6 +978,42 @@ $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdo
                             <input type="text" name="ViviendaBienes[otro_especificar]" id="vivienda-bienes-otro" class="form-control" placeholder="Especifica otro bien..." value="<?= Html::encode($bienesOtro ?? '') ?>">
                         </div>
                     </div>
+                    <?php
+                    $mostrarOtroServicio = $catalogoServicioOtroId !== null && in_array((int)$catalogoServicioOtroId, $serviciosSeleccionados, true);
+                    ?>
+                    <div class="mt-4">
+                        <h5 class="mb-2">
+                            <i class="fas fa-plug text-warning"></i>
+                            <span class="text-secondary">Servicios con los que cuenta tu vivienda</span>
+                        </h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoServiciosViviendaOptions as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $serviciosSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input vivienda-servicio-checkbox"
+                                            name="ViviendaServicios[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="vivienda-servicio-<?= (int)$id ?>"
+                                            data-otro-id="<?= (int)$catalogoServicioOtroId ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="vivienda-servicio-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2 <?= $mostrarOtroServicio ? '' : 'd-none' ?>" id="vivienda-servicios-otro-container">
+                            <input
+                                type="text"
+                                name="ViviendaServicios[otro_especificar]"
+                                id="vivienda-servicios-otro"
+                                class="form-control"
+                                placeholder="Especifica otro servicio..."
+                                value="<?= Html::encode($serviciosOtro ?? '') ?>">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1151,6 +1191,7 @@ $this->registerJs($script, View::POS_BEGIN);
 $this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
 $this->registerJsVar('TIPO_VIVIENDA_OTRO_ID', $tipoViviendaOtroId);
 $this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
+$this->registerJsVar('VIVIENDA_SERVICIO_OTRO_ID', $catalogoServicioOtroId);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
     ['depends' => [\yii\web\JqueryAsset::class]]

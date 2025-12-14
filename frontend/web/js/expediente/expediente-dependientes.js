@@ -13,7 +13,8 @@
         const $otroInput = $(selectors.otroInput);
         if (!$otroInput.length) return;
 
-        $otroInput.on('input blur', function () {
+        // Permitir escribir espacios mientras se tipea; normalizar solo al perder foco
+        $otroInput.on('blur', function () {
             const raw = $(this).val();
             const trimmed = typeof raw === 'string' ? raw.trim() : '';
             $(this).val(trimmed);
@@ -45,6 +46,7 @@
                 .val('')
                 .prop('required', false)
                 .removeAttr('pattern')
+                .removeClass('is-invalid')
                 .get(0)?.setCustomValidity('');
             toggleDependientes.lastValue = 0;
             return;
@@ -60,7 +62,9 @@
             // Obligar al menos un caracter no espacio
             $otroInput.attr('pattern', '.*\\S.*');
         } else {
-            $otroInput.removeAttr('pattern').get(0)?.setCustomValidity('');
+            $otroInput.removeAttr('pattern')
+                .removeClass('is-invalid')
+                .get(0)?.setCustomValidity('');
         }
 
         // Si no hay checks, forzar uno requerido para validación HTML5
@@ -73,19 +77,23 @@
         const formEl = document.querySelector('.expediente-form form');
         if (!formEl) return;
 
-        formEl.addEventListener('submit', function (e) {
-            const $otroContainer = $(selectors.otroContainer);
-            const $otroInput = $(selectors.otroInput);
-            const $toggle = $(selectors.tieneDependientes);
-            const otroId = window.DEPENDENCIA_OTRO_ID ?? null;
+        const $form = $(formEl);
+        const $otroInput = $(selectors.otroInput);
+        const $toggle = $(selectors.tieneDependientes);
+        const otroId = window.DEPENDENCIA_OTRO_ID ?? null;
 
+        function validateOtro(event, options = {}) {
+            const sanitize = options.sanitize === true;
+            const $otroContainer = $(selectors.otroContainer);
             if (!$otroContainer.length || !$otroInput.length || !$toggle.length) {
-                return;
+                return true;
             }
 
             const hasDependientes = parseInt($toggle.val(), 10) === 1;
             if (!hasDependientes) {
-                return;
+                $otroInput.get(0)?.setCustomValidity('');
+                $otroInput.removeClass('is-invalid');
+                return true;
             }
 
             const selected = $(selectors.dependienteCheckbox).filter(':checked').map(function () {
@@ -93,25 +101,60 @@
             }).get();
             const requiresOtro = otroId !== null && selected.includes(otroId);
             if (!requiresOtro) {
-                return;
+                $otroInput.get(0)?.setCustomValidity('');
+                $otroInput.removeClass('is-invalid');
+                return true;
             }
 
             const raw = $otroInput.val();
             const trimmed = typeof raw === 'string' ? raw.trim() : '';
-            $otroInput.val(trimmed);
+            if (sanitize) {
+                $otroInput.val(trimmed);
+            }
+
             if (trimmed.length === 0) {
-                e.preventDefault();
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                $otroInput.addClass('is-invalid');
                 $otroInput.get(0)?.setCustomValidity('Debes especificar el texto para "Otro".');
                 $otroInput.get(0)?.reportValidity();
-                // Abrir acordeón correspondiente
                 const $collapse = $otroInput.closest('.accordion-collapse');
                 if ($collapse.length) {
                     $collapse.addClass('show');
                     $collapse.prev('.accordion-header').find('.accordion-button').removeClass('collapsed');
                 }
-            } else {
-                $otroInput.get(0)?.setCustomValidity('');
+                return false;
             }
+
+            $otroInput.removeClass('is-invalid');
+            $otroInput.get(0)?.setCustomValidity('');
+            return true;
+        }
+
+        $form.on('submit', function (e) {
+            if (!validateOtro(e, { sanitize: true })) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+            }
+            return true;
+        });
+
+        $form.on('beforeSubmit', function (e) {
+            if (!validateOtro(e, { sanitize: true })) {
+                e.preventDefault();
+                return false;
+            }
+            return true;
+        });
+
+        $(selectors.dependienteCheckbox).on('change', function () {
+            validateOtro(null, { sanitize: false });
+        });
+        $(selectors.otroInput).on('input', function () {
+            validateOtro(null, { sanitize: false });
         });
     }
 

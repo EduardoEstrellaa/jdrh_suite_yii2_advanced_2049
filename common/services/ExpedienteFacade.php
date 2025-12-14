@@ -12,12 +12,14 @@ use common\models\AlumVivienda;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\TiempoRecorridoTransporte;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
+use common\models\ViviendaServicios;
 use common\services\support\OperationResult;
 
 /**
@@ -45,6 +47,10 @@ class ExpedienteFacade
             'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
             'bienesSeleccionados' => [],
             'bienesOtro' => null,
+            'catalogoServiciosViviendaOptions' => CatalogoServiciosVivienda::dropdownOptions(),
+            'catalogoServicioOtroId' => CatalogoServiciosVivienda::getOtroId(),
+            'serviciosSeleccionados' => [],
+            'serviciosOtro' => null,
             'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
             'bienesPersonalesSeleccionados' => [],
             'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
@@ -61,9 +67,10 @@ class ExpedienteFacade
         $dependientesData = $this->buildDependientesData($models['alumDependenEconomica']);
         $edadesHijos = $this->getEdadesHijos($models['alumInfoHijos']);
         $bienesData = $this->buildViviendaBienesData($models['alumVivienda']);
+        $serviciosData = $this->buildViviendaServiciosData($models['alumVivienda']);
         $bienesPersonalesData = $this->buildBienesPersonalesData($alumnoId);
 
-        return array_merge($models, $dependientesData, $bienesData, $bienesPersonalesData, [
+        return array_merge($models, $dependientesData, $bienesData, $serviciosData, $bienesPersonalesData, [
             'edadesHijos' => $edadesHijos,
             'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
             'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
@@ -71,6 +78,8 @@ class ExpedienteFacade
             'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
             'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
             'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
+            'catalogoServiciosViviendaOptions' => CatalogoServiciosVivienda::dropdownOptions(),
+            'catalogoServicioOtroId' => CatalogoServiciosVivienda::getOtroId(),
             'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
             'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
@@ -196,6 +205,41 @@ class ExpedienteFacade
         return [
             'bienesSeleccionados' => $seleccionados,
             'bienesOtro' => $bienesOtro,
+        ];
+    }
+
+    /**
+     * Construye información de servicios seleccionados y texto para "Otro".
+     */
+    private function buildViviendaServiciosData(?AlumVivienda $alumVivienda = null): array
+    {
+        if ($alumVivienda === null || $alumVivienda->isNewRecord) {
+            return [
+                'serviciosSeleccionados' => [],
+                'serviciosOtro' => null,
+            ];
+        }
+
+        $servicios = ViviendaServicios::findAll([
+            'alum_vivienda_id' => $alumVivienda->id,
+        ]);
+
+        $seleccionados = [];
+        $serviciosOtro = null;
+        $otroId = CatalogoServiciosVivienda::getOtroId();
+
+        foreach ($servicios as $servicio) {
+            $servicioId = (int)$servicio->catalogo_servicios_vivienda_id;
+            $seleccionados[] = $servicioId;
+
+            if ($otroId !== null && $servicioId === $otroId) {
+                $serviciosOtro = $servicio->otro_especificar;
+            }
+        }
+
+        return [
+            'serviciosSeleccionados' => $seleccionados,
+            'serviciosOtro' => $serviciosOtro,
         ];
     }
 

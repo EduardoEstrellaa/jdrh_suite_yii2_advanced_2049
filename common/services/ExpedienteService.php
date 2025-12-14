@@ -22,11 +22,13 @@ use common\models\AlumVivienda;
 use common\models\CatalogoBienesVivienda;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
+use common\models\ViviendaServicios;
 use common\models\AlumBienesPersonales;
 use common\services\support\DependientesManager;
 use common\services\support\HijosManager;
 use common\services\support\ViviendaBienesManager;
 use common\services\support\AlumBienesPersonalesManager;
+use common\services\support\ViviendaServiciosManager;
 
 class ExpedienteService
 {
@@ -46,6 +48,7 @@ class ExpedienteService
             HijosManager::sync($models['alumInfoHijos'], $post);
             DependientesManager::sync($models['alumDependenEconomica'], $post);
             ViviendaBienesManager::sync($models['alumVivienda'], $post);
+            ViviendaServiciosManager::sync($models['alumVivienda'], $post);
             AlumBienesPersonalesManager::sync($alumno->id, $post);
             $transaction->commit();
             return true;
@@ -75,6 +78,7 @@ class ExpedienteService
             HijosManager::sync($models['alumInfoHijos'], $post);
             DependientesManager::sync($models['alumDependenEconomica'], $post);
             ViviendaBienesManager::sync($models['alumVivienda'], $post);
+            ViviendaServiciosManager::sync($models['alumVivienda'], $post);
             AlumBienesPersonalesManager::sync($alumnoId, $post);
             $transaction->commit();
             return true;
@@ -309,6 +313,7 @@ class ExpedienteService
             $alumVivienda = AlumVivienda::findOne(['alumnos_id' => $alumnoId]);
             if ($alumVivienda) {
                 ViviendaBienes::deleteAll(['alum_vivienda_id' => $alumVivienda->id]);
+                ViviendaServicios::deleteAll(['alum_vivienda_id' => $alumVivienda->id]);
                 $alumVivienda->delete();
             }
 
