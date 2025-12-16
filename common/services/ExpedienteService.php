@@ -15,6 +15,8 @@ use common\models\AlumDependeEconomicamente;
 use common\models\AlumDependenEconomica;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
+use common\models\AlumEstadoSalud;
+use common\models\ProblemasSalud;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumTrabajo;
 use common\models\AlumTransportes;
@@ -29,6 +31,7 @@ use common\services\support\HijosManager;
 use common\services\support\ViviendaBienesManager;
 use common\services\support\AlumBienesPersonalesManager;
 use common\services\support\ViviendaServiciosManager;
+use common\services\support\ProblemasSaludManager;
 
 class ExpedienteService
 {
@@ -37,7 +40,7 @@ class ExpedienteService
      */
     public static function crearExpediente($perfil, $alumno, $post)
     {
-        $models = self::initializeModelsForCreate($perfil, $alumno);
+        $models = self::getModelsForCreate($perfil, $alumno);
 
         self::loadAndValidate($models, $post);
         self::normalizeModels($models);
@@ -45,11 +48,7 @@ class ExpedienteService
         $transaction = Yii::$app->db->beginTransaction();
         try {
             self::saveModels($models);
-            HijosManager::sync($models['alumInfoHijos'], $post);
-            DependientesManager::sync($models['alumDependenEconomica'], $post);
-            ViviendaBienesManager::sync($models['alumVivienda'], $post);
-            ViviendaServiciosManager::sync($models['alumVivienda'], $post);
-            AlumBienesPersonalesManager::sync($alumno->id, $post);
+            self::syncAggregates($models, $post, $alumno->id);
             $transaction->commit();
             return true;
         } catch (DomainException $e) {
@@ -70,16 +69,13 @@ class ExpedienteService
     {
         $models = self::getModelsForUpdate($perfilId, $alumnoId);
 
+        self::loadModels($models, $post);
+        self::normalizeModels($models);
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            self::loadModels($models, $post);
-            self::normalizeModels($models);
             self::saveModels($models);
-            HijosManager::sync($models['alumInfoHijos'], $post);
-            DependientesManager::sync($models['alumDependenEconomica'], $post);
-            ViviendaBienesManager::sync($models['alumVivienda'], $post);
-            ViviendaServiciosManager::sync($models['alumVivienda'], $post);
-            AlumBienesPersonalesManager::sync($alumnoId, $post);
+            self::syncAggregates($models, $post, $alumnoId);
             $transaction->commit();
             return true;
         } catch (DomainException $e) {
@@ -94,68 +90,49 @@ class ExpedienteService
     }
 
     /**
-     * Obtiene modelos nuevos para crear expediente
+     * Obtiene modelos nuevos para crear expediente.
      */
     public static function getModelsForCreate($perfil, $alumno)
     {
-        $models = [];
-
-        // Modelos con perfil_id
-        $models['datosPersonales'] = new DatosPersonales(['perfil_id' => $perfil->id]);
-        $models['lugaresNacimiento'] = new LugaresNacimiento(['perfil_id' => $perfil->id]);
-        $models['domiciliosActuales'] = new DomiciliosActuales(['perfil_id' => $perfil->id]);
-        $models['datosGenerales'] = new DatosGenerales(['perfil_id' => $perfil->id]);
-
-        // Modelos con alumnos_id
-        $models['alumBecas'] = new AlumBecas(['alumnos_id' => $alumno->id]);
-        $models['alumDatosFamiliares'] = new AlumDatosFamiliares(['alumnos_id' => $alumno->id]);
-        $models['alumInfoHijos'] = new AlumInfoHijos(['alumnos_id' => $alumno->id]);
-        $models['alumDependeEconomicamente'] = new AlumDependeEconomicamente(['alumnos_id' => $alumno->id]);
-        $models['alumDependenEconomica'] = new AlumDependenEconomica(['alumnos_id' => $alumno->id]);
-        $models['alumTrabajo'] = new AlumTrabajo(['alumnos_id' => $alumno->id]);
-        $models['alumVivienda'] = new AlumVivienda(['alumnos_id' => $alumno->id]);
-        $models['alumTransportes'] = new AlumTransportes(['alumnos_id' => $alumno->id]);
-
-        return $models;
+        return [
+            'datosPersonales' => new DatosPersonales(['perfil_id' => $perfil->id]),
+            'lugaresNacimiento' => new LugaresNacimiento(['perfil_id' => $perfil->id]),
+            'domiciliosActuales' => new DomiciliosActuales(['perfil_id' => $perfil->id]),
+            'datosGenerales' => new DatosGenerales(['perfil_id' => $perfil->id]),
+            'alumBecas' => new AlumBecas(['alumnos_id' => $alumno->id]),
+            'alumDatosFamiliares' => new AlumDatosFamiliares(['alumnos_id' => $alumno->id]),
+            'alumInfoHijos' => new AlumInfoHijos(['alumnos_id' => $alumno->id]),
+            'alumDependeEconomicamente' => new AlumDependeEconomicamente(['alumnos_id' => $alumno->id]),
+            'alumDependenEconomica' => new AlumDependenEconomica(['alumnos_id' => $alumno->id]),
+            'alumTrabajo' => new AlumTrabajo(['alumnos_id' => $alumno->id]),
+            'alumVivienda' => new AlumVivienda(['alumnos_id' => $alumno->id]),
+            'alumTransportes' => new AlumTransportes(['alumnos_id' => $alumno->id]),
+            'alumEstadoSalud' => new AlumEstadoSalud(['alumnos_id' => $alumno->id]),
+        ];
     }
 
     /**
-     * Obtiene los modelos para actualizar expediente
+     * Obtiene los modelos para actualizar expediente.
      */
     public static function getModelsForUpdate($perfilId, $alumnoId)
     {
-        $models = [];
-
-        // Modelos con perfil_id
-        $models['datosPersonales'] = self::findOrCreateModel(DatosPersonales::class, ['perfil_id' => $perfilId]);
-        $models['lugaresNacimiento'] = self::findOrCreateModel(LugaresNacimiento::class, ['perfil_id' => $perfilId]);
-        $models['domiciliosActuales'] = self::findOrCreateModel(DomiciliosActuales::class, ['perfil_id' => $perfilId]);
-        $models['datosGenerales'] = self::findOrCreateModel(DatosGenerales::class, ['perfil_id' => $perfilId]);
-
-        // Modelos con alumnos_id
-        $models['alumBecas'] = self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]);
-        $models['alumDatosFamiliares'] = self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]);
-        $models['alumInfoHijos'] = self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]);
-        $models['alumDependeEconomicamente'] = self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]);
-        $models['alumDependenEconomica'] = self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]);
-        $models['alumTrabajo'] = self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]);
-        $models['alumVivienda'] = self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]);
-        $models['alumTransportes'] = self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]);
-
-        return $models;
+        return [
+            'datosPersonales' => self::findOrCreateModel(DatosPersonales::class, ['perfil_id' => $perfilId]),
+            'lugaresNacimiento' => self::findOrCreateModel(LugaresNacimiento::class, ['perfil_id' => $perfilId]),
+            'domiciliosActuales' => self::findOrCreateModel(DomiciliosActuales::class, ['perfil_id' => $perfilId]),
+            'datosGenerales' => self::findOrCreateModel(DatosGenerales::class, ['perfil_id' => $perfilId]),
+            'alumBecas' => self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]),
+            'alumDatosFamiliares' => self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]),
+            'alumInfoHijos' => self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]),
+            'alumDependeEconomicamente' => self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]),
+            'alumDependenEconomica' => self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]),
+            'alumTrabajo' => self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]),
+            'alumVivienda' => self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]),
+            'alumTransportes' => self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]),
+            'alumEstadoSalud' => self::findOrCreateModel(AlumEstadoSalud::class, ['alumnos_id' => $alumnoId]),
+        ];
     }
 
-    /**
-     * Inicializa modelos para creación
-     */
-    private static function initializeModelsForCreate($perfil, $alumno)
-    {
-        return self::getModelsForCreate($perfil, $alumno);
-    }
-
-    /**
-     * Busca o crea un modelo
-     */
     private static function findOrCreateModel($className, $conditions)
     {
         $model = $className::find()->where($conditions)->one();
@@ -196,64 +173,13 @@ class ExpedienteService
     private static function saveModels(array $models): void
     {
         foreach ($models as $model) {
-            self::normalizeModel($model);
             if (!$model->save()) {
-                Yii::error("Error en " . get_class($model) . " : " . json_encode($model->errors));
+                Yii::error('Error en ' . get_class($model) . ' : ' . json_encode($model->errors));
                 throw new DomainException('No se pudo guardar ' . get_class($model));
             }
         }
     }
 
-    /**
-     * Normaliza los campos de beca cuando no corresponden.
-     */
-    private static function normalizeBecaFields(AlumBecas $alumBecas): void
-    {
-        if ((int)$alumBecas->tiene_beca !== 1) {
-            $alumBecas->tipos_becas_id = null;
-            $alumBecas->otro_especificar = null;
-            return;
-        }
-
-        if ((int)$alumBecas->tipos_becas_id !== 1) {
-            $alumBecas->otro_especificar = null;
-        }
-    }
-
-    /**
-     * Limpia campos de dependencia económica cuando no aplica "Otro".
-     */
-    private static function normalizeDependenciaFields(AlumDependeEconomicamente $alumDependeEconomicamente): void
-    {
-        $otroId = CatalogoDependenciasEconomicas::getOtroId();
-        if ($otroId === null) {
-            $alumDependeEconomicamente->otro_especificar = null;
-            return;
-        }
-
-        if ((int)$alumDependeEconomicamente->catalogo_dependencias_economicas_id !== $otroId) {
-            $alumDependeEconomicamente->otro_especificar = null;
-        }
-    }
-
-    /**
-     * Limpia campos de trabajo cuando no aplica.
-     */
-    private static function normalizeTrabajoFields(AlumTrabajo $alumTrabajo): void
-    {
-        if ((int)$alumTrabajo->tiene_trabajo !== 1) {
-            $alumTrabajo->nombre_empresa = null;
-            $alumTrabajo->puesto_ocupacion = null;
-            $alumTrabajo->horario_entrada = null;
-            $alumTrabajo->horario_salida = null;
-        }
-    }
-
-    /**
-     * Normaliza modelos dependientes (becas/dependencia económica) previo a guardar.
-     *
-     * @param array $models
-     */
     private static function normalizeModels(array &$models): void
     {
         foreach ($models as $model) {
@@ -261,11 +187,6 @@ class ExpedienteService
         }
     }
 
-    /**
-     * Normaliza un modelo concreto si aplica reglas especiales.
-     *
-     * @param mixed $model
-     */
     private static function normalizeModel($model): void
     {
         if ($model instanceof AlumBecas) {
@@ -285,6 +206,67 @@ class ExpedienteService
         }
     }
 
+    private static function normalizeBecaFields(AlumBecas $alumBecas): void
+    {
+        if ((int)$alumBecas->tiene_beca !== 1) {
+            $alumBecas->tipos_becas_id = null;
+            $alumBecas->otro_especificar = null;
+            return;
+        }
+
+        if ((int)$alumBecas->tipos_becas_id !== 1) {
+            $alumBecas->otro_especificar = null;
+        }
+    }
+
+    private static function normalizeDependenciaFields(AlumDependeEconomicamente $alumDependeEconomicamente): void
+    {
+        $otroId = CatalogoDependenciasEconomicas::getOtroId();
+        if ($otroId === null) {
+            $alumDependeEconomicamente->otro_especificar = null;
+            return;
+        }
+
+        if ((int)$alumDependeEconomicamente->catalogo_dependencias_economicas_id !== $otroId) {
+            $alumDependeEconomicamente->otro_especificar = null;
+        }
+    }
+
+    private static function normalizeTrabajoFields(AlumTrabajo $alumTrabajo): void
+    {
+        if ((int)$alumTrabajo->tiene_trabajo !== 1) {
+            $alumTrabajo->nombre_empresa = null;
+            $alumTrabajo->puesto_ocupacion = null;
+            $alumTrabajo->horario_entrada = null;
+            $alumTrabajo->horario_salida = null;
+        }
+    }
+
+    private static function normalizeViviendaFields(AlumVivienda $alumVivienda): void
+    {
+        if ((int)$alumVivienda->vives_casa_padres === 1) {
+            $alumVivienda->otro_especificar = null;
+        }
+
+        $otroId = TiposViviendas::getOtroId();
+        if ($otroId === null || (int)$alumVivienda->tipos_viviendas_id !== $otroId) {
+            $alumVivienda->otro_tipo_especificar = null;
+        }
+    }
+
+    /**
+     * Sincroniza colecciones relacionadas después de guardar los modelos base.
+     */
+    private static function syncAggregates(array $models, array $post, int $alumnoId): void
+    {
+        ProblemasSaludManager::sync($models['alumEstadoSalud'], $post);
+        HijosManager::sync($models['alumInfoHijos'], $post);
+        DependientesManager::sync($models['alumDependenEconomica'], $post);
+        ViviendaBienesManager::sync($models['alumVivienda'], $post);
+        ViviendaServiciosManager::sync($models['alumVivienda'], $post);
+        AlumBienesPersonalesManager::sync($alumnoId, $post);
+    }
+
     /**
      * Elimina un expediente completo de forma transaccional.
      */
@@ -292,19 +274,23 @@ class ExpedienteService
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            // Eliminar modelos con perfil_id
             DatosPersonales::deleteAll(['perfil_id' => $perfilId]);
             LugaresNacimiento::deleteAll(['perfil_id' => $perfilId]);
             DomiciliosActuales::deleteAll(['perfil_id' => $perfilId]);
             DatosGenerales::deleteAll(['perfil_id' => $perfilId]);
 
-            // Eliminar modelos con alumnos_id
             AlumBecas::deleteAll(['alumnos_id' => $alumnoId]);
             AlumDatosFamiliares::deleteAll(['alumnos_id' => $alumnoId]);
             AlumDependeEconomicamente::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTrabajo::deleteAll(['alumnos_id' => $alumnoId]);
             AlumBienesPersonales::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
+
+            $alumEstadoSalud = AlumEstadoSalud::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumEstadoSalud) {
+                ProblemasSalud::deleteAll(['alum_estado_salud_id' => $alumEstadoSalud->id]);
+                $alumEstadoSalud->delete();
+            }
             $alumDependen = AlumDependenEconomica::findOne(['alumnos_id' => $alumnoId]);
             if ($alumDependen) {
                 Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);
@@ -327,7 +313,7 @@ class ExpedienteService
     }
 
     /**
-     * Verifica si el expediente existe
+     * Verifica si el expediente existe.
      */
     public static function expedienteExiste($perfilId, $alumnoId)
     {
@@ -343,26 +329,14 @@ class ExpedienteService
             if ($model instanceof AlumTransportes) {
                 continue;
             }
+            if ($model instanceof AlumEstadoSalud) {
+                continue;
+            }
             if ($model->isNewRecord) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     * Limpia campos de vivienda cuando no corresponden.
-     */
-    private static function normalizeViviendaFields(AlumVivienda $alumVivienda): void
-    {
-        if ((int)$alumVivienda->vives_casa_padres === 1) {
-            $alumVivienda->otro_especificar = null;
-        }
-
-        $otroId = TiposViviendas::getOtroId();
-        if ($otroId === null || (int)$alumVivienda->tipos_viviendas_id !== $otroId) {
-            $alumVivienda->otro_tipo_especificar = null;
-        }
     }
 }

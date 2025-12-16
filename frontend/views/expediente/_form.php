@@ -20,6 +20,10 @@ use common\models\AlumTransportes;
 use common\models\CatalogoTransportes;
 use common\models\TiposViviendas;
 use common\models\TiempoRecorridoTransporte;
+use common\models\AlumEstadoSalud;
+use common\models\ProblemasSalud;
+use common\models\CatalogoProblemasSalud;
+use common\models\TipoGravedad;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
 use yii\web\View;
@@ -52,11 +56,16 @@ $catalogoBienesPersonalesOptions = $catalogoBienesPersonalesOptions ?? [];
 $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
 $catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
 $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
+$alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
+$problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
+$catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
+$tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
+$otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
 ?>
 
 <div class="expediente-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'expediente-form']); ?>
 
     <!-- ===================== -->
     <!-- 🎯 ACORDEÓN GENERAL -->
@@ -1086,17 +1095,99 @@ $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdo
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 6: SALUD -->
+        <!-- SECCIÓN 10: SALUD -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingSalud">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSalud" aria-expanded="false" aria-controls="collapseSalud">
-                    ⚕️ VI. SALUD
+                    ⚕️ X. SALUD
                 </button>
             </h2>
             <div id="collapseSalud" class="accordion-collapse collapse" aria-labelledby="headingSalud" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de salud próximamente...</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumEstadoSalud,
+                                'tuvo_problema_salud',
+                                'fa-heartbeat',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Ha tenido problemas de salud?',
+                                    'id' => 'alumestadosalud-tuvo_problema_salud',
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $problemasSaludSeleccionados = [];
+                    foreach ($problemasSalud as $ps) {
+                        $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
+                    }
+                    ?>
+
+                    <div id="salud-problemas-container" class="<?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <h5 class="mt-3 mb-3">Problemas de salud</h5>
+                        <div class="row g-3">
+                            <?php foreach ($catalogoProblemasSaludMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $seleccionado = isset($problemasSaludSeleccionados[$id]);
+                                $problema = $problemasSaludSeleccionados[$id] ?? new ProblemasSalud();
+                                ?>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="border rounded p-3 h-100 problema-item" data-problema-id="<?= $id ?>">
+                                        <div class="form-check mb-2">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input problema-salud-checkbox"
+                                                name="ProblemasSalud[<?= $id ?>][selected]"
+                                                value="1"
+                                                id="problema-<?= $id ?>"
+                                                <?= $seleccionado ? 'checked' : '' ?>>
+                                            <label class="form-check-label fw-semibold" for="problema-<?= $id ?>"><?= Html::encode($nombre) ?></label>
+                                                <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
+                                            </div>
+                                        <div class="mb-2 problema-gravedad-wrapper <?= $seleccionado ? '' : 'd-none' ?>">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $problema,
+                                                "[$id]tipo_gravedad_id",
+                                                'fa-exclamation-triangle',
+                                                $tipoGravedadMap,
+                                                [
+                                                    'options' => [
+                                                        'placeholder' => 'Selecciona gravedad...',
+                                                        'class' => 'form-control problema-gravedad-select',
+                                                        'disabled' => !$seleccionado,
+                                                    ],
+                                                    'fieldOptions' => [
+                                                        'enableClientValidation' => false,
+                                                        'enableAjaxValidation' => false,
+                                                        'validateOnBlur' => false,
+                                                        'validateOnChange' => false,
+                                                        'validateOnType' => false,
+                                                    ],
+                                                    'labelOptions' => ['class' => 'form-label fw-semibold mb-1', 'label' => 'Tipo de gravedad'],
+                                                ],
+                                                ['allowClear' => true]
+                                            ) ?>
+                                        </div>
+                                        <?php if ($otroCatalogoProblemaId !== null && $id === (int)$otroCatalogoProblemaId): ?>
+                                            <input
+                                                type="text"
+                                                name="ProblemasSalud[<?= $id ?>][otro_especificar]"
+                                                class="form-control problema-otro-campo <?= $seleccionado ? '' : 'd-none' ?>"
+                                                placeholder="Especifica el problema"
+                                                value="<?= $seleccionado ? Html::encode($problema->otro_especificar) : '' ?>">
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1192,6 +1283,7 @@ $this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
 $this->registerJsVar('TIPO_VIVIENDA_OTRO_ID', $tipoViviendaOtroId);
 $this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
 $this->registerJsVar('VIVIENDA_SERVICIO_OTRO_ID', $catalogoServicioOtroId);
+$this->registerJsVar('PROBLEMA_OTRO_ID', $otroCatalogoProblemaId);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
@@ -1206,6 +1298,10 @@ $this->registerJsFile(
 );
 $this->registerJsFile(
     '@web/js/expediente/expediente-vivienda.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-salud.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 

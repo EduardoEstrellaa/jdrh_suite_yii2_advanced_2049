@@ -7,59 +7,44 @@ use Yii;
 use common\models\AlumDependenEconomica;
 use common\models\AlumInfoHijos;
 use common\models\AlumBienesPersonales;
-use common\models\AlumTransportes;
 use common\models\AlumVivienda;
+use common\models\AlumEstadoSalud;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoProblemasSalud;
 use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
+use common\models\ProblemasSalud;
 use common\models\TiempoRecorridoTransporte;
+use common\models\TipoGravedad;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\models\ViviendaServicios;
 use common\services\support\OperationResult;
 
-/**
- * Fachada de aplicaciÇün para orquestar operaciones de expediente.
- */
 class ExpedienteFacade
 {
     /**
-     * Datos iniciales para vista de creaciÇün.
+     * Datos iniciales para vista de creación.
      */
     public function getCreateData($perfil, $alumno)
     {
         $models = ExpedienteService::getModelsForCreate($perfil, $alumno);
 
-        return array_merge($models, [
-            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
-            'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
-            'dependientes' => [],
-            'dependientesSeleccionados' => [],
-            'dependientesOtro' => null,
-            'edadesHijos' => [],
-            'tiposViviendasMap' => TiposViviendas::dropdownOptions(),
-            'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
-            'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
-            'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
-            'bienesSeleccionados' => [],
-            'bienesOtro' => null,
-            'catalogoServiciosViviendaOptions' => CatalogoServiciosVivienda::dropdownOptions(),
-            'catalogoServicioOtroId' => CatalogoServiciosVivienda::getOtroId(),
-            'serviciosSeleccionados' => [],
-            'serviciosOtro' => null,
-            'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
-            'bienesPersonalesSeleccionados' => [],
-            'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
-            'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
-        ]);
+        return array_merge(
+            $models,
+            $this->getDependientesDefaults(),
+            $this->getViviendaDefaults(),
+            $this->getSaludDefaults(),
+            $this->getCatalogosData()
+        );
     }
 
     /**
-     * Datos completos para vistas de actualizaciÇün/consulta.
+     * Datos completos para vistas de actualización/consulta.
      */
     public function getUpdateData($perfilId, $alumnoId)
     {
@@ -69,21 +54,18 @@ class ExpedienteFacade
         $bienesData = $this->buildViviendaBienesData($models['alumVivienda']);
         $serviciosData = $this->buildViviendaServiciosData($models['alumVivienda']);
         $bienesPersonalesData = $this->buildBienesPersonalesData($alumnoId);
+        $problemasSaludData = $this->buildProblemasSaludData($models['alumEstadoSalud'] ?? null);
 
-        return array_merge($models, $dependientesData, $bienesData, $serviciosData, $bienesPersonalesData, [
-            'edadesHijos' => $edadesHijos,
-            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
-            'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
-            'tiposViviendasMap' => TiposViviendas::dropdownOptions(),
-            'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
-            'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
-            'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
-            'catalogoServiciosViviendaOptions' => CatalogoServiciosVivienda::dropdownOptions(),
-            'catalogoServicioOtroId' => CatalogoServiciosVivienda::getOtroId(),
-            'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
-            'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
-            'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
-        ]);
+        return array_merge(
+            $models,
+            $dependientesData,
+            $bienesData,
+            $serviciosData,
+            $bienesPersonalesData,
+            $problemasSaludData,
+            ['edadesHijos' => $edadesHijos],
+            $this->getCatalogosData()
+        );
     }
 
     /**
@@ -123,17 +105,10 @@ class ExpedienteFacade
         }
     }
 
-    /**
-     * Construye informaciÇün de dependientes seleccionados y texto de "Otro".
-     */
-    private function buildDependientesData(?AlumDependenEconomica $alumDependenEconomica = null)
+    private function buildDependientesData(?AlumDependenEconomica $alumDependenEconomica = null): array
     {
         if ($alumDependenEconomica === null || $alumDependenEconomica->isNewRecord) {
-            return [
-                'dependientes' => [],
-                'dependientesSeleccionados' => [],
-                'dependientesOtro' => null,
-            ];
+            return $this->getDependientesDefaults();
         }
 
         $dependientes = Dependientes::findAll([
@@ -159,10 +134,16 @@ class ExpedienteFacade
         ];
     }
 
-    /**
-     * Obtiene edades de hijos asociadas.
-     */
-    private function getEdadesHijos(?AlumInfoHijos $alumInfoHijos = null)
+    private function getDependientesDefaults(): array
+    {
+        return [
+            'dependientes' => [],
+            'dependientesSeleccionados' => [],
+            'dependientesOtro' => null,
+        ];
+    }
+
+    private function getEdadesHijos(?AlumInfoHijos $alumInfoHijos = null): array
     {
         if ($alumInfoHijos === null || $alumInfoHijos->isNewRecord) {
             return [];
@@ -173,16 +154,28 @@ class ExpedienteFacade
         ]);
     }
 
-    /**
-     * Construye informaciГіn de bienes seleccionados y texto para "Otro".
-     */
+    private function buildProblemasSaludData(?AlumEstadoSalud $alumEstadoSalud = null): array
+    {
+        if ($alumEstadoSalud === null || $alumEstadoSalud->isNewRecord) {
+            return $this->getSaludDefaults();
+        }
+
+        $problemas = ProblemasSalud::find()
+            ->where(['alum_estado_salud_id' => $alumEstadoSalud->id])
+            ->all();
+        if (empty($problemas)) {
+            $problemas = [new ProblemasSalud()];
+        }
+
+        return [
+            'problemasSalud' => $problemas,
+        ];
+    }
+
     private function buildViviendaBienesData(?AlumVivienda $alumVivienda = null): array
     {
         if ($alumVivienda === null || $alumVivienda->isNewRecord) {
-            return [
-                'bienesSeleccionados' => [],
-                'bienesOtro' => null,
-            ];
+            return $this->getViviendaDefaults();
         }
 
         $bienes = ViviendaBienes::findAll([
@@ -208,9 +201,6 @@ class ExpedienteFacade
         ];
     }
 
-    /**
-     * Construye información de servicios seleccionados y texto para "Otro".
-     */
     private function buildViviendaServiciosData(?AlumVivienda $alumVivienda = null): array
     {
         if ($alumVivienda === null || $alumVivienda->isNewRecord) {
@@ -243,9 +233,6 @@ class ExpedienteFacade
         ];
     }
 
-    /**
-     * Construye informaciÃ³n de bienes personales seleccionados.
-     */
     private function buildBienesPersonalesData(int $alumnoId): array
     {
         $seleccionados = AlumBienesPersonales::find()
@@ -257,6 +244,41 @@ class ExpedienteFacade
 
         return [
             'bienesPersonalesSeleccionados' => $seleccionados,
+        ];
+    }
+
+    private function getViviendaDefaults(): array
+    {
+        return [
+            'bienesSeleccionados' => [],
+            'bienesOtro' => null,
+        ];
+    }
+
+    private function getSaludDefaults(): array
+    {
+        return [
+            'problemasSalud' => [new ProblemasSalud()],
+        ];
+    }
+
+    private function getCatalogosData(): array
+    {
+        return [
+            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
+            'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
+            'tiposViviendasMap' => TiposViviendas::dropdownOptions(),
+            'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
+            'catalogoBienesOptions' => CatalogoBienesVivienda::dropdownOptions(),
+            'catalogoBienOtroId' => CatalogoBienesVivienda::getOtroId(),
+            'catalogoServiciosViviendaOptions' => CatalogoServiciosVivienda::dropdownOptions(),
+            'catalogoServicioOtroId' => CatalogoServiciosVivienda::getOtroId(),
+            'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
+            'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
+            'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
+            'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
+            'tipoGravedadMap' => TipoGravedad::dropdownOptions(),
+            'otroCatalogoProblemaId' => CatalogoProblemasSalud::getOtroId(),
         ];
     }
 }
