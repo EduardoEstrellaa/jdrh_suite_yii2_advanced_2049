@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumServiciosSalud;
+use common\models\AlumServiciosSalud;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
