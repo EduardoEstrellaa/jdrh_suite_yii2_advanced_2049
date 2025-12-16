@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "alum_asiste_dentista".
+ * This is the model class for table "alum_asiste_medico".
  *
  * @property int $id
  * @property int $alumnos_id
@@ -14,14 +14,14 @@ use Yii;
  * @property Alumnos $alumnos
  * @property FrecuenciaTiempo $frecuenciaTiempo
  */
-class AlumAsisteDentista extends \yii\db\ActiveRecord
+class AlumAsisteMedico extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'alum_asiste_dentista';
+        return 'alum_asiste_medico';
     }
 
     /**

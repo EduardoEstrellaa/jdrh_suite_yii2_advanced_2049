@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\FrecuenciaTiempo $model */
+/** @var common\models\FrecuenciaTiempo $model */
 
 $this->title = Yii::t('app', 'Create Frecuencia Tiempo');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Frecuencia Tiempos'), 'url' => ['index']];

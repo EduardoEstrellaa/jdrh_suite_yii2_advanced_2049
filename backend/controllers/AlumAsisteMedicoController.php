@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\AlumAsisteMedico;
+use common\models\AlumAsisteMedico;
 use backend\models\search\AlumAsisteMedicoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
