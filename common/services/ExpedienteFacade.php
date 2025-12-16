@@ -9,15 +9,18 @@ use common\models\AlumInfoHijos;
 use common\models\AlumBienesPersonales;
 use common\models\AlumVivienda;
 use common\models\AlumEstadoSalud;
+use common\models\AlumServiciosSalud;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\CatalogoProblemasSalud;
+use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\ProblemasSalud;
+use common\models\ServiciosSalud;
 use common\models\TiempoRecorridoTransporte;
 use common\models\TipoGravedad;
 use common\models\TiposViviendas;
@@ -55,6 +58,7 @@ class ExpedienteFacade
         $serviciosData = $this->buildViviendaServiciosData($models['alumVivienda']);
         $bienesPersonalesData = $this->buildBienesPersonalesData($alumnoId);
         $problemasSaludData = $this->buildProblemasSaludData($models['alumEstadoSalud'] ?? null);
+        $serviciosSaludData = $this->buildServiciosSaludData($models['alumServiciosSalud'] ?? null);
 
         return array_merge(
             $models,
@@ -63,6 +67,7 @@ class ExpedienteFacade
             $serviciosData,
             $bienesPersonalesData,
             $problemasSaludData,
+            $serviciosSaludData,
             ['edadesHijos' => $edadesHijos],
             $this->getCatalogosData()
         );
@@ -172,6 +177,22 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildServiciosSaludData(?AlumServiciosSalud $alumServiciosSalud = null): array
+    {
+        if ($alumServiciosSalud === null || $alumServiciosSalud->isNewRecord) {
+            return ['serviciosSaludSeleccionados' => []];
+        }
+
+        $ids = ServiciosSalud::find()
+            ->select('catalogo_servicios_salud_id')
+            ->where(['alum_servicios_salud_id' => $alumServiciosSalud->id])
+            ->column();
+
+        return [
+            'serviciosSaludSeleccionados' => array_map('intval', $ids),
+        ];
+    }
+
     private function buildViviendaBienesData(?AlumVivienda $alumVivienda = null): array
     {
         if ($alumVivienda === null || $alumVivienda->isNewRecord) {
@@ -259,6 +280,7 @@ class ExpedienteFacade
     {
         return [
             'problemasSalud' => [new ProblemasSalud()],
+            'serviciosSaludSeleccionados' => [],
         ];
     }
 
@@ -277,6 +299,7 @@ class ExpedienteFacade
             'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
+            'catalogoServiciosSaludMap' => CatalogoServiciosSalud::dropdownOptions(),
             'tipoGravedadMap' => TipoGravedad::dropdownOptions(),
             'otroCatalogoProblemaId' => CatalogoProblemasSalud::getOtroId(),
         ];

@@ -21,8 +21,10 @@ use common\models\CatalogoTransportes;
 use common\models\TiposViviendas;
 use common\models\TiempoRecorridoTransporte;
 use common\models\AlumEstadoSalud;
+use common\models\AlumServiciosSalud;
 use common\models\ProblemasSalud;
 use common\models\CatalogoProblemasSalud;
+use common\models\CatalogoServiciosSalud;
 use common\models\TipoGravedad;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
@@ -57,10 +59,13 @@ $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
 $catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
 $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
+$alumServiciosSalud = $alumServiciosSalud ?? new AlumServiciosSalud(['alumnos_id' => $alumno->id ?? null]);
 $problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
 $catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
+$catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
 $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
+$serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
 ?>
 
 <div class="expediente-form">
@@ -1119,6 +1124,19 @@ $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::get
                                 ]
                             ) ?>
                         </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumServiciosSalud,
+                                'tiene_servicios_salud',
+                                'fa-briefcase-medical',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Cuenta con servicios de salud?',
+                                    'id' => 'alumserviciossalud-tiene_servicios_salud',
+                                ]
+                            ) ?>
+                        </div>
                     </div>
 
                     <?php
@@ -1127,6 +1145,27 @@ $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::get
                         $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
                     }
                     ?>
+
+                    <div id="salud-servicios-container" class="<?= ((int)($alumServiciosSalud->tiene_servicios_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <h5 class="mt-3 mb-3">Servicios de salud</h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoServiciosSaludMap as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $serviciosSaludSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input servicio-salud-checkbox"
+                                            name="ServiciosSalud[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="servicio-salud-<?= (int)$id ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="servicio-salud-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
 
                     <div id="salud-problemas-container" class="<?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
                         <h5 class="mt-3 mb-3">Problemas de salud</h5>

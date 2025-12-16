@@ -3,6 +3,9 @@
   const contenedorSelector = '#salud-problemas-container';
   const checkboxSelector = '.problema-salud-checkbox';
   const otroCampoSelector = '.problema-otro-campo';
+  const selectorServicios = '#alumserviciossalud-tiene_servicios_salud';
+  const serviciosContainerSelector = '#salud-servicios-container';
+  const servicioCheckboxSelector = '.servicio-salud-checkbox';
 
   const getOtroId = () =>
     typeof PROBLEMA_OTRO_ID !== 'undefined' ? parseInt(PROBLEMA_OTRO_ID, 10) : null;
@@ -64,7 +67,7 @@
     }
   };
 
-  const toggleContenedor = () => {
+  const toggleProblemas = () => {
     const show = parseInt($(selectorTiene).val(), 10) === 1;
     $(contenedorSelector).toggleClass('d-none', !show);
 
@@ -76,6 +79,21 @@
           disableRow($cb.closest('.problema-item'));
         }
       });
+    }
+  };
+
+  const toggleServicios = () => {
+    const show = parseInt($(selectorServicios).val(), 10) === 1;
+    $(serviciosContainerSelector).toggleClass('d-none', !show);
+
+    const $checkboxes = $(servicioCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      $checkboxes.prop('checked', false);
+      if (first) {
+        first.setCustomValidity('');
+      }
     }
   };
 
@@ -118,22 +136,72 @@
     return true;
   };
 
+  const validateServiciosSalud = (event) => {
+    const show = parseInt($(selectorServicios).val(), 10) === 1;
+    const $checkboxes = $(servicioCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      if (first) {
+        first.setCustomValidity('');
+      }
+      return true;
+    }
+
+    const hasSelection = $(servicioCheckboxSelector + ':checked').length > 0;
+    if (!hasSelection) {
+      if (first) {
+        first.setCustomValidity('Selecciona al menos un servicio de salud.');
+        if (event) {
+          first.reportValidity();
+        }
+      }
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return false;
+    }
+
+    if (first) {
+      first.setCustomValidity('');
+    }
+    return true;
+  };
+
   $(document)
-    .on('change', selectorTiene, toggleContenedor)
+    .on('change', selectorTiene, toggleProblemas)
     .on('change', checkboxSelector, function () {
       toggleRow($(this));
       validateOtroSalud();
     })
+    .on('change', selectorServicios, function () {
+      toggleServicios();
+      validateServiciosSalud();
+    })
+    .on('change', servicioCheckboxSelector, function () {
+      validateServiciosSalud();
+    })
     .on('input', otroCampoSelector, function () {
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
+    })
+    .on('submit', '#expediente-form', function (event) {
+      const validOtro = validateOtroSalud(event);
+      const validServicios = validateServiciosSalud(event);
+      if (!validOtro || !validServicios) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     });
 
   $(document).ready(() => {
-    toggleContenedor();
+    toggleProblemas();
+    toggleServicios();
     $(checkboxSelector).each(function () {
       toggleRow($(this));
     });
     validateOtroSalud();
+    validateServiciosSalud();
   });
 })(jQuery);
