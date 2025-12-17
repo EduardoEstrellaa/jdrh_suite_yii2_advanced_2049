@@ -312,6 +312,11 @@ class ExpedienteService
 
             AlumAsisteMedico::deleteAll(['alumnos_id' => $alumnoId]);
             AlumAsisteDentista::deleteAll(['alumnos_id' => $alumnoId]);
+            $alumEstadoSalud = AlumEstadoSalud::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumEstadoSalud) {
+                ProblemasSalud::deleteAll(['alum_estado_salud_id' => $alumEstadoSalud->id]);
+                $alumEstadoSalud->delete();
+            }
             $alumUsoAnteojos = AlumUsoAnteojos::findOne(['alumnos_id' => $alumnoId]);
             if ($alumUsoAnteojos) {
                 UsoAnteojos::deleteAll(['alum_uso_anteojos_id' => $alumUsoAnteojos->id]);
@@ -321,11 +326,6 @@ class ExpedienteService
             if ($alumServiciosSalud) {
                 ServiciosSalud::deleteAll(['alum_servicios_salud_id' => $alumServiciosSalud->id]);
                 $alumServiciosSalud->delete();
-            }
-            $alumEstadoSalud = AlumEstadoSalud::findOne(['alumnos_id' => $alumnoId]);
-            if ($alumEstadoSalud) {
-                ProblemasSalud::deleteAll(['alum_estado_salud_id' => $alumEstadoSalud->id]);
-                $alumEstadoSalud->delete();
             }
             $alumTratamientos = AlumTratamientos::findOne(['alumnos_id' => $alumnoId]);
             if ($alumTratamientos) {
@@ -368,9 +368,6 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumTransportes) {
-                continue;
-            }
-            if ($model instanceof AlumEstadoSalud) {
                 continue;
             }
             if ($model instanceof AlumServiciosSalud) {

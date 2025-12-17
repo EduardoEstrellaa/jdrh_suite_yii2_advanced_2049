@@ -1214,6 +1214,87 @@ foreach ($tratamientos as $t) {
                         </div>
                     </div>
 
+                    <?php
+                    $problemasSaludSeleccionados = [];
+                    foreach ($problemasSalud as $ps) {
+                        $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
+                    }
+                    ?>
+
+                    <div id="salud-problemas-container" class="<?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <div class="mt-3 mb-3">
+                            <h5 class="mb-1">Problemas de salud</h5>
+                            <p class="text-muted small mb-0">Selecciona los problemas de salud que has tenido y su gravedad.</p>
+                        </div>
+
+                        <div id="lista-problemas" class="row g-3">
+                            <?php foreach ($catalogoProblemasSaludMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $problema = $problemasSaludSeleccionados[$id] ?? new ProblemasSalud(['catalogo_problemas_salud_id' => $id]);
+                                $seleccionado = isset($problemasSaludSeleccionados[$id]);
+                                $esOtro = $otroCatalogoProblemaId !== null && $id === (int)$otroCatalogoProblemaId;
+                                $otroClasses = 'form-field mb-0 problema-otro ' . ($seleccionado && $esOtro ? '' : 'd-none');
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100 problema-item" data-problema-id="<?= $id ?>">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                    class="form-check-input problema-checkbox"
+                                                    type="checkbox"
+                                                    id="problema-<?= $id ?>"
+                                                    name="ProblemasSalud[<?= $id ?>][selected]"
+                                                    value="1"
+                                                    <?= $seleccionado ? 'checked' : '' ?>>
+                                                <label class="form-check-label fw-semibold" for="problema-<?= $id ?>">
+                                                    <?= Html::encode($nombre) ?>
+                                                </label>
+                                                <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="problema-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $problema,
+                                                "[{$id}]tipo_gravedad_id",
+                                                'fa-exclamation-triangle',
+                                                $tipoGravedadMap,
+                                                [
+                                                    'placeholder' => 'Gravedad...',
+                                                    'class' => 'form-control problema-gravedad',
+                                                    'id' => "problema-gravedad-{$id}",
+                                                    'disabled' => !$seleccionado,
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
+
+                                            <?php if ($esOtro): ?>
+                                                <?= InputHelper::iconTextField(
+                                                    $form,
+                                                    $problema,
+                                                    "[{$id}]otro_especificar",
+                                                    'fa-keyboard',
+                                                    [
+                                                        'options' => ['class' => trim($otroClasses)],
+                                                        'inputOptions' => [
+                                                            'placeholder' => 'Especifica el problema',
+                                                            'class' => 'form-control problema-otro-input',
+                                                            'id' => "problema-otro-{$id}",
+                                                            'disabled' => !$seleccionado,
+                                                        ],
+                                                        'labelOptions' => ['class' => 'form-label fw-semibold'],
+                                                    ]
+                                                ) ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
                     <div id="salud-tratamientos-container" class="<?= ((int)($alumTratamientos->esta_en_tratamiento ?? 0) === 1) ? '' : 'd-none' ?>">
                         <div class="mt-3 mb-3">
                             <h5 class="mb-1">Tratamientos</h5>
@@ -1320,13 +1401,6 @@ foreach ($tratamientos as $t) {
                         </div>
                     </div>
 
-                    <?php
-                    $problemasSaludSeleccionados = [];
-                    foreach ($problemasSalud as $ps) {
-                        $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
-                    }
-                    ?>
-
                     <div id="salud-anteojos-container" class="<?= ((int)($alumUsoAnteojos->utilizas_anteojos ?? 0) === 1) ? '' : 'd-none' ?>">
                         <h5 class="mt-3 mb-3">Tipo de uso de anteojos</h5>
                         <div class="row g-2">
@@ -1369,66 +1443,6 @@ foreach ($tratamientos as $t) {
                         </div>
                     </div>
 
-                    <div id="salud-problemas-container" class="<?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <h5 class="mt-3 mb-3">Problemas de salud</h5>
-                        <div class="row g-3">
-                            <?php foreach ($catalogoProblemasSaludMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $seleccionado = isset($problemasSaludSeleccionados[$id]);
-                                $problema = $problemasSaludSeleccionados[$id] ?? new ProblemasSalud();
-                                ?>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="border rounded p-3 h-100 problema-item" data-problema-id="<?= $id ?>">
-                                        <div class="form-check mb-2">
-                                            <input
-                                                type="checkbox"
-                                                class="form-check-input problema-salud-checkbox"
-                                                name="ProblemasSalud[<?= $id ?>][selected]"
-                                                value="1"
-                                                id="problema-<?= $id ?>"
-                                                <?= $seleccionado ? 'checked' : '' ?>>
-                                            <label class="form-check-label fw-semibold" for="problema-<?= $id ?>"><?= Html::encode($nombre) ?></label>
-                                            <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
-                                        </div>
-                                        <div class="mb-2 problema-gravedad-wrapper <?= $seleccionado ? '' : 'd-none' ?>">
-                                            <?= InputHelper::iconSelect2Field(
-                                                $form,
-                                                $problema,
-                                                "[$id]tipo_gravedad_id",
-                                                'fa-exclamation-triangle',
-                                                $tipoGravedadMap,
-                                                [
-                                                    'options' => [
-                                                        'placeholder' => 'Selecciona gravedad...',
-                                                        'class' => 'form-control problema-gravedad-select',
-                                                        'disabled' => !$seleccionado,
-                                                    ],
-                                                    'fieldOptions' => [
-                                                        'enableClientValidation' => false,
-                                                        'enableAjaxValidation' => false,
-                                                        'validateOnBlur' => false,
-                                                        'validateOnChange' => false,
-                                                        'validateOnType' => false,
-                                                    ],
-                                                    'labelOptions' => ['class' => 'form-label fw-semibold mb-1', 'label' => 'Tipo de gravedad'],
-                                                ],
-                                                ['allowClear' => true]
-                                            ) ?>
-                                        </div>
-                                        <?php if ($otroCatalogoProblemaId !== null && $id === (int)$otroCatalogoProblemaId): ?>
-                                            <input
-                                                type="text"
-                                                name="ProblemasSalud[<?= $id ?>][otro_especificar]"
-                                                class="form-control problema-otro-campo <?= $seleccionado ? '' : 'd-none' ?>"
-                                                placeholder="Especifica el problema"
-                                                value="<?= $seleccionado ? Html::encode($problema->otro_especificar) : '' ?>">
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

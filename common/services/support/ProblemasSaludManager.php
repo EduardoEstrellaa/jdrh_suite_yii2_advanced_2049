@@ -10,12 +10,12 @@ use common\models\ProblemasSalud;
 class ProblemasSaludManager
 {
     /**
-     * Sincroniza los problemas de salud asociados a un estado de salud.
+     * Sincroniza los problemas de salud asociados a un alumno.
      */
     public static function sync(AlumEstadoSalud $alumEstadoSalud, array $post): void
     {
         if ($alumEstadoSalud->isNewRecord || !$alumEstadoSalud->id) {
-            throw new DomainException('No se pudo asociar problemas de salud sin un estado de salud guardado.');
+            throw new DomainException('No se pudo asociar problemas de salud sin un registro base guardado.');
         }
 
         if ((int)$alumEstadoSalud->tuvo_problema_salud !== 1) {
@@ -24,18 +24,17 @@ class ProblemasSaludManager
         }
 
         $rows = $post['ProblemasSalud'] ?? [];
-        $otroId = CatalogoProblemasSalud::getOtroId();
-
         $problemas = [];
-        foreach ($rows as $key => $row) {
-            $problema = self::mapRowToModel($alumEstadoSalud->id, $row, (int)$key, $otroId);
+
+        foreach ($rows as $row) {
+            $problema = self::mapRowToModel($alumEstadoSalud->id, $row);
             if ($problema !== null) {
                 $problemas[] = $problema;
             }
         }
 
         if (empty($problemas)) {
-            throw new DomainException('Debes capturar al menos un problema de salud.');
+            throw new DomainException('Agrega al menos un problema de salud o indica que no los has tenido.');
         }
 
         ProblemasSalud::deleteAll(['alum_estado_salud_id' => $alumEstadoSalud->id]);
@@ -47,34 +46,42 @@ class ProblemasSaludManager
         }
     }
 
-    private static function mapRowToModel(int $alumEstadoSaludId, array $row, int $fallbackCatalogoId, ?int $otroId): ?ProblemasSalud
+    private static function mapRowToModel(int $alumEstadoSaludId, array $row): ?ProblemasSalud
     {
         $selected = isset($row['selected']) && (int)$row['selected'] === 1;
         if (!$selected) {
             return null;
         }
 
-        $catalogoId = isset($row['catalogo_problemas_salud_id'])
-            ? (int)$row['catalogo_problemas_salud_id']
-            : $fallbackCatalogoId;
-        $tipoGravedadId = (int)($row['tipo_gravedad_id'] ?? 0);
-        $otroTexto = trim((string)($row['otro_especificar'] ?? ''));
+        $catalogoId = (int)($row['catalogo_problemas_salud_id'] ?? 0);
+        $gravedadId = (int)($row['tipo_gravedad_id'] ?? 0);
+        $otro = trim((string)($row['otro_especificar'] ?? ''));
 
-        if ($catalogoId <= 0 || $tipoGravedadId <= 0) {
-            throw new DomainException('Debes seleccionar el problema de salud y su gravedad.');
+        if ($catalogoId <= 0) {
+            throw new DomainException('Cada problema de salud requiere tipo y gravedad.');
+        }
+
+        if ($gravedadId <= 0) {
+            throw new DomainException('Selecciona la gravedad para cada problema marcado.');
+        }
+
+        $otroId = CatalogoProblemasSalud::getOtroId();
+        if ($otroId !== null && $catalogoId === (int)$otroId) {
+            if ($otro === '') {
+                throw new DomainException('Especifica el problema de salud cuando elijas "Otro".');
+            }
+        } else {
+            $otro = null;
         }
 
         $problema = new ProblemasSalud([
             'alum_estado_salud_id' => $alumEstadoSaludId,
             'catalogo_problemas_salud_id' => $catalogoId,
-            'tipo_gravedad_id' => $tipoGravedadId,
+            'tipo_gravedad_id' => $gravedadId,
         ]);
 
-        if ($otroId !== null && $catalogoId === $otroId) {
-            if ($otroTexto === '') {
-                throw new DomainException('Debes especificar el problema de salud cuando eliges "Otro".');
-            }
-            $problema->otro_especificar = $otroTexto;
+        if ($otro !== null) {
+            $problema->otro_especificar = $otro;
         }
 
         return $problema;

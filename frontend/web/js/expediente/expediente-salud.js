@@ -1,8 +1,13 @@
 ;(function ($) {
   const selectorTiene = '#alumestadosalud-tuvo_problema_salud';
-  const contenedorSelector = '#salud-problemas-container';
-  const checkboxSelector = '.problema-salud-checkbox';
-  const otroCampoSelector = '.problema-otro-campo';
+  const problemasContainerSelector = '#salud-problemas-container';
+  const problemasListSelector = '#lista-problemas';
+  const problemaItemSelector = '.problema-item';
+  const problemaCheckboxSelector = '.problema-checkbox';
+  const problemaDetalleSelector = '.problema-detalle';
+  const problemaGravedadSelector = '.problema-gravedad';
+  const problemaOtroSelector = '.problema-otro';
+  const problemaOtroInputSelector = '.problema-otro-input';
   const selectorServicios = '#alumserviciossalud-tiene_servicios_salud';
   const serviciosContainerSelector = '#salud-servicios-container';
   const servicioCheckboxSelector = '.servicio-salud-checkbox';
@@ -23,13 +28,16 @@
     width: '100%',
     allowClear: true,
   };
-
-  const getOtroId = () =>
-    typeof PROBLEMA_OTRO_ID !== 'undefined' ? parseInt(PROBLEMA_OTRO_ID, 10) : null;
+  const problemaOtroId = (() => {
+    const val = parseInt(window.PROBLEMA_OTRO_ID, 10);
+    return Number.isNaN(val) ? null : val;
+  })();
 
   const resetSelect = ($select) => {
+    $select.find('option:selected').prop('selected', false);
     $select.val(null);
     if ($select.data('select2')) {
+      $select.trigger('change.select2');
       $select.trigger('change');
       $select.trigger('select2:close');
     } else {
@@ -41,62 +49,138 @@
     }
   };
 
-  const clearOtroCampo = ($otro) => {
-    $otro.val('').removeClass('is-invalid').toggleClass('d-none', true).prop('required', false);
-    if ($otro[0]) {
-      $otro[0].setCustomValidity('');
-    }
-  };
-
-  const disableRow = ($row) => {
-    const $gravedad = $row.find('.problema-gravedad-select');
-    const $gravedadWrapper = $row.find('.problema-gravedad-wrapper');
-    const $otroCampo = $row.find(otroCampoSelector);
-
-    resetSelect($gravedad);
-    $gravedad.prop('disabled', true);
-    $gravedadWrapper.addClass('d-none');
-
-    if ($otroCampo.length) {
-      clearOtroCampo($otroCampo);
-    }
-  };
-
-  const enableRow = ($row) => {
-    const $gravedad = $row.find('.problema-gravedad-select');
-    const $gravedadWrapper = $row.find('.problema-gravedad-wrapper');
-    const $otroCampo = $row.find(otroCampoSelector);
-
-    $gravedad.prop('disabled', false);
-    $gravedadWrapper.removeClass('d-none');
-
-    if ($otroCampo.length) {
-      $otroCampo.toggleClass('d-none', false).prop('required', true);
-    }
-  };
-
-  const toggleRow = ($checkbox) => {
-    const $row = $checkbox.closest('.problema-item');
-    if ($checkbox.is(':checked')) {
-      enableRow($row);
-    } else {
-      disableRow($row);
-    }
-  };
-
   const toggleProblemas = () => {
     const show = parseInt($(selectorTiene).val(), 10) === 1;
-    $(contenedorSelector).toggleClass('d-none', !show);
+    $(problemasContainerSelector).toggleClass('d-none', !show);
 
     if (!show) {
-      $(checkboxSelector).each(function () {
-        const $cb = $(this);
-        if ($cb.is(':checked')) {
-          $cb.prop('checked', false);
-          disableRow($cb.closest('.problema-item'));
-        }
+      const first = $(problemaCheckboxSelector).first()[0];
+      if (first) {
+        first.setCustomValidity('');
+      }
+      $(problemaCheckboxSelector).prop('checked', false);
+      $(problemaDetalleSelector).addClass('d-none');
+      $(problemaGravedadSelector).each(function () {
+        resetSelect($(this));
+        $(this).prop('required', false).prop('disabled', true).trigger('change.select2');
+      });
+      $(problemaOtroSelector).addClass('d-none');
+      $(problemaOtroInputSelector).each(function () {
+        $(this).val('').prop('disabled', true).removeClass('is-invalid');
+        if (this.setCustomValidity) this.setCustomValidity('');
       });
     }
+  };
+
+  const toggleProblemaDetalle = ($checkbox) => {
+    const $row = $checkbox.closest(problemaItemSelector);
+    const $detalle = $row.find(problemaDetalleSelector);
+    const $gravedad = $row.find(problemaGravedadSelector);
+    const $otroContainer = $row.find(problemaOtroSelector);
+    const $otroInput = $row.find(problemaOtroInputSelector);
+    const problemaId = parseInt($row.data('problema-id'), 10);
+    const checked = $checkbox.is(':checked');
+    const esOtro = Number.isInteger(problemaOtroId) && problemaId === problemaOtroId;
+
+    $detalle.toggleClass('d-none', !checked);
+    $gravedad.prop('required', checked).prop('disabled', !checked).trigger('change.select2');
+
+    if (!checked) {
+      resetSelect($gravedad);
+    } else {
+      initSelect2($gravedad);
+    }
+
+    const showOtro = checked && esOtro;
+    $otroContainer.toggleClass('d-none', !showOtro);
+    $otroInput.prop('disabled', !showOtro).prop('required', showOtro);
+
+    if (!showOtro) {
+      $otroInput.val('').removeClass('is-invalid');
+      if ($otroInput[0]) {
+        $otroInput[0].setCustomValidity('');
+      }
+    }
+  };
+
+  const validateProblemas = (event) => {
+    const show = parseInt($(selectorTiene).val(), 10) === 1;
+    const $checkboxes = $(problemaCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      if (first) {
+        first.setCustomValidity('');
+      }
+      return true;
+    }
+
+    const seleccionados = $(problemaCheckboxSelector + ':checked');
+    if (!seleccionados.length) {
+      if (first) {
+        first.setCustomValidity('Selecciona al menos un problema de salud.');
+        if (event) {
+          first.reportValidity();
+        }
+      }
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return false;
+    }
+
+    if (first) {
+      first.setCustomValidity('');
+    }
+
+    let valid = true;
+    seleccionados.each(function () {
+      const $row = $(this).closest(problemaItemSelector);
+      const $gravedad = $row.find(problemaGravedadSelector);
+      const $otro = $row.find(problemaOtroInputSelector);
+      const problemaId = parseInt($row.data('problema-id'), 10);
+      const esOtro = Number.isInteger(problemaOtroId) && problemaId === problemaOtroId;
+
+      $gravedad.removeClass('is-invalid');
+      if ($gravedad[0]) {
+        $gravedad[0].setCustomValidity('');
+      }
+
+      if (!$gravedad.val()) {
+        valid = false;
+        if ($gravedad[0]) {
+          $gravedad.addClass('is-invalid');
+          $gravedad[0].setCustomValidity('Selecciona la gravedad.');
+          if (event) $gravedad[0].reportValidity();
+        }
+        return false;
+      }
+
+      if (esOtro) {
+        const val = ($otro.val() || '').trim();
+        $otro.removeClass('is-invalid');
+        if ($otro[0]) {
+          $otro[0].setCustomValidity('');
+        }
+        if (!val) {
+          valid = false;
+          if ($otro[0]) {
+            $otro.addClass('is-invalid');
+            $otro[0].setCustomValidity('Especifica el problema de salud.');
+            if (event) $otro[0].reportValidity();
+          }
+          return false;
+        }
+      }
+    });
+
+    if (!valid && event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    return valid;
   };
 
   const toggleServicios = () => {
@@ -127,45 +211,6 @@
         first.setCustomValidity('');
       }
     }
-  };
-
-  const validateOtroSalud = (event) => {
-    const otroId = getOtroId();
-    if (!otroId) {
-      return true;
-    }
-
-    const $row = $(`.problema-item[data-problema-id="${otroId}"]`);
-    if (!$row.length) {
-      return true;
-    }
-
-    const $checkbox = $row.find(checkboxSelector);
-    const $otroCampo = $row.find(otroCampoSelector);
-    if (!$checkbox.is(':checked')) {
-      clearOtroCampo($otroCampo);
-      return true;
-    }
-
-    const texto = ($otroCampo.val() || '').trim();
-    if (!texto) {
-      $otroCampo.addClass('is-invalid');
-      if ($otroCampo[0]) {
-        $otroCampo[0].setCustomValidity('Por favor especifica el problema de salud.');
-        $otroCampo[0].reportValidity();
-      }
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      return false;
-    }
-
-    $otroCampo.removeClass('is-invalid');
-    if ($otroCampo[0]) {
-      $otroCampo[0].setCustomValidity('');
-    }
-    return true;
   };
 
   const validateServiciosSalud = (event) => {
@@ -347,10 +392,18 @@
   };
 
   $(document)
-    .on('change', selectorTiene, toggleProblemas)
-    .on('change', checkboxSelector, function () {
-      toggleRow($(this));
-      validateOtroSalud();
+    .on('change', selectorTiene, function () {
+      toggleProblemas();
+      validateProblemas();
+    })
+    .on('change', problemaCheckboxSelector, function () {
+      toggleProblemaDetalle($(this));
+      validateProblemas();
+    })
+    .on('change', problemaGravedadSelector, function () {
+      this.setCustomValidity('');
+      $(this).removeClass('is-invalid');
+      validateProblemas();
     })
     .on('change', selectorServicios, function () {
       toggleServicios();
@@ -378,16 +431,16 @@
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
     })
-    .on('input', otroCampoSelector, function () {
+    .on('input', problemaOtroInputSelector, function () {
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
     })
     .on('submit', '#expediente-form', function (event) {
-      const validOtro = validateOtroSalud(event);
+      const validProblemas = validateProblemas(event);
       const validServicios = validateServiciosSalud(event);
       const validAnteojos = validateUsoAnteojos(event);
       const validTratamientos = validateTratamientos(event);
-      if (!validOtro || !validServicios || !validAnteojos || !validTratamientos) {
+      if (!validProblemas || !validServicios || !validAnteojos || !validTratamientos) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -398,8 +451,11 @@
     toggleServicios();
     toggleAnteojos();
     toggleTratamientos();
-    $(checkboxSelector).each(function () {
-      toggleRow($(this));
+    $(problemaCheckboxSelector).each(function () {
+      toggleProblemaDetalle($(this));
+    });
+    $(problemaGravedadSelector).each(function () {
+      initSelect2($(this));
     });
     $(tratamientosListSelector)
       .find(tratamientoCheckboxSelector)
@@ -409,7 +465,7 @@
     $(tratamientoFrecuenciaSelector).each(function () {
       initSelect2($(this));
     });
-    validateOtroSalud();
+    validateProblemas();
     validateServiciosSalud();
     validateUsoAnteojos();
     validateTratamientos();

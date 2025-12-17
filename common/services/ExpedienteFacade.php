@@ -25,7 +25,6 @@ use common\models\CatalogoUsoAnteojos;
 use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
-use common\models\ProblemasSalud;
 use common\models\FrecuenciaTiempo;
 use common\models\ServiciosSalud;
 use common\models\UsoAnteojos;
@@ -35,6 +34,7 @@ use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\models\ViviendaServicios;
 use common\models\Tratamientos;
+use common\models\ProblemasSalud;
 use common\services\support\OperationResult;
 
 class ExpedienteFacade
@@ -178,14 +178,13 @@ class ExpedienteFacade
     private function buildProblemasSaludData(?AlumEstadoSalud $alumEstadoSalud = null): array
     {
         if ($alumEstadoSalud === null || $alumEstadoSalud->isNewRecord) {
-            return [
-                'problemasSalud' => [new ProblemasSalud()],
-            ];
+            return ['problemasSalud' => [new ProblemasSalud()]];
         }
 
         $problemas = ProblemasSalud::find()
             ->where(['alum_estado_salud_id' => $alumEstadoSalud->id])
             ->all();
+
         if (empty($problemas)) {
             $problemas = [new ProblemasSalud()];
         }
