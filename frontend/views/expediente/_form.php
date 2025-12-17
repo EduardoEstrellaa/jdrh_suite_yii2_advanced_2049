@@ -31,6 +31,10 @@ use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoUsoAnteojos;
 use common\models\FrecuenciaTiempo;
 use common\models\TipoGravedad;
+use common\models\CatalogoTratamientos;
+use common\models\AlumTratamientos;
+use common\models\Tratamientos;
+use kartik\daterange\DateRangePicker;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
 use yii\web\View;
@@ -77,6 +81,14 @@ $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
 $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
 $usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
+$alumTratamientos = $alumTratamientos ?? new AlumTratamientos(['alumnos_id' => $alumno->id ?? null]);
+$tratamientos = $tratamientos ?? [new Tratamientos()];
+$catalogoTratamientosMap = $catalogoTratamientosMap ?? CatalogoTratamientos::dropdownOptions();
+
+$tratamientosMap = [];
+foreach ($tratamientos as $t) {
+    $tratamientosMap[(int)$t->catalogo_tratamientos_id] = $t;
+}
 ?>
 
 <div class="expediente-form">
@@ -1187,6 +1199,125 @@ $usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
                                 ]
                             ) ?>
                         </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumTratamientos,
+                                'esta_en_tratamiento',
+                                'fa-pills',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Estás en tratamiento actualmente?',
+                                    'id' => 'alumtratamientos-esta_en_tratamiento',
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div id="salud-tratamientos-container" class="<?= ((int)($alumTratamientos->esta_en_tratamiento ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <div class="mt-3 mb-3">
+                            <h5 class="mb-1">Tratamientos</h5>
+                            <p class="text-muted small mb-0">Selecciona los tratamientos que sigues y especifica frecuencia y fechas.</p>
+                        </div>
+
+                        <div id="lista-tratamientos" class="row g-3">
+                            <?php foreach ($catalogoTratamientosMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $tratamiento = $tratamientosMap[$id] ?? new Tratamientos(['catalogo_tratamientos_id' => $id]);
+                                $seleccionado = isset($tratamientosMap[$id]);
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100 tratamiento-item" data-tratamiento-id="<?= $id ?>">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                    class="form-check-input tratamiento-checkbox"
+                                                    type="checkbox"
+                                                    id="tratamiento-<?= $id ?>"
+                                                    name="Tratamientos[<?= $id ?>][selected]"
+                                                    value="1"
+                                                    <?= $seleccionado ? 'checked' : '' ?>>
+                                                <label class="form-check-label fw-semibold" for="tratamiento-<?= $id ?>">
+                                                    <?= Html::encode($nombre) ?>
+                                                </label>
+                                                <input type="hidden" name="Tratamientos[<?= $id ?>][catalogo_tratamientos_id]" value="<?= $id ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="tratamiento-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $tratamiento,
+                                                "[{$id}]frecuencia_tiempo_id",
+                                                'fa-sync-alt',
+                                                $frecuenciasTiempoMap,
+                                                [
+                                                    'placeholder' => 'Frecuencia...',
+                                                    'class' => 'form-control tratamiento-frecuencia',
+                                                    'id' => "tratamiento-frecuencia-{$id}",
+                                                    'disabled' => !$seleccionado,
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('Frecuencia', ['class' => 'form-label fw-semibold']) ?>
+
+                                            <div class="form-field mb-3">
+                                                <label class="form-label fw-semibold" for="tratamiento-rango-<?= $id ?>">Rango de fechas</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                                    <?= DateRangePicker::widget([
+                                                        'model' => $tratamiento,
+                                                        'attribute' => "[{$id}]fecha_inicio",
+                                                        'startAttribute' => "[{$id}]fecha_inicio",
+                                                        'endAttribute' => "[{$id}]fecha_fin",
+                                                        'convertFormat' => true,
+                                                        'value' => ($tratamiento->fecha_inicio && $tratamiento->fecha_fin)
+                                                            ? Html::encode($tratamiento->fecha_inicio . ' - ' . $tratamiento->fecha_fin)
+                                                            : '',
+                                                        'options' => [
+                                                            'id' => "tratamiento-rango-{$id}",
+                                                            'class' => 'form-control tratamiento-rango',
+                                                            'placeholder' => 'Selecciona rango...',
+                                                            'readonly' => true,
+                                                            'disabled' => !$seleccionado,
+                                                        ],
+                                                        'startInputOptions' => [
+                                                            'class' => 'd-none tratamiento-fecha tratamiento-fecha-inicio',
+                                                            'id' => "tratamiento-inicio-{$id}",
+                                                        ],
+                                                        'endInputOptions' => [
+                                                            'class' => 'd-none tratamiento-fecha tratamiento-fecha-fin',
+                                                            'id' => "tratamiento-fin-{$id}",
+                                                        ],
+                                                        'pluginOptions' => [
+                                                            'locale' => [
+                                                                'format' => 'Y-MM-DD',
+                                                                'separator' => ' - ',
+                                                            ],
+                                                            'autoUpdateInput' => false,
+                                                            'opens' => 'center',
+                                                        ],
+                                                        'pluginEvents' => [
+                                                            'apply.daterangepicker' => "function(ev, picker) {
+                                                                const val = picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD');
+                                                                $(this).val(val);
+                                                                $('#tratamiento-inicio-{$id}').val(picker.startDate.format('YYYY-MM-DD')).trigger('change');
+                                                                $('#tratamiento-fin-{$id}').val(picker.endDate.format('YYYY-MM-DD')).trigger('change');
+                                                            }",
+                                                            'cancel.daterangepicker' => "function(ev, picker) {
+                                                                $(this).val('');
+                                                                $('#tratamiento-inicio-{$id}').val('').trigger('change');
+                                                                $('#tratamiento-fin-{$id}').val('').trigger('change');
+                                                            }",
+                                                        ],
+                                                    ]) ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
 
                     <?php
@@ -1258,8 +1389,8 @@ $usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
                                                 id="problema-<?= $id ?>"
                                                 <?= $seleccionado ? 'checked' : '' ?>>
                                             <label class="form-check-label fw-semibold" for="problema-<?= $id ?>"><?= Html::encode($nombre) ?></label>
-                                                <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
-                                            </div>
+                                            <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
+                                        </div>
                                         <div class="mb-2 problema-gravedad-wrapper <?= $seleccionado ? '' : 'd-none' ?>">
                                             <?= InputHelper::iconSelect2Field(
                                                 $form,

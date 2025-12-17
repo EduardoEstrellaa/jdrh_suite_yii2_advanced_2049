@@ -23,6 +23,8 @@ use common\models\AlumAsisteMedico;
 use common\models\AlumAsisteDentista;
 use common\models\AlumUsoAnteojos;
 use common\models\UsoAnteojos;
+use common\models\AlumTratamientos;
+use common\models\Tratamientos;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumTrabajo;
 use common\models\AlumTransportes;
@@ -40,6 +42,7 @@ use common\services\support\ViviendaServiciosManager;
 use common\services\support\ProblemasSaludManager;
 use common\services\support\ServiciosSaludManager;
 use common\services\support\UsoAnteojosManager;
+use common\services\support\TratamientosManager;
 
 class ExpedienteService
 {
@@ -120,6 +123,7 @@ class ExpedienteService
             'alumAsisteMedico' => new AlumAsisteMedico(['alumnos_id' => $alumno->id]),
             'alumAsisteDentista' => new AlumAsisteDentista(['alumnos_id' => $alumno->id]),
             'alumUsoAnteojos' => new AlumUsoAnteojos(['alumnos_id' => $alumno->id]),
+            'alumTratamientos' => new AlumTratamientos(['alumnos_id' => $alumno->id]),
         ];
     }
 
@@ -146,6 +150,7 @@ class ExpedienteService
             'alumAsisteMedico' => self::findOrCreateModel(AlumAsisteMedico::class, ['alumnos_id' => $alumnoId]),
             'alumAsisteDentista' => self::findOrCreateModel(AlumAsisteDentista::class, ['alumnos_id' => $alumnoId]),
             'alumUsoAnteojos' => self::findOrCreateModel(AlumUsoAnteojos::class, ['alumnos_id' => $alumnoId]),
+            'alumTratamientos' => self::findOrCreateModel(AlumTratamientos::class, ['alumnos_id' => $alumnoId]),
         ];
     }
 
@@ -278,6 +283,7 @@ class ExpedienteService
         ProblemasSaludManager::sync($models['alumEstadoSalud'], $post);
         ServiciosSaludManager::sync($models['alumServiciosSalud'], $post);
         UsoAnteojosManager::sync($models['alumUsoAnteojos'], $post);
+        TratamientosManager::sync($models['alumTratamientos'], $post);
         HijosManager::sync($models['alumInfoHijos'], $post);
         DependientesManager::sync($models['alumDependenEconomica'], $post);
         ViviendaBienesManager::sync($models['alumVivienda'], $post);
@@ -320,6 +326,11 @@ class ExpedienteService
             if ($alumEstadoSalud) {
                 ProblemasSalud::deleteAll(['alum_estado_salud_id' => $alumEstadoSalud->id]);
                 $alumEstadoSalud->delete();
+            }
+            $alumTratamientos = AlumTratamientos::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumTratamientos) {
+                Tratamientos::deleteAll(['alum_tratamientos_id' => $alumTratamientos->id]);
+                $alumTratamientos->delete();
             }
             $alumDependen = AlumDependenEconomica::findOne(['alumnos_id' => $alumnoId]);
             if ($alumDependen) {
@@ -372,6 +383,9 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumUsoAnteojos) {
+                continue;
+            }
+            if ($model instanceof AlumTratamientos) {
                 continue;
             }
             if ($model->isNewRecord) {

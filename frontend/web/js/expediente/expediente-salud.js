@@ -9,6 +9,20 @@
   const selectorAnteojos = '#alumusoanteojos-utilizas_anteojos';
   const anteojosContainerSelector = '#salud-anteojos-container';
   const anteojosCheckboxSelector = '.uso-anteojos-checkbox';
+  const selectorTratamientos = '#alumtratamientos-esta_en_tratamiento';
+  const tratamientosContainerSelector = '#salud-tratamientos-container';
+  const tratamientosListSelector = '#lista-tratamientos';
+  const tratamientoItemSelector = '.tratamiento-item';
+  const tratamientoCheckboxSelector = '.tratamiento-checkbox';
+  const tratamientoDetalleSelector = '.tratamiento-detalle';
+  const tratamientoFrecuenciaSelector = '.tratamiento-frecuencia';
+  const tratamientoFechaSelector = '.tratamiento-fecha';
+  const tratamientoRangoSelector = '.tratamiento-rango';
+  const select2Defaults = {
+    theme: 'bootstrap-5',
+    width: '100%',
+    allowClear: true,
+  };
 
   const getOtroId = () =>
     typeof PROBLEMA_OTRO_ID !== 'undefined' ? parseInt(PROBLEMA_OTRO_ID, 10) : null;
@@ -187,6 +201,118 @@
     return true;
   };
 
+  const initSelect2 = ($select) => {
+    if (!$select.length) return;
+    const placeholder = $select.data('placeholder') || $select.attr('placeholder') || 'Selecciona...';
+    if ($select.data('select2')) {
+      $select.trigger('change.select2');
+      return;
+    }
+    $select.select2(Object.assign({}, select2Defaults, { placeholder }));
+  };
+
+  const toggleTratamientos = () => {
+    const show = parseInt($(selectorTratamientos).val(), 10) === 1;
+    $(tratamientosContainerSelector).toggleClass('d-none', !show);
+
+    if (!show) {
+      $(tratamientoCheckboxSelector).prop('checked', false);
+      $(tratamientoDetalleSelector).addClass('d-none');
+      $(tratamientoFrecuenciaSelector).each(function () {
+        resetSelect($(this));
+        $(this).prop('required', false).prop('disabled', true).trigger('change.select2');
+      });
+      $(tratamientoFechaSelector).val('').prop('disabled', true).each(function () {
+        if (this.setCustomValidity) this.setCustomValidity('');
+      });
+      $(tratamientoRangoSelector).val('').prop('disabled', true).removeClass('is-invalid');
+    }
+  };
+
+  const toggleTratamientoDetalle = ($checkbox) => {
+    const $row = $checkbox.closest(tratamientoItemSelector);
+    const $detalle = $row.find(tratamientoDetalleSelector);
+    const $frecuencia = $row.find(tratamientoFrecuenciaSelector);
+    const $fechas = $row.find(tratamientoFechaSelector);
+    const $rango = $row.find(tratamientoRangoSelector);
+    const checked = $checkbox.is(':checked');
+
+    $detalle.toggleClass('d-none', !checked);
+    $frecuencia.prop('required', checked).prop('disabled', !checked).trigger('change.select2');
+    $fechas.prop('disabled', !checked);
+    $rango.prop('disabled', !checked);
+
+    if (!checked) {
+      resetSelect($frecuencia);
+      $fechas.val('');
+      $fechas.each(function () {
+        if (this.setCustomValidity) this.setCustomValidity('');
+      });
+      $rango.val('').removeClass('is-invalid');
+    } else {
+      initSelect2($frecuencia);
+    }
+  };
+
+  const validateTratamientos = (event) => {
+    const show = parseInt($(selectorTratamientos).val(), 10) === 1;
+    if (!show) {
+      return true;
+    }
+
+    let valid = true;
+    $(tratamientosListSelector)
+      .find(tratamientoItemSelector)
+      .each(function () {
+        const $row = $(this);
+        const $checkbox = $row.find(tratamientoCheckboxSelector);
+        if (!$checkbox.is(':checked')) {
+          return;
+        }
+
+        const $frecuencia = $row.find(tratamientoFrecuenciaSelector);
+        const $fechas = $row.find(tratamientoFechaSelector);
+
+        $frecuencia.removeClass('is-invalid');
+        $fechas.removeClass('is-invalid');
+        if ($frecuencia[0]) {
+          $frecuencia[0].setCustomValidity('');
+        }
+
+        if (!$frecuencia.val()) {
+          valid = false;
+          if ($frecuencia[0]) {
+            $frecuencia.addClass('is-invalid');
+            $frecuencia[0].setCustomValidity('Selecciona la frecuencia.');
+            if (event) $frecuencia[0].reportValidity();
+          }
+          return false;
+        }
+
+        const $inicio = $fechas.eq(0);
+        const $fin = $fechas.eq(1);
+        const inicioVal = $inicio.val();
+        const finVal = $fin.val();
+
+        if (inicioVal && finVal && new Date(finVal) < new Date(inicioVal)) {
+          valid = false;
+          $fin.addClass('is-invalid');
+          if ($fin[0]) {
+            $fin[0].setCustomValidity('La fecha fin debe ser igual o posterior al inicio.');
+            if (event) $fin[0].reportValidity();
+          }
+          return false;
+        }
+      });
+
+    if (!valid && event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    return valid;
+  };
+
   const validateUsoAnteojos = (event) => {
     const show = parseInt($(selectorAnteojos).val(), 10) === 1;
     const $checkboxes = $(anteojosCheckboxSelector);
@@ -240,6 +366,18 @@
     .on('change', anteojosCheckboxSelector, function () {
       validateUsoAnteojos();
     })
+    .on('change', selectorTratamientos, function () {
+      toggleTratamientos();
+      validateTratamientos();
+    })
+    .on('change', tratamientoCheckboxSelector, function () {
+      toggleTratamientoDetalle($(this));
+      validateTratamientos();
+    })
+    .on('change', `${tratamientoFrecuenciaSelector}, ${tratamientoFechaSelector}, ${tratamientoRangoSelector}`, function () {
+      this.setCustomValidity('');
+      $(this).removeClass('is-invalid');
+    })
     .on('input', otroCampoSelector, function () {
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
@@ -248,7 +386,8 @@
       const validOtro = validateOtroSalud(event);
       const validServicios = validateServiciosSalud(event);
       const validAnteojos = validateUsoAnteojos(event);
-      if (!validOtro || !validServicios || !validAnteojos) {
+      const validTratamientos = validateTratamientos(event);
+      if (!validOtro || !validServicios || !validAnteojos || !validTratamientos) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -258,11 +397,21 @@
     toggleProblemas();
     toggleServicios();
     toggleAnteojos();
+    toggleTratamientos();
     $(checkboxSelector).each(function () {
       toggleRow($(this));
+    });
+    $(tratamientosListSelector)
+      .find(tratamientoCheckboxSelector)
+      .each(function () {
+        toggleTratamientoDetalle($(this));
+      });
+    $(tratamientoFrecuenciaSelector).each(function () {
+      initSelect2($(this));
     });
     validateOtroSalud();
     validateServiciosSalud();
     validateUsoAnteojos();
+    validateTratamientos();
   });
 })(jQuery);

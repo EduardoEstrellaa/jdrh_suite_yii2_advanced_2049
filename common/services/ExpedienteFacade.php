@@ -13,12 +13,14 @@ use common\models\AlumAsisteMedico;
 use common\models\AlumAsisteDentista;
 use common\models\AlumServiciosSalud;
 use common\models\AlumUsoAnteojos;
+use common\models\AlumTratamientos;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\CatalogoProblemasSalud;
 use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoServiciosVivienda;
+use common\models\CatalogoTratamientos;
 use common\models\CatalogoUsoAnteojos;
 use common\models\CatalogoTransportes;
 use common\models\Dependientes;
@@ -32,6 +34,7 @@ use common\models\TipoGravedad;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\models\ViviendaServicios;
+use common\models\Tratamientos;
 use common\services\support\OperationResult;
 
 class ExpedienteFacade
@@ -48,6 +51,7 @@ class ExpedienteFacade
             $this->getDependientesDefaults(),
             $this->getViviendaDefaults(),
             $this->getSaludDefaults(),
+            $this->getTratamientosDefaults(),
             $this->getCatalogosData()
         );
     }
@@ -66,6 +70,7 @@ class ExpedienteFacade
         $problemasSaludData = $this->buildProblemasSaludData($models['alumEstadoSalud'] ?? null);
         $serviciosSaludData = $this->buildServiciosSaludData($models['alumServiciosSalud'] ?? null);
         $usoAnteojosData = $this->buildUsoAnteojosData($models['alumUsoAnteojos'] ?? null);
+        $tratamientosData = $this->buildTratamientosData($models['alumTratamientos'] ?? null);
 
         return array_merge(
             $models,
@@ -76,6 +81,7 @@ class ExpedienteFacade
             $problemasSaludData,
             $serviciosSaludData,
             $usoAnteojosData,
+            $tratamientosData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -172,7 +178,9 @@ class ExpedienteFacade
     private function buildProblemasSaludData(?AlumEstadoSalud $alumEstadoSalud = null): array
     {
         if ($alumEstadoSalud === null || $alumEstadoSalud->isNewRecord) {
-            return $this->getSaludDefaults();
+            return [
+                'problemasSalud' => [new ProblemasSalud()],
+            ];
         }
 
         $problemas = ProblemasSalud::find()
@@ -216,6 +224,25 @@ class ExpedienteFacade
 
         return [
             'usoAnteojosSeleccionados' => array_map('intval', $ids),
+        ];
+    }
+
+    private function buildTratamientosData(?AlumTratamientos $alumTratamientos = null): array
+    {
+        if ($alumTratamientos === null || $alumTratamientos->isNewRecord) {
+            return ['tratamientos' => [new Tratamientos()]];
+        }
+
+        $tratamientos = Tratamientos::find()
+            ->where(['alum_tratamientos_id' => $alumTratamientos->id])
+            ->all();
+
+        if (empty($tratamientos)) {
+            $tratamientos = [new Tratamientos()];
+        }
+
+        return [
+            'tratamientos' => $tratamientos,
         ];
     }
 
@@ -313,6 +340,13 @@ class ExpedienteFacade
         ];
     }
 
+    private function getTratamientosDefaults(): array
+    {
+        return [
+            'tratamientos' => [new Tratamientos()],
+        ];
+    }
+
     private function getCatalogosData(): array
     {
         return [
@@ -329,6 +363,7 @@ class ExpedienteFacade
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
             'catalogoServiciosSaludMap' => CatalogoServiciosSalud::dropdownOptions(),
+            'catalogoTratamientosMap' => CatalogoTratamientos::dropdownOptions(),
             'catalogoUsoAnteojosMap' => CatalogoUsoAnteojos::dropdownOptions(),
             'frecuenciasTiempoMap' => FrecuenciaTiempo::dropdownOptions(),
             'tipoGravedadMap' => TipoGravedad::dropdownOptions(),

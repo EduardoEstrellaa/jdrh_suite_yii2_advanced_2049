@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "catalogo_tratamientos".
@@ -37,6 +38,20 @@ class CatalogoTratamientos extends \yii\db\ActiveRecord
             [['descripcion'], 'string', 'max' => 250],
             [['tipos_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => TiposTratamientos::class, 'targetAttribute' => ['tipos_tratamientos_id' => 'id']],
         ];
+    }
+
+    /**
+     * Opciones para dropdown (id => nombre).
+     */
+    public static function dropdownOptions(): array
+    {
+        $records = static::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($records, 'id', 'nombre');
     }
 
     /**
