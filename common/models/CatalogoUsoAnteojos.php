@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -29,11 +29,9 @@ class CatalogoUsoAnteojos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'nombre'], 'required'],
-            [['id'], 'integer'],
+            [['nombre'], 'required'],
             [['nombre'], 'string', 'max' => 150],
             [['descripcion'], 'string', 'max' => 250],
-            [['id'], 'unique'],
         ];
     }
 

@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\UsoAnteojos;
+use common\models\UsoAnteojos;
 use backend\models\search\UsoAnteojosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

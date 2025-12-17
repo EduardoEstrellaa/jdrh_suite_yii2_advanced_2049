@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CatalogoUsoAnteojos;
+use common\models\CatalogoUsoAnteojos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\UsoAnteojos;
+use common\models\UsoAnteojos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
