@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-11-2025 a las 17:01:59
+-- Tiempo de generación: 17-12-2025 a las 21:51:39
 -- Versión del servidor: 9.1.0
--- Versión de PHP: 8.2.26
+-- Versión de PHP: 8.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `alergias`;
 CREATE TABLE IF NOT EXISTS `alergias` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `alum_alergia_id` int NOT NULL,
   `catalogo_alergias_id` int NOT NULL,
   `tipo_gravedad_id` int NOT NULL,
@@ -37,6 +37,23 @@ CREATE TABLE IF NOT EXISTS `alergias` (
   KEY `fk_alergias_alum_alergia1_idx` (`alum_alergia_id`),
   KEY `fk_alergias_catalogo_alergias1_idx` (`catalogo_alergias_id`),
   KEY `fk_alergias_tipo_gravedad1_idx` (`tipo_gravedad_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `alumno`
+--
+
+DROP TABLE IF EXISTS `alumno`;
+CREATE TABLE IF NOT EXISTS `alumno` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(45) DEFAULT NULL,
+  `apellido` varchar(45) DEFAULT NULL,
+  `matricula` varchar(45) DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -57,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `alumnos` (
   KEY `fk_alumnos_perfil1_idx` (`perfil_id`),
   KEY `fk_alumnos_generaciones1_idx` (`generaciones_id`),
   KEY `fk_alumnos_plan_licenciaturas1_idx` (`plan_licenciaturas_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `alumnos`
@@ -65,7 +82,10 @@ CREATE TABLE IF NOT EXISTS `alumnos` (
 
 INSERT INTO `alumnos` (`id`, `perfil_id`, `matricula`, `plan_licenciaturas_id`, `generaciones_id`) VALUES
 (9, 26, '21070053', 1, 1),
-(10, 27, '21070020', 1, 1);
+(12, 29, '21070031', 1, 2),
+(15, 31, '21070014', 1, 2),
+(16, 32, '21070016', 1, 1),
+(17, 33, '21070011', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -96,7 +116,14 @@ CREATE TABLE IF NOT EXISTS `alum_asiste_dentista` (
   PRIMARY KEY (`id`),
   KEY `fk_alum_asiste_dentista_frecuencia_tiempo1_idx` (`frecuencia_tiempo_id`),
   KEY `fk_alum_asiste_dentista_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_asiste_dentista`
+--
+
+INSERT INTO `alum_asiste_dentista` (`id`, `alumnos_id`, `frecuencia_tiempo_id`) VALUES
+(1, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -112,7 +139,14 @@ CREATE TABLE IF NOT EXISTS `alum_asiste_medico` (
   PRIMARY KEY (`id`),
   KEY `fk_alum_asiste_medico_frecuencia_tiempo1_idx` (`frecuencia_tiempo_id`),
   KEY `fk_alum_asiste_medico_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_asiste_medico`
+--
+
+INSERT INTO `alum_asiste_medico` (`id`, `alumnos_id`, `frecuencia_tiempo_id`) VALUES
+(1, 17, 5);
 
 -- --------------------------------------------------------
 
@@ -130,7 +164,16 @@ CREATE TABLE IF NOT EXISTS `alum_becas` (
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_becas_tipos_becas1_idx` (`tipos_becas_id`),
   KEY `fk_alumnos_becas_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_becas`
+--
+
+INSERT INTO `alum_becas` (`id`, `alumnos_id`, `tiene_beca`, `tipos_becas_id`, `otro_especificar`) VALUES
+(7, 15, 1, 5, NULL),
+(8, 16, 1, 1, 'Rita Cetina'),
+(9, 17, 1, 6, NULL);
 
 -- --------------------------------------------------------
 
@@ -146,7 +189,27 @@ CREATE TABLE IF NOT EXISTS `alum_bienes_personales` (
   PRIMARY KEY (`id`),
   KEY `fk_alum_bienes_personales_catalogo_bienes_personales1_idx` (`catalogo_bienes_personales_id`),
   KEY `fk_alum_bienes_personales_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_bienes_personales`
+--
+
+INSERT INTO `alum_bienes_personales` (`id`, `catalogo_bienes_personales_id`, `alumnos_id`) VALUES
+(19, 4, 15),
+(20, 5, 15),
+(21, 1, 15),
+(22, 2, 15),
+(23, 3, 15),
+(24, 6, 15),
+(53, 1, 16),
+(54, 3, 16),
+(133, 4, 17),
+(134, 5, 17),
+(135, 1, 17),
+(136, 2, 17),
+(137, 3, 17),
+(138, 6, 17);
 
 -- --------------------------------------------------------
 
@@ -174,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `alum_consumo_alimentos` (
 
 DROP TABLE IF EXISTS `alum_datos_familiares`;
 CREATE TABLE IF NOT EXISTS `alum_datos_familiares` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `alumnos_id` int NOT NULL,
   `padre_nombre` varchar(150) NOT NULL,
   `padre_apellido_paterno` varchar(150) NOT NULL,
@@ -188,7 +251,17 @@ CREATE TABLE IF NOT EXISTS `alum_datos_familiares` (
   `madre_mayahablante` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_datos_familiares_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_datos_familiares`
+--
+
+INSERT INTO `alum_datos_familiares` (`id`, `alumnos_id`, `padre_nombre`, `padre_apellido_paterno`, `padre_apellido_materno`, `padre_ocupacion`, `padre_mayahablante`, `madre_nombre`, `madre_apellido_paterno`, `madre_apellido_materno`, `madre_ocupacion`, `madre_mayahablante`) VALUES
+(4, 15, 'Ali', 'Cuevas', 'Jimenez', 'Guia de Turista', 0, 'Eiffy Zulay Del Carmen ', 'Escobedo ', 'Nuñez', 'Emprendedora', 0),
+(6, 15, 'Ali', 'Cuevas', 'Jimenez', 'Guia de Turista', 0, 'Eiffy Zulay Del Carmen ', 'Escobedo ', 'Nuñez', 'Emprendedora', 0),
+(7, 16, 'Marco Antonio ', 'Olivo ', 'Arguello', 'Delivery', 0, 'Lidy Maribel', 'Esocbedo', 'Nunez', 'Emprendedora', 0),
+(8, 17, 'Jorge Gabriel ', 'Estrella ', 'Pomol', 'Taxista', 0, 'Eiffy Zulay Del Carmen ', 'Escobedo ', 'Nuñez', 'Emprendedora', 0);
 
 -- --------------------------------------------------------
 
@@ -203,7 +276,16 @@ CREATE TABLE IF NOT EXISTS `alum_dependen_economica` (
   `tiene_dependientes` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_dependen_economica_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_dependen_economica`
+--
+
+INSERT INTO `alum_dependen_economica` (`id`, `alumnos_id`, `tiene_dependientes`) VALUES
+(1, 15, 1),
+(2, 16, 1),
+(3, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -220,7 +302,16 @@ CREATE TABLE IF NOT EXISTS `alum_depende_economicamente` (
   PRIMARY KEY (`id`),
   KEY `fk_alum_depende_economicamente_catalogo_dependencias_econom_idx` (`catalogo_dependencias_economicas_id`),
   KEY `fk_alum_depende_economicamente_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_depende_economicamente`
+--
+
+INSERT INTO `alum_depende_economicamente` (`id`, `alumnos_id`, `catalogo_dependencias_economicas_id`, `otro_especificar`) VALUES
+(2, 15, 7, NULL),
+(3, 16, 8, NULL),
+(4, 17, 13, '');
 
 -- --------------------------------------------------------
 
@@ -280,7 +371,15 @@ CREATE TABLE IF NOT EXISTS `alum_estado_salud` (
   `tuvo_problema_salud` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_estado_salud_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_estado_salud`
+--
+
+INSERT INTO `alum_estado_salud` (`id`, `alumnos_id`, `tuvo_problema_salud`) VALUES
+(1, 16, 1),
+(2, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -318,7 +417,16 @@ CREATE TABLE IF NOT EXISTS `alum_info_hijos` (
   `cantidad_hijos` smallint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_info_hijos_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_info_hijos`
+--
+
+INSERT INTO `alum_info_hijos` (`id`, `alumnos_id`, `tiene_hijos`, `cantidad_hijos`) VALUES
+(15, 15, 1, 1),
+(16, 16, 1, 1),
+(17, 17, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -401,7 +509,14 @@ CREATE TABLE IF NOT EXISTS `alum_servicios_salud` (
   `tiene_servicios_salud` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_servicios_salud_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_servicios_salud`
+--
+
+INSERT INTO `alum_servicios_salud` (`id`, `alumnos_id`, `tiene_servicios_salud`) VALUES
+(2, 17, 0);
 
 -- --------------------------------------------------------
 
@@ -420,7 +535,16 @@ CREATE TABLE IF NOT EXISTS `alum_trabajo` (
   `horario_salida` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_trabaja_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_trabajo`
+--
+
+INSERT INTO `alum_trabajo` (`id`, `alumnos_id`, `tiene_trabajo`, `nombre_empresa`, `puesto_ocupacion`, `horario_entrada`, `horario_salida`) VALUES
+(1, 15, 0, NULL, NULL, NULL, NULL),
+(2, 16, 1, 'Startech Studios', 'Jefe ', '07:00:00', '12:00:00'),
+(3, 17, 1, 'PSI EXTINTORES', 'Desarrollador de Software', '12:00:00', '17:00:00');
 
 -- --------------------------------------------------------
 
@@ -438,7 +562,16 @@ CREATE TABLE IF NOT EXISTS `alum_transportes` (
   KEY `fk_alum_transportes_catalogo_transportes1_idx` (`catalogo_transportes_id`),
   KEY `fk_alum_transportes_tiempo_recorrido_transporte1_idx` (`tiempo_recorrido_transporte_id`),
   KEY `fk_alum_transportes_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_transportes`
+--
+
+INSERT INTO `alum_transportes` (`id`, `alumnos_id`, `catalogo_transportes_id`, `tiempo_recorrido_transporte_id`) VALUES
+(1, 15, 5, 5),
+(2, 16, 3, 1),
+(3, 17, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -453,7 +586,14 @@ CREATE TABLE IF NOT EXISTS `alum_tratamientos` (
   `esta_en_tratamiento` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_tratamientos_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_tratamientos`
+--
+
+INSERT INTO `alum_tratamientos` (`id`, `alumnos_id`, `esta_en_tratamiento`) VALUES
+(3, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -468,7 +608,14 @@ CREATE TABLE IF NOT EXISTS `alum_uso_anteojos` (
   `utilizas_anteojos` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alum_uso_anteojos_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_uso_anteojos`
+--
+
+INSERT INTO `alum_uso_anteojos` (`id`, `alumnos_id`, `utilizas_anteojos`) VALUES
+(1, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -487,7 +634,16 @@ CREATE TABLE IF NOT EXISTS `alum_vivienda` (
   PRIMARY KEY (`id`),
   KEY `fk_alum_vivienda_tipos_viviendas1_idx` (`tipos_viviendas_id`),
   KEY `fk_alum_vivienda_alumnos1_idx` (`alumnos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alum_vivienda`
+--
+
+INSERT INTO `alum_vivienda` (`id`, `alumnos_id`, `vives_casa_padres`, `otro_especificar`, `tipos_viviendas_id`, `otro_tipo_especificar`) VALUES
+(2, 15, 1, NULL, 2, NULL),
+(3, 16, 0, '', 3, NULL),
+(4, 17, 1, NULL, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -629,7 +785,19 @@ CREATE TABLE IF NOT EXISTS `catalogo_bienes_personales` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_bienes_personales`
+--
+
+INSERT INTO `catalogo_bienes_personales` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Laptop', 'Computadora portátil utilizada para estudio, trabajo o actividades personales.'),
+(2, 'PC de escritorio', 'Computadora de escritorio utilizada para tareas académicas, laborales o recreativas.'),
+(3, 'Tableta', 'Dispositivo móvil con pantalla táctil para estudio, trabajo, entretenimiento o comunicación.'),
+(4, 'Celular / Smartphone', 'Teléfono móvil utilizado para comunicación, acceso a internet, aplicaciones y entretenimiento.'),
+(5, 'Consola de videojuegos', 'Dispositivo electrónico destinado a juegos interactivos para entretenimiento.'),
+(6, 'Televisor', 'Equipo de visualización audiovisual para entretenimiento, información o educación.');
 
 -- --------------------------------------------------------
 
@@ -643,7 +811,24 @@ CREATE TABLE IF NOT EXISTS `catalogo_bienes_vivienda` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_bienes_vivienda`
+--
+
+INSERT INTO `catalogo_bienes_vivienda` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Refrigerador', 'Electrodoméstico utilizado para conservar alimentos y bebidas en frío.'),
+(2, 'Estufa', 'Aparato doméstico empleado para cocinar alimentos, ya sea de gas o eléctrica.'),
+(3, 'Horno de microondas', 'Electrodoméstico utilizado para calentar o cocinar alimentos de manera rápida.'),
+(4, 'Lavadora', 'Máquina utilizada para el lavado automático de ropa doméstica.'),
+(5, 'Televisor/pantalla', 'Dispositivo de entretenimiento para visualizar contenido audiovisual.'),
+(6, 'Aire acondicionado', 'Sistema para enfriar o climatizar el ambiente interior.'),
+(7, 'Calentador de agua (boiler)', 'Equipo utilizado para calentar agua destinada a uso doméstico.'),
+(8, 'Ventilador', 'Aparato que genera corriente de aire para ventilación y confort térmico.'),
+(9, 'Muebles básicos', 'Conjunto de muebles esenciales del hogar como cama, mesa, sillas o sofá.'),
+(10, 'Equipo de sonido', 'Sistema de audio para reproducción de música o contenido multimedia.'),
+(11, 'Otro', 'Cualquier otro bien doméstico no incluido anteriormente, como licuadora, aspiradora o plancha.');
 
 -- --------------------------------------------------------
 
@@ -672,7 +857,26 @@ CREATE TABLE IF NOT EXISTS `catalogo_dependencias_economicas` (
   `categorias_dependencias_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_catalogo_dependencias_economicas_categorias_dependencias_idx` (`categorias_dependencias_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_dependencias_economicas`
+--
+
+INSERT INTO `catalogo_dependencias_economicas` (`id`, `nombre`, `descripcion`, `categorias_dependencias_id`) VALUES
+(1, 'Padre', 'Progenitor masculino que provee o recibe apoyo económico directo.', 1),
+(2, 'Madre', 'Progenitora femenina que provee o recibe apoyo económico directo.', 1),
+(3, 'Hermano(a)', 'Familiar directo del alumno que puede contribuir o depender del ingreso familiar.', 1),
+(4, 'Cónyuge o pareja', 'Persona con vínculo marital o de convivencia que comparte responsabilidades económicas.', 1),
+(5, 'Abuelo(a)', 'Familiar indirecto que puede proporcionar o requerir apoyo económico.', 2),
+(6, 'Tío(a)', 'Familiar indirecto que ofrece o recibe ayuda económica del alumno.', 2),
+(7, 'Primo(a)', 'Pariente colateral que mantiene relación económica ocasional o parcial con el alumno.', 2),
+(8, 'Tutor o responsable legal', 'Persona encargada legalmente del cuidado y sustento del alumno.', 3),
+(9, 'Amigo(a) o conocido(a)', 'Persona no familiar que brinda o recibe apoyo económico voluntario.', 3),
+(10, 'Institución educativa', 'Entidad académica que ofrece apoyo económico mediante becas o programas.', 4),
+(11, 'Programa social o gubernamental', 'Ayuda económica otorgada por el gobierno o programas sociales institucionales.', 4),
+(12, 'Organización privada o fundación', 'Entidad civil o privada que proporciona apoyos económicos o en especie.', 4),
+(13, 'Otro', 'Persona o entidad no especificada en el catálogo anterior, aplicable a casos particulares.', 3);
 
 -- --------------------------------------------------------
 
@@ -755,7 +959,28 @@ CREATE TABLE IF NOT EXISTS `catalogo_problemas_salud` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_problemas_salud`
+--
+
+INSERT INTO `catalogo_problemas_salud` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Hipertensión', 'Elevación persistente de la presión arterial que puede aumentar el riesgo de enfermedades cardiovasculares y requiere seguimiento médico.'),
+(2, 'Diabetes', 'Enfermedad crónica que afecta la regulación de la glucosa en sangre y requiere control médico y manejo de estilo de vida.'),
+(3, 'Asma', 'Enfermedad respiratoria caracterizada por inflamación y obstrucción de las vías aéreas, con episodios de dificultad para respirar.'),
+(4, 'Obesidad', 'Acumulación excesiva de grasa corporal que puede afectar la salud general y aumentar el riesgo de enfermedades crónicas.'),
+(5, 'Enfermedades cardíacas', 'Trastornos que afectan el corazón y el sistema circulatorio, incluyendo insuficiencia cardíaca, arritmias y cardiopatías isquémicas.'),
+(6, 'Enfermedades respiratorias crónicas', 'Afecciones prolongadas de los pulmones y vías respiratorias, como bronquitis crónica y enfermedad pulmonar obstructiva crónica (EPOC).'),
+(7, 'Trastornos digestivos', 'Afecciones que afectan el sistema gastrointestinal, incluyendo gastritis, reflujo gastroesofágico y úlceras.'),
+(8, 'Trastornos renales', 'Enfermedades que afectan la función de los riñones, incluyendo insuficiencia renal crónica y cálculos renales.'),
+(9, 'Trastornos hepáticos', 'Enfermedades del hígado, como hepatitis, cirrosis o esteatosis hepática.'),
+(10, 'Trastornos endocrinos', 'Afecciones que afectan las glándulas endocrinas y la regulación hormonal, incluyendo hipotiroidismo e hipertiroidismo'),
+(11, 'Trastornos neurológicos', 'Enfermedades que afectan el sistema nervioso, como epilepsia, migraña o esclerosis múltiple'),
+(12, 'Enfermedades crónicas de la piel', 'Afecciones cutáneas prolongadas como psoriasis, eczema o dermatitis atópica.'),
+(13, 'Problemas de visión', 'Alteraciones visuales que requieren corrección o tratamiento, incluyendo miopía, hipermetropía y cataratas.'),
+(14, 'Problemas de audición', 'Alteraciones auditivas como hipoacusia o tinnitus, que pueden afectar la comunicación y la calidad de vida.'),
+(15, 'Otro (especificar)', 'Cualquier otra condición de salud no listada anteriormente que requiera atención médica o seguimiento.');
 
 -- --------------------------------------------------------
 
@@ -783,7 +1008,18 @@ CREATE TABLE IF NOT EXISTS `catalogo_servicios_salud` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_servicios_salud`
+--
+
+INSERT INTO `catalogo_servicios_salud` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'IMSS (Instituto Mexicano del Seguro Social)', 'Servicio de salud pública que brinda atención médica, hospitalaria y preventiva a trabajadores afiliados y sus familias.'),
+(2, 'ISSSTE (Instituto de Seguridad y Servicios Sociales de los Trabajadores del Estado)', 'Proporciona servicios médicos, hospitalarios y preventivos a los empleados del sector público federal y sus beneficiarios.'),
+(3, 'Secretaría de Salud (Centros de Salud / IMSS Bienestar / INSABI)', 'Servicios de atención primaria, preventiva y de promoción de la salud disponibles para toda la población, incluyendo personas sin seguridad social.'),
+(4, 'Hospitales y clínicas privadas', 'Atención médica integral proporcionada por instituciones privadas, incluyendo consultas, diagnósticos, tratamientos y procedimientos especializados bajo pago directo o seguros privados.'),
+(5, 'Farmacias con servicio médico', 'Consultas básicas y atención de problemas de salud comunes ofrecidas en farmacias que cuentan con personal capacitado y servicios limitados.');
 
 -- --------------------------------------------------------
 
@@ -797,7 +1033,17 @@ CREATE TABLE IF NOT EXISTS `catalogo_servicios_vivienda` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_servicios_vivienda`
+--
+
+INSERT INTO `catalogo_servicios_vivienda` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Agua potable', 'Servicio que proporciona acceso al suministro de agua limpia para consumo doméstico.'),
+(2, 'Electricidad', 'Servicio de energía eléctrica disponible en la vivienda para iluminación y uso de aparatos eléctricos.'),
+(3, 'Internet', 'Conexión de red que permite el acceso a servicios digitales y comunicación en línea.'),
+(4, 'Otro', 'Cualquier otro servicio doméstico no especificado anteriormente, como gas natural u otros.');
 
 -- --------------------------------------------------------
 
@@ -810,7 +1056,18 @@ CREATE TABLE IF NOT EXISTS `catalogo_transportes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_transportes`
+--
+
+INSERT INTO `catalogo_transportes` (`id`, `nombre`) VALUES
+(1, 'Caminando'),
+(2, 'Bicicleta'),
+(3, 'Motocicleta'),
+(4, 'Automóvil particular'),
+(5, 'Transporte público colectivo (camión, combi, microbús)');
 
 -- --------------------------------------------------------
 
@@ -820,13 +1077,34 @@ CREATE TABLE IF NOT EXISTS `catalogo_transportes` (
 
 DROP TABLE IF EXISTS `catalogo_tratamientos`;
 CREATE TABLE IF NOT EXISTS `catalogo_tratamientos` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   `tipos_tratamientos_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_catalogo_tratamientos_tipos_tratamientos1_idx` (`tipos_tratamientos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_tratamientos`
+--
+
+INSERT INTO `catalogo_tratamientos` (`id`, `nombre`, `descripcion`, `tipos_tratamientos_id`) VALUES
+(1, 'Medicación antihistamínica', 'Uso de medicamentos para controlar reacciones alérgicas como urticaria, rinitis o conjuntivitis.', 1),
+(2, 'Terapia antibiótica', 'Administración de antibióticos para tratar infecciones bacterianas según diagnóstico médico.', 1),
+(3, 'Control de hipertensión', 'Tratamiento con medicación y seguimiento médico para mantener la presión arterial dentro de rangos saludables.', 1),
+(4, 'Control de diabetes', 'Tratamiento mediante medicación, insulina y seguimiento clínico para mantener niveles de glucosa adecuados.', 1),
+(5, 'Terapia antiinflamatoria', 'Uso de fármacos antiinflamatorios para controlar dolor, inflamación o molestias musculoesqueléticas.', 1),
+(6, 'Terapia cognitivo-conductual', 'Sesiones terapéuticas enfocadas en modificar patrones de pensamiento y conducta.', 2),
+(7, 'Psicoterapia de apoyo', 'Intervenciones para manejo de estrés, ansiedad o depresión mediante técnicas de acompañamiento profesional.', 2),
+(8, 'Terapia familiar', 'Sesiones que involucran a la familia para mejorar la comunicación y resolver conflictos.', 2),
+(9, 'Terapia de relajación y manejo del estrés', 'Técnicas y ejercicios guiados para reducir ansiedad y mejorar bienestar emocional.', 2),
+(10, 'Evaluación psiquiátrica', 'Diagnóstico integral de trastornos mentales con plan de tratamiento personalizado.', 3),
+(11, 'Terapia farmacológica psiquiátrica', 'Administración de medicamentos para el tratamiento de trastornos mentales bajo supervisión profesional.', 3),
+(12, 'Terapia electroconvulsiva (TEC)', 'Tratamiento psiquiátrico que utiliza estímulos eléctricos controlados para casos graves de depresión o trastornos resistentes.', 3),
+(13, 'Rehabilitación física', 'Ejercicios y terapias físicas diseñadas para recuperar movilidad y fuerza tras lesiones o cirugías.', 4),
+(14, 'Terapia ocupacional', 'Intervenciones que buscan mejorar habilidades de la vida diaria y laboral.', 4),
+(15, 'Rehabilitación cognitiva', 'Actividades terapéuticas para recuperar funciones cognitivas afectadas por enfermedades o accidentes.', 4);
 
 -- --------------------------------------------------------
 
@@ -849,11 +1127,21 @@ CREATE TABLE IF NOT EXISTS `catalogo_usos_internet` (
 
 DROP TABLE IF EXISTS `catalogo_uso_anteojos`;
 CREATE TABLE IF NOT EXISTS `catalogo_uso_anteojos` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_uso_anteojos`
+--
+
+INSERT INTO `catalogo_uso_anteojos` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Solo para lectura', 'Utilizo anteojos únicamente para actividades de lectura o tareas que requieren visión cercana.'),
+(2, 'Uso irregular/ocasional', 'Hago uso constante de anteojos según recomendación médica para mejorar la visión en diversas actividades diarias.'),
+(3, 'Para todas las actividades', 'Utilizo anteojos de manera habitual para la mayoría de mis actividades diarias, tanto de cerca como de lejos.'),
+(4, 'Necesito, pero no tengo', 'Requiere el uso de anteojos según indicación médica, pero actualmente no los utilizo de manera regular.');
 
 -- --------------------------------------------------------
 
@@ -881,7 +1169,17 @@ CREATE TABLE IF NOT EXISTS `categorias_dependencias` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `categorias_dependencias`
+--
+
+INSERT INTO `categorias_dependencias` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Familiar directo', 'Personas con vínculo de parentesco inmediato con el alumno, como padres, hijos o cónyuge.'),
+(2, 'Familiar indirecto', 'Parientes no directos que pueden participar en el sustento económico, como tíos, primos o abuelos.'),
+(3, 'No familiar', 'Personas sin lazo de parentesco que contribuyen o dependen económicamente del alumno, como tutores, padrinos o amigos.'),
+(4, 'Institucional / Gubernamental', 'Entidades públicas o privadas que proporcionan apoyo económico, como becas, programas sociales o fundaciones.');
 
 -- --------------------------------------------------------
 
@@ -933,14 +1231,24 @@ CREATE TABLE IF NOT EXISTS `datos_generales` (
   `tlf_personal` varchar(13) DEFAULT NULL,
   `tlf_emergencia` varchar(13) DEFAULT NULL,
   `email_personal` varchar(250) DEFAULT NULL,
-  `maya_hablante` tinyint DEFAULT NULL,
+  `maya_hablante` tinyint(1) DEFAULT NULL,
   `estados_civiles_id` int NOT NULL,
   `nacionalidades_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_datos_generales_estados_civiles1_idx` (`estados_civiles_id`),
   KEY `fk_datos_generales_nacionalidades1_idx` (`nacionalidades_id`),
   KEY `fk_datos_generales_perfil1_idx` (`perfil_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `datos_generales`
+--
+
+INSERT INTO `datos_generales` (`id`, `perfil_id`, `tlf_personal`, `tlf_emergencia`, `email_personal`, `maya_hablante`, `estados_civiles_id`, `nacionalidades_id`) VALUES
+(4, 31, '9851028414', '8130872198', 'carlos.ace@gmail.com', 1, 2, 1),
+(6, 31, '9851028414', '8130872198', 'carlos.ace@gmail.com', 0, 1, 1),
+(7, 32, '9851240538', '9851294850', 'marco.aoe@gmail.com', 0, 1, 1),
+(8, 33, '9994212407', '9851028414', 'lalo.eaee@gmail.com', 0, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -957,7 +1265,17 @@ CREATE TABLE IF NOT EXISTS `datos_personales` (
   `rfc` varchar(13) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_datos_personales_perfil1_idx` (`perfil_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `datos_personales`
+--
+
+INSERT INTO `datos_personales` (`id`, `perfil_id`, `curp`, `nss`, `rfc`) VALUES
+(6, 31, 'CARLOS112HQTYTK65', '12345678901', ''),
+(8, 31, 'CARLOS112HQTYTK65', '', ''),
+(9, 32, 'MARCOOLIVO12345', '12345678901', ''),
+(10, 33, 'EDUVGMU970311MNTPT', '', '');
 
 -- --------------------------------------------------------
 
@@ -982,14 +1300,27 @@ CREATE TABLE IF NOT EXISTS `departamentos` (
 
 DROP TABLE IF EXISTS `dependientes`;
 CREATE TABLE IF NOT EXISTS `dependientes` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `alum_dependen_economica_id` int NOT NULL,
   `catalogo_dependencias_economicas_id` int NOT NULL,
   `otro_especificar` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_dependen_alumno_alum_dependen_economica1_idx` (`alum_dependen_economica_id`),
   KEY `fk_dependen_alumno_catalogo_dependencias_economicas1_idx` (`catalogo_dependencias_economicas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=253 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `dependientes`
+--
+
+INSERT INTO `dependientes` (`id`, `alum_dependen_economica_id`, `catalogo_dependencias_economicas_id`, `otro_especificar`) VALUES
+(153, 1, 5, NULL),
+(154, 1, 3, NULL),
+(155, 1, 12, NULL),
+(234, 2, 9, NULL),
+(235, 2, 2, NULL),
+(236, 2, 13, 'Hijos'),
+(252, 3, 4, NULL);
 
 -- --------------------------------------------------------
 
@@ -1029,7 +1360,17 @@ CREATE TABLE IF NOT EXISTS `domicilios_actuales` (
   KEY `fk_domicilios_actuales_entidades_federativas1_idx` (`entidades_federativas_id`),
   KEY `fk_domicilios_actuales_municipios1_idx` (`municipios_id`),
   KEY `fk_domicilios_actuales_perfil1_idx` (`perfil_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `domicilios_actuales`
+--
+
+INSERT INTO `domicilios_actuales` (`id`, `perfil_id`, `entidades_federativas_id`, `municipios_id`, `localidad`, `calle`, `numero_exterior`, `numero_interior`, `colonia`, `codigo_postal`) VALUES
+(6, 31, 1, 2, 'Valladolid', '42', '213F', '', 'San Juan', '97783'),
+(8, 31, 1, 2, 'Valladolid', '42', '213F', '', 'San Juan', '97783'),
+(9, 32, 1, 2, 'Valladolid', '42', '213F', '', 'San Juan', '97783'),
+(10, 33, 1, 2, 'Valladolid', '42', '213F', '', 'San Juan', '97783');
 
 -- --------------------------------------------------------
 
@@ -1044,10 +1385,18 @@ CREATE TABLE IF NOT EXISTS `edades_hijos` (
   `nombre` varchar(150) NOT NULL,
   `apellido_paterno` varchar(150) NOT NULL,
   `apellido_materno` varchar(150) NOT NULL,
-  `fecha_nacimiento` datetime NOT NULL,
+  `fecha_nacimiento` date NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alumnos_edades_hijos_alum_info_hijos1_idx` (`alum_info_hijos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `edades_hijos`
+--
+
+INSERT INTO `edades_hijos` (`id`, `alum_info_hijos_id`, `nombre`, `apellido_paterno`, `apellido_materno`, `fecha_nacimiento`) VALUES
+(83, 15, 'Johana', 'Olivo', 'Escobedo', '2000-08-21'),
+(84, 16, 'Eduardo', 'Estrella', 'Olivo', '2027-07-24');
 
 -- --------------------------------------------------------
 
@@ -1131,21 +1480,32 @@ CREATE TABLE IF NOT EXISTS `equipos` (
   `fecha_alta` datetime NOT NULL,
   `numero_inventario` varchar(50) NOT NULL,
   `numero_serie` varchar(100) DEFAULT NULL,
-  `foto_equipo` text,
-  `foto_numero_inventario` text,
-  `foto_numero_serie` text,
+  `foto_equipo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `foto_numero_inventario` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `foto_numero_serie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `observaciones` text,
   `especificaciones` text,
   `modelos_id` int NOT NULL,
   `tipo_equipo_id` int NOT NULL,
   `tipo_alta_id` int NOT NULL,
   `estado_equipo_id` int NOT NULL,
+  `marca_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_equipos_modelos1_idx` (`modelos_id`),
   KEY `fk_equipos_tipo_equipo1_idx` (`tipo_equipo_id`),
   KEY `fk_equipos_tipo_alta1_idx` (`tipo_alta_id`),
-  KEY `fk_equipos_estado_equipo1_idx` (`estado_equipo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_equipos_estado_equipo1_idx` (`estado_equipo_id`),
+  KEY `fk_equipos_marcas` (`marca_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `equipos`
+--
+
+INSERT INTO `equipos` (`id`, `fecha_alta`, `numero_inventario`, `numero_serie`, `foto_equipo`, `foto_numero_inventario`, `foto_numero_serie`, `observaciones`, `especificaciones`, `modelos_id`, `tipo_equipo_id`, `tipo_alta_id`, `estado_equipo_id`, `marca_id`) VALUES
+(10, '2025-12-08 00:42:37', '32432141234', '6874658657', '69361efdcca71_53613f1cfd140abdd42b01ca5a42024e.jpg', '69361efdccf85_il_fullxfull.3671126133_doj1.jpg', '69361efdcd4a9_Robin.jpg', 'NAI', 'Nai', 1, 1, 1, 2, 1),
+(12, '2025-12-08 01:33:39', '34524325', '23454325', '69362af34dcc6_8d2c550b-39d6-4a3f-bcb2-9d51ca544f94.jpg', '69362af34e113_648658124-LEGO-NINJAGO---Minifigur-Kai.jpg', '69362af34e707_c0fbf45fcbeca248a44cfbdfc4e9e2b5.jpg', 'qweqwe', 'wqqwewq', 7, 2, 1, 2, 3),
+(13, '2025-12-17 20:01:25', '10203040506070', '9879879786', '69430c158cea8_8d2c550b-39d6-4a3f-bcb2-9d51ca544f94.jpg', '69430c158d30e_c0fbf45fcbeca248a44cfbdfc4e9e2b5.jpg', '69430c158d88b_cr71.jpg', 'Ninguna observacion', 'Especificaciones ......', 4, 2, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1194,7 +1554,18 @@ CREATE TABLE IF NOT EXISTS `estados_civiles` (
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `estados_civiles`
+--
+
+INSERT INTO `estados_civiles` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Soltero(a)', 'Persona que no ha contraído matrimonio legalmente.'),
+(2, 'Casado(a)', 'Persona unida legalmente en matrimonio.'),
+(3, 'Divorciado(a)', 'Persona cuyo vínculo matrimonial ha sido disuelto legalmente.'),
+(4, 'Viudo(a)', 'Persona cuyo cónyuge ha fallecido.'),
+(5, 'Unión libre', 'Persona que convive con otra en una relación estable sin matrimonio legal.');
 
 -- --------------------------------------------------------
 
@@ -1204,10 +1575,18 @@ CREATE TABLE IF NOT EXISTS `estados_civiles` (
 
 DROP TABLE IF EXISTS `estado_equipo`;
 CREATE TABLE IF NOT EXISTS `estado_equipo` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `estado_equipo`
+--
+
+INSERT INTO `estado_equipo` (`id`, `descripcion`) VALUES
+(1, 'Funciona'),
+(2, 'No Funciona');
 
 -- --------------------------------------------------------
 
@@ -1221,7 +1600,18 @@ CREATE TABLE IF NOT EXISTS `frecuencia_tiempo` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `frecuencia_tiempo`
+--
+
+INSERT INTO `frecuencia_tiempo` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Cada mes', 'Asisto al profesional de manera mensual para seguimiento o control de salud.'),
+(2, 'Cada 3 meses', 'Realizo visitas trimestrales para revisiones periódicas o seguimiento de tratamientos específicos.'),
+(3, 'Cada 6 meses', 'Realizo visitas semestrales para revisiones preventivas o seguimiento de tratamientos.'),
+(4, 'Cada año', 'Acudo anualmente para chequeos rutinarios, control general o prevención de enfermedades.'),
+(5, 'Solo cuando es necesario', 'Acudo únicamente ante la aparición de síntomas, malestar o necesidad específica de atención médica o dental.');
 
 -- --------------------------------------------------------
 
@@ -1282,7 +1672,7 @@ INSERT INTO `generaciones` (`id`, `nombre`, `anio_inicio`, `anio_fin`, `descripc
 DROP TABLE IF EXISTS `genero`;
 CREATE TABLE IF NOT EXISTS `genero` (
   `id` smallint NOT NULL AUTO_INCREMENT,
-  `genero_nombre` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `genero_nombre` varchar(45) COLLATE utf8mb3_unicode_ci NOT NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -1368,7 +1758,17 @@ CREATE TABLE IF NOT EXISTS `lugares_nacimiento` (
   KEY `fk_lugares_nacimiento_entidades_federativas1_idx` (`entidades_federativas_id`),
   KEY `fk_lugares_nacimiento_municipios1_idx` (`municipios_id`),
   KEY `fk_lugares_nacimiento_perfil1_idx` (`perfil_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `lugares_nacimiento`
+--
+
+INSERT INTO `lugares_nacimiento` (`id`, `perfil_id`, `entidades_federativas_id`, `municipios_id`, `localidad`) VALUES
+(6, 31, 2, 4, 'Campeche'),
+(8, 31, 2, 6, 'Campeche'),
+(9, 32, 1, 3, 'Tizimin'),
+(10, 33, 1, 1, 'Mérida');
 
 -- --------------------------------------------------------
 
@@ -1381,7 +1781,18 @@ CREATE TABLE IF NOT EXISTS `marcas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `marcas`
+--
+
+INSERT INTO `marcas` (`id`, `descripcion`) VALUES
+(1, 'HP'),
+(2, 'DELL'),
+(3, 'LENOVO'),
+(4, 'ACER'),
+(5, 'Samsung');
 
 -- --------------------------------------------------------
 
@@ -1418,7 +1829,18 @@ CREATE TABLE IF NOT EXISTS `modelos` (
   `marcas_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_modelos_marcas1_idx` (`marcas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `modelos`
+--
+
+INSERT INTO `modelos` (`id`, `descripcion`, `marcas_id`) VALUES
+(1, 'Modelo 1', 1),
+(4, 'Modelo 2', 1),
+(5, 'Modelo 1', 3),
+(7, 'Modelo 2', 3),
+(8, 'Modelo 1', 5);
 
 -- --------------------------------------------------------
 
@@ -1458,11 +1880,21 @@ INSERT INTO `municipios` (`id`, `nombre`, `entidades_federativas_id`) VALUES
 
 DROP TABLE IF EXISTS `nacionalidades`;
 CREATE TABLE IF NOT EXISTS `nacionalidades` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `nacionalidades`
+--
+
+INSERT INTO `nacionalidades` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Mexicana', 'Personas originarias de México.'),
+(2, 'Estadounidense', 'Personas originarias de Estados Unidos.'),
+(3, 'Colombiana', 'Personas originarias de Colombia.'),
+(4, 'Argentina', 'Personas originarias de Argentina.');
 
 -- --------------------------------------------------------
 
@@ -1493,22 +1925,25 @@ CREATE TABLE IF NOT EXISTS `perfil` (
   `user_id` int NOT NULL,
   `nombre` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `apellido` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `fecha_nacimiento` datetime NOT NULL,
+  `fecha_nacimiento` date NOT NULL,
   `genero_id` smallint NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `genero_id_2` (`genero_id`),
   KEY `fk_perfil_user1_idx` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `perfil`
 --
 
 INSERT INTO `perfil` (`id`, `user_id`, `nombre`, `apellido`, `fecha_nacimiento`, `genero_id`, `created_at`, `updated_at`) VALUES
-(26, 26, 'Johana Yanet', 'Olivo Escobedo', '2000-09-11 00:00:00', 2, '2025-10-29 12:00:43', '2025-10-29 12:00:43'),
-(27, 27, 'Edgar Manuel', 'Poot Ku', '2000-07-20 00:00:00', 1, '2025-10-29 13:57:32', '2025-10-29 13:57:32');
+(26, 26, 'Johana Yanet', 'Olivo Escobedo', '2000-09-11', 2, '2025-10-29 12:00:43', '2025-10-29 12:00:43'),
+(29, 1, 'Eduardo Alexander', 'Estrella Escobedo', '2000-09-11', 1, '2025-12-09 17:49:54', '2025-12-09 17:49:54'),
+(31, 29, 'Carlos Ali', 'Cuevas Escobedo', '2010-12-14', 1, '2025-12-09 23:56:30', '2025-12-10 02:01:44'),
+(32, 30, 'Marco Antonio', 'Olivo Escobedo', '1996-08-15', 1, '2025-12-13 17:49:48', '2025-12-13 17:49:48'),
+(33, 31, 'Eduardo Alexander', 'Estrella Escobedo', '2000-09-11', 1, '2025-12-16 13:47:00', '2025-12-16 13:47:00');
 
 -- --------------------------------------------------------
 
@@ -1590,7 +2025,16 @@ CREATE TABLE IF NOT EXISTS `problemas_salud` (
   KEY `fk_problemas_salud_alum_estado_salud1_idx` (`alum_estado_salud_id`),
   KEY `fk_problemas_salud_catalogo_problemas_salud1_idx` (`catalogo_problemas_salud_id`),
   KEY `fk_problemas_salud_tipo_gravedad1_idx` (`tipo_gravedad_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `problemas_salud`
+--
+
+INSERT INTO `problemas_salud` (`id`, `alum_estado_salud_id`, `catalogo_problemas_salud_id`, `otro_especificar`, `tipo_gravedad_id`) VALUES
+(52, 1, 3, NULL, 3),
+(53, 1, 13, NULL, 1),
+(72, 2, 3, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -1646,7 +2090,7 @@ CREATE TABLE IF NOT EXISTS `servicios_salud` (
   PRIMARY KEY (`id`),
   KEY `fk_servicios_salud_alum_servicios_salud1_idx` (`alum_servicios_salud_id`),
   KEY `fk_servicios_salud_catalogo_servicios_salud1_idx` (`catalogo_servicios_salud_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1660,7 +2104,18 @@ CREATE TABLE IF NOT EXISTS `tiempo_recorrido_transporte` (
   `rango_tiempo` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tiempo_recorrido_transporte`
+--
+
+INSERT INTO `tiempo_recorrido_transporte` (`id`, `rango_tiempo`, `descripcion`) VALUES
+(1, '10–30 minutos', 'Traslado estimado entre 10 y 30 minutos desde el hogar hasta el destino.'),
+(2, '31–60 minutos', 'Traslado estimado entre 31 minutos y 1 hora desde el hogar hasta el destino.'),
+(3, '61–90 minutos', 'Traslado estimado entre 1 hora y 1 hora 30 minutos desde el hogar hasta el destino.'),
+(4, '91–120 minutos', 'Traslado estimado entre 1 hora 31 minutos y 2 horas desde el hogar hasta el destino.'),
+(5, 'Más de 120 minutos', 'Traslado estimado superior a 2 horas desde el hogar hasta el destino.');
 
 -- --------------------------------------------------------
 
@@ -1674,7 +2129,19 @@ CREATE TABLE IF NOT EXISTS `tipos_becas` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipos_becas`
+--
+
+INSERT INTO `tipos_becas` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Otro (especificar)', 'Espacio para registrar becas adicionales, federales, estatales o institucionales no contempladas en el catálogo principal.'),
+(2, 'Beca de Excelencia (Gobierno del Estado de Yucatán)', 'Apoyo estatal de hasta $1,200 pesos mensuales otorgado a estudiantes destacados en los ámbitos académico, artístico o deportivo. Las reglas de operación se publican en el Diario Oficial del Estado.'),
+(3, 'Programa de Becas para Estudiantes Foráneos (Gobierno del Estado de Yucatán)', 'Apoyo estatal para estudiantes provenientes de municipios foráneos con promedio mínimo de 8.5 y condiciones económicas limitadas. Cubre manutención y gastos de transporte.'),
+(4, 'Beca Juventud de Renacimiento – UADY', 'Programa institucional de la Universidad Autónoma de Yucatán que otorga $3,000 pesos bimestrales a estudiantes de licenciatura con alto rendimiento académico.'),
+(5, 'Beca de Movilidad Internacional Yucatán', 'Apoyo estatal para estudiantes de nivel superior que realicen estancias académicas en el extranjero. Incluye gastos de transporte, seguro médico, hospedaje y apoyo para idiomas.'),
+(6, 'Beca “Jóvenes Escribiendo el Futuro”', 'Apoyo federal de $5,800 pesos bimestrales dirigido a estudiantes de licenciatura o técnico superior universitario en universidades públicas prioritarias. Se gestiona a través de la plataforma SUBES.');
 
 -- --------------------------------------------------------
 
@@ -1702,7 +2169,17 @@ CREATE TABLE IF NOT EXISTS `tipos_tratamientos` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipos_tratamientos`
+--
+
+INSERT INTO `tipos_tratamientos` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Médico', 'Tratamientos realizados por profesionales de la salud con intervención clínica directa, incluyendo farmacología, procedimientos médicos y monitoreo de signos vitales.'),
+(2, 'Psicológico', 'Intervenciones terapéuticas orientadas a la modificación de conductas, manejo emocional y desarrollo de habilidades cognitivas y sociales, mediante técnicas psicoterapéuticas individuales o grupales.'),
+(3, 'Psiquiátrico', 'Tratamientos que incluyen diagnóstico, medicación y seguimiento de trastornos mentales por profesionales de psiquiatría, con enfoque integral en la salud mental del paciente.'),
+(4, 'Rehabilitación', 'Intervenciones dirigidas a la recuperación funcional y mejora de la calidad de vida, incluyendo terapia física, ocupacional y cognitiva, tras enfermedades, lesiones o cirugías.');
 
 -- --------------------------------------------------------
 
@@ -1716,7 +2193,17 @@ CREATE TABLE IF NOT EXISTS `tipos_viviendas` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipos_viviendas`
+--
+
+INSERT INTO `tipos_viviendas` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Propia', 'Vivienda que pertenece a la persona o a algún integrante de su familia, ya sea totalmente pagada o en proceso de pago.'),
+(2, 'Rentada', 'Vivienda ocupada mediante el pago periódico de una renta o alquiler a un propietario.'),
+(3, 'Prestada', 'Vivienda cedida temporalmente por familiares, amigos o terceros sin pago de renta.'),
+(4, 'Otro', 'Tipo de vivienda que no encaja en las categorías anteriores, como vivienda institucional o en comodato especial.');
 
 -- --------------------------------------------------------
 
@@ -1730,7 +2217,18 @@ CREATE TABLE IF NOT EXISTS `tipo_alergias` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_alergias`
+--
+
+INSERT INTO `tipo_alergias` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Alergia alimentaria', 'Reacción del sistema inmunitario ante el consumo de ciertos alimentos o componentes alimenticios.'),
+(2, 'Alergia farmacológica', 'Respuesta inmunitaria adversa al uso de medicamentos o fármacos específicos.'),
+(3, 'Alergia ambiental', 'Sensibilidad a partículas o sustancias presentes en el ambiente como polvo, polen o moho.'),
+(4, 'Alergia por picadura de insecto', 'Reacción local o sistémica al veneno de abejas, avispas u otros insectos.'),
+(5, 'Alergia por contacto', 'Inflamación o irritación de la piel causada por contacto directo con materiales o productos químicos.');
 
 -- --------------------------------------------------------
 
@@ -1743,7 +2241,15 @@ CREATE TABLE IF NOT EXISTS `tipo_alta` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_alta`
+--
+
+INSERT INTO `tipo_alta` (`id`, `descripcion`) VALUES
+(1, 'Compra'),
+(2, 'Donacion');
 
 -- --------------------------------------------------------
 
@@ -1769,7 +2275,15 @@ CREATE TABLE IF NOT EXISTS `tipo_equipo` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_equipo`
+--
+
+INSERT INTO `tipo_equipo` (`id`, `descripcion`) VALUES
+(1, 'Laptop'),
+(2, 'Pc Escritorio');
 
 -- --------------------------------------------------------
 
@@ -1783,7 +2297,17 @@ CREATE TABLE IF NOT EXISTS `tipo_gravedad` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_gravedad`
+--
+
+INSERT INTO `tipo_gravedad` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Leve', 'La condición o alergia presenta síntomas mínimos que no interfieren significativamente con las actividades diarias y no requieren intervención urgente.'),
+(2, 'Moderada', 'La condición o alergia causa síntomas evidentes que afectan algunas actividades diarias y puede requerir tratamiento o seguimiento médico.'),
+(3, 'Grave', 'La condición o alergia provoca síntomas intensos que limitan actividades diarias y requieren atención médica inmediata o tratamiento especializado.'),
+(4, 'Crítica / potencialmente peligrosa', 'La condición o alergia presenta riesgo alto para la salud, pudiendo poner en peligro la vida, y requiere intervención médica urgente o continua.');
 
 -- --------------------------------------------------------
 
@@ -1842,7 +2366,7 @@ INSERT INTO `tipo_usuario` (`id`, `tipo_usuario_nombre`, `tipo_usuario_valor`) V
 
 DROP TABLE IF EXISTS `tratamientos`;
 CREATE TABLE IF NOT EXISTS `tratamientos` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `alum_tratamientos_id` int NOT NULL,
   `catalogo_tratamientos_id` int NOT NULL,
   `frecuencia_tiempo_id` int NOT NULL,
@@ -1852,7 +2376,14 @@ CREATE TABLE IF NOT EXISTS `tratamientos` (
   KEY `fk_tratamientos_frecuencia_tiempo1_idx` (`frecuencia_tiempo_id`),
   KEY `fk_tratamientos_alum_tratamientos1_idx` (`alum_tratamientos_id`),
   KEY `fk_tratamientos_catalogo_tratamientos1_idx` (`catalogo_tratamientos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tratamientos`
+--
+
+INSERT INTO `tratamientos` (`id`, `alum_tratamientos_id`, `catalogo_tratamientos_id`, `frecuencia_tiempo_id`, `fecha_inicio`, `fecha_fin`) VALUES
+(6, 3, 4, 2, '0000-00-00', '2025-12-04');
 
 -- --------------------------------------------------------
 
@@ -1901,7 +2432,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `fk_user_rol1_idx` (`rol_id`),
   KEY `fk_user_estado1_idx` (`estado_id`),
   KEY `fk_user_tipo_usuario1_idx` (`tipo_usuario_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
@@ -1910,7 +2441,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `rol_id`, `estado_id`, `tipo_usuario_id`, `created_at`, `updated_at`, `verification_token`) VALUES
 (1, 'root', 'pQeZefuxsI0kiGxn_OKI6IXdBznTmWF9', '$2y$13$M0AvNyw666uh452dv5sdJOLimBesSgRNjdFTGZFCXEEf0rsnEVohm', NULL, 'root@root.com', 7, 1, 2, '2025-08-30 14:25:57', '2025-08-30 14:25:57', 'WnDqUcudrydqtx7rhS8QrZ5P8m-a8mMn_1756585557'),
 (26, 'johana.yoe', 'PzTemzgTZKveVWSHE6UTzF8lJqMbHWZ7', '$2y$13$axpISi3AcdTxLk1BuNc/H.tGKKoRdZ673ZjBLUiBQYfI.zbmOnYi.', NULL, 'johana.yoe@gmail.com', 8, 1, 1, '2025-10-29 12:00:43', '2025-10-29 12:00:43', 'XwGy3jBkvTHNEsy97WRRGLZVWZWmd1qp_1761760843'),
-(27, 'edgar.pk', '8--kH_qoncTCS59hBeDmp6dwi4GpMj8j', '$2y$13$WtKfqJPCo2vU.HQpVjC63eW7hlikmOlkF0hGDsmbaqzcJlKjKK5sW', NULL, 'edgar.pk@gmail.com', 8, 1, 2, '2025-10-29 13:57:32', '2025-10-29 14:00:45', 'QptF9hiXfzsUPrmYlK69yWng1jUC1fE0_1761767852');
+(29, 'carlos.ace', 'h2SRbOVdxnd0eL3ngqOW8yxUS1qCOcFU', '$2y$13$VWscFcX3qxJwd.wKWC1uhOyJKFaONycb4R3LH3WKwBcPWn96TE5yS', NULL, 'carlos.ace@gmail.com', 8, 1, 2, '2025-12-09 23:52:33', '2025-12-09 23:53:09', 'yLmFc_9bCE4hH04uDIUrg7SeptenoK9e_1765345953'),
+(30, 'marco.aoe', 'JLZ4iNYFf0zQg_1hSDyBdIODXveH5r4_', '$2y$13$mbJUUM8f849ZiWelWCKe9uH.wz9WuGvX4Pft2j/mnEnPiIsJQgxoO', NULL, 'marco.aoe@gmail.com', 8, 1, 1, '2025-12-13 17:49:48', '2025-12-13 17:49:56', 'Ej6npuLB9UUm3Q5KgQUlFBTngZYtxDfu_1765669788'),
+(31, 'Eduardo.aee', 'lphxkbEX2_Vut6jp6wNjjXHWObAASIKq', '$2y$13$CaCag859DGO9wYNhKl5cmujEOzVXZ9Y5T6WHWsaUmDsGho/bkieKi', NULL, 'Eduardo.aee@gmail.com', 8, 1, 2, '2025-12-16 13:46:59', '2025-12-16 14:28:36', 'Hg51pBb0sjMfvbNOCJhXw-UcpGHMm-Op_1765914419');
 
 -- --------------------------------------------------------
 
@@ -1942,7 +2475,14 @@ CREATE TABLE IF NOT EXISTS `uso_anteojos` (
   PRIMARY KEY (`id`),
   KEY `fk_uso_anteojos_catalogo_uso_anteojos1_idx` (`catalogo_uso_anteojos_id`),
   KEY `fk_uso_anteojos_alum_uso_anteojos1_idx` (`alum_uso_anteojos_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `uso_anteojos`
+--
+
+INSERT INTO `uso_anteojos` (`id`, `alum_uso_anteojos_id`, `catalogo_uso_anteojos_id`) VALUES
+(14, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -1975,7 +2515,34 @@ CREATE TABLE IF NOT EXISTS `vivienda_bienes` (
   PRIMARY KEY (`id`),
   KEY `fk_vivienda_bienes_alum_vivienda1_idx` (`alum_vivienda_id`),
   KEY `fk_vivienda_bienes_catalogo_bienes_vivienda1_idx` (`catalogo_bienes_vivienda_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `vivienda_bienes`
+--
+
+INSERT INTO `vivienda_bienes` (`id`, `alum_vivienda_id`, `catalogo_bienes_vivienda_id`, `otro_especificar`) VALUES
+(41, 2, 6, NULL),
+(42, 2, 2, NULL),
+(43, 2, 9, NULL),
+(44, 2, 5, NULL),
+(153, 3, 6, NULL),
+(154, 3, 2, NULL),
+(155, 3, 9, NULL),
+(156, 3, 11, 'Licuadora'),
+(157, 3, 1, NULL),
+(158, 3, 8, NULL),
+(291, 4, 6, NULL),
+(292, 4, 7, NULL),
+(293, 4, 10, NULL),
+(294, 4, 2, NULL),
+(295, 4, 3, NULL),
+(296, 4, 4, NULL),
+(297, 4, 9, NULL),
+(298, 4, 11, 'OTRO BIEN'),
+(299, 4, 1, NULL),
+(300, 4, 5, NULL),
+(301, 4, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -1992,7 +2559,21 @@ CREATE TABLE IF NOT EXISTS `vivienda_servicios` (
   PRIMARY KEY (`id`),
   KEY `fk_vivienda_servicios_catalogo_servicios_vivienda1_idx` (`catalogo_servicios_vivienda_id`),
   KEY `fk_vivienda_servicios_alum_vivienda1_idx` (`alum_vivienda_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `vivienda_servicios`
+--
+
+INSERT INTO `vivienda_servicios` (`id`, `alum_vivienda_id`, `catalogo_servicios_vivienda_id`, `otro_especificar`) VALUES
+(61, 3, 1, NULL),
+(62, 3, 2, NULL),
+(63, 3, 3, NULL),
+(64, 3, 4, 'Cablevision'),
+(113, 4, 1, NULL),
+(114, 4, 2, NULL),
+(115, 4, 3, NULL),
+(116, 4, 4, 'OTRO SERVICIO');
 
 --
 -- Restricciones para tablas volcadas
@@ -2270,7 +2851,7 @@ ALTER TABLE `datos_generales`
 -- Filtros para la tabla `datos_personales`
 --
 ALTER TABLE `datos_personales`
-  ADD CONSTRAINT `fk_datos_personales_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
+  ADD CONSTRAINT `fk_datos_personales_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `departamentos`
@@ -2298,7 +2879,7 @@ ALTER TABLE `deportes`
 ALTER TABLE `domicilios_actuales`
   ADD CONSTRAINT `fk_domicilios_actuales_entidades_federativas1` FOREIGN KEY (`entidades_federativas_id`) REFERENCES `entidades_federativas` (`id`),
   ADD CONSTRAINT `fk_domicilios_actuales_municipios1` FOREIGN KEY (`municipios_id`) REFERENCES `municipios` (`id`),
-  ADD CONSTRAINT `fk_domicilios_actuales_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
+  ADD CONSTRAINT `fk_domicilios_actuales_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `edades_hijos`
@@ -2326,6 +2907,7 @@ ALTER TABLE `enfermedades_cronicas`
 --
 ALTER TABLE `equipos`
   ADD CONSTRAINT `fk_equipos_estado_equipo1` FOREIGN KEY (`estado_equipo_id`) REFERENCES `estado_equipo` (`id`),
+  ADD CONSTRAINT `fk_equipos_marcas` FOREIGN KEY (`marca_id`) REFERENCES `marcas` (`id`),
   ADD CONSTRAINT `fk_equipos_modelos1` FOREIGN KEY (`modelos_id`) REFERENCES `modelos` (`id`),
   ADD CONSTRAINT `fk_equipos_tipo_alta1` FOREIGN KEY (`tipo_alta_id`) REFERENCES `tipo_alta` (`id`),
   ADD CONSTRAINT `fk_equipos_tipo_equipo1` FOREIGN KEY (`tipo_equipo_id`) REFERENCES `tipo_equipo` (`id`);
@@ -2344,7 +2926,7 @@ ALTER TABLE `historial_traslado`
 ALTER TABLE `lugares_nacimiento`
   ADD CONSTRAINT `fk_lugares_nacimiento_entidades_federativas1` FOREIGN KEY (`entidades_federativas_id`) REFERENCES `entidades_federativas` (`id`),
   ADD CONSTRAINT `fk_lugares_nacimiento_municipios1` FOREIGN KEY (`municipios_id`) REFERENCES `municipios` (`id`),
-  ADD CONSTRAINT `fk_lugares_nacimiento_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`);
+  ADD CONSTRAINT `fk_lugares_nacimiento_perfil1` FOREIGN KEY (`perfil_id`) REFERENCES `perfil` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `modelos`

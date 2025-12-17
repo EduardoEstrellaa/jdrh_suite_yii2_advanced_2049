@@ -18,10 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Modelos', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Modelo', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -31,15 +29,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'descripcion',
-            'marcas_id',
+
+            [
+                'attribute' => 'id_marca',
+                'value' => function ($model) {
+                    return $model->marca ? $model->marca->descripcion : '(Sin marca)';
+                },
+                'label' => 'Marca',
+            ],
+
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Modelos $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>
-
 
 </div>

@@ -28,10 +28,9 @@ class EstadoEquipo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'descripcion'], 'required'],
-            [['id'], 'integer'],
+            // ✔ SOLO tus reglas (HEAD)
+            [['descripcion'], 'required'],
             [['descripcion'], 'string', 'max' => 100],
-            [['id'], 'unique'],
         ];
     }
 

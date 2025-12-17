@@ -68,4 +68,11 @@ class Modelos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Marcas::class, ['id' => 'marcas_id']);
     }
+
+    public function getMarca()
+    {
+    return $this->getMarcas();
+    }
+
+
 }
