@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -34,10 +34,9 @@ class Tratamientos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'alum_tratamientos_id', 'catalogo_tratamientos_id', 'frecuencia_tiempo_id'], 'required'],
-            [['id', 'alum_tratamientos_id', 'catalogo_tratamientos_id', 'frecuencia_tiempo_id'], 'integer'],
+            [['alum_tratamientos_id', 'catalogo_tratamientos_id', 'frecuencia_tiempo_id'], 'required'],
+            [['alum_tratamientos_id', 'catalogo_tratamientos_id', 'frecuencia_tiempo_id'], 'integer'],
             [['fecha_inicio', 'fecha_fin'], 'safe'],
-            [['id'], 'unique'],
             [['alum_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlumTratamientos::class, 'targetAttribute' => ['alum_tratamientos_id' => 'id']],
             [['catalogo_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoTratamientos::class, 'targetAttribute' => ['catalogo_tratamientos_id' => 'id']],
             [['frecuencia_tiempo_id'], 'exist', 'skipOnError' => true, 'targetClass' => FrecuenciaTiempo::class, 'targetAttribute' => ['frecuencia_tiempo_id' => 'id']],

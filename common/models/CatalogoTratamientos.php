@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -31,11 +31,10 @@ class CatalogoTratamientos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'nombre', 'tipos_tratamientos_id'], 'required'],
-            [['id', 'tipos_tratamientos_id'], 'integer'],
+            [['nombre', 'tipos_tratamientos_id'], 'required'],
+            [['tipos_tratamientos_id'], 'integer'],
             [['nombre'], 'string', 'max' => 150],
             [['descripcion'], 'string', 'max' => 250],
-            [['id'], 'unique'],
             [['tipos_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => TiposTratamientos::class, 'targetAttribute' => ['tipos_tratamientos_id' => 'id']],
         ];
     }
