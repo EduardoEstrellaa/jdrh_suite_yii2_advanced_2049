@@ -12,16 +12,13 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
 
+    // Aliases need to be defined at the root level, not inside components
+    'aliases' => [
+        '@frontendUrl' => 'http://localhost/jdrh_suite_yii2_advanced_2049/frontend/web',
+        '@backendUrl'  => 'http://localhost/jdrh_suite_yii2_advanced_2049/backend/web',
+    ],
+
     'components' => [
-
-        // ==== ALIASES PARA ARCHIVOS SUBIDOS ====
-        'aliases' => [
-    '@frontendUrl' => 'http://localhost/jdrh_suite_yii2_advanced_2049/frontend/web',
-    '@backendUrl'  => 'http://localhost/jdrh_suite_yii2_advanced_2049/backend/web',
-],
-
-
-
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
