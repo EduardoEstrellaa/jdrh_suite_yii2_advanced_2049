@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\AlumEstadoSalud $model */
+/** @var common\models\AlumEstadoSalud $model */
 
 $this->title = Yii::t('app', 'Create Alum Estado Salud');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Alum Estado Saluds'), 'url' => ['index']];

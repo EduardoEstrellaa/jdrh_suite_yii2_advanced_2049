@@ -1,21 +1,99 @@
-<?php
+﻿<?php
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\helpers\InputHelper;
 use common\assets\ExpedienteAsset;
+use common\helpers\BooleanHelper;
 use common\models\EntidadesFederativas;
+use common\models\EstadosCiviles;
+use common\models\Nacionalidades;
+use common\models\TiposBecas;
+use common\models\CatalogoDependenciasEconomicas;
+use common\models\AlumDependeEconomicamente;
+use common\models\AlumDependenEconomica;
+use common\models\Dependientes;
+use common\models\AlumTrabajo;
+use common\models\AlumVivienda;
+use common\models\CatalogoBienesVivienda;
+use common\models\AlumTransportes;
+use common\models\CatalogoTransportes;
+use common\models\TiposViviendas;
+use common\models\TiempoRecorridoTransporte;
+use common\models\AlumEstadoSalud;
+use common\models\AlumServiciosSalud;
+use common\models\AlumAsisteMedico;
+use common\models\AlumAsisteDentista;
+use common\models\AlumUsoAnteojos;
+use common\models\ProblemasSalud;
+use common\models\CatalogoProblemasSalud;
+use common\models\CatalogoServiciosSalud;
+use common\models\CatalogoUsoAnteojos;
+use common\models\FrecuenciaTiempo;
+use common\models\TipoGravedad;
+use common\models\CatalogoTratamientos;
+use common\models\AlumTratamientos;
+use common\models\Tratamientos;
+use kartik\daterange\DateRangePicker;
+use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
 use yii\web\View;
 
 ExpedienteAsset::register($this);
 
 $this->title = 'Expediente';
+
+$alumDependeEconomicamente = $alumDependeEconomicamente ?? new AlumDependeEconomicamente();
+$alumDependenEconomica = $alumDependenEconomica ?? new AlumDependenEconomica();
+$alumTrabajo = $alumTrabajo ?? new AlumTrabajo();
+$alumVivienda = $alumVivienda ?? new AlumVivienda(['alumnos_id' => $alumno->id ?? null]);
+$alumTransportes = $alumTransportes ?? new AlumTransportes(['alumnos_id' => $alumno->id ?? null]);
+$catalogoDependenciasOptions = $catalogoDependenciasOptions ?? [];
+$otroCatalogoDependenciaId = $otroCatalogoDependenciaId ?? null;
+$dependientes = $dependientes ?? [];
+$dependientesSeleccionados = $dependientesSeleccionados ?? [];
+$dependientesOtro = $dependientesOtro ?? null;
+$tiposViviendasMap = $tiposViviendasMap ?? [];
+$tipoViviendaOtroId = $tipoViviendaOtroId ?? null;
+$catalogoBienesOptions = $catalogoBienesOptions ?? [];
+$catalogoBienOtroId = $catalogoBienOtroId ?? null;
+$bienesSeleccionados = $bienesSeleccionados ?? [];
+$bienesOtro = $bienesOtro ?? null;
+$catalogoServiciosViviendaOptions = $catalogoServiciosViviendaOptions ?? [];
+$catalogoServicioOtroId = $catalogoServicioOtroId ?? null;
+$serviciosSeleccionados = $serviciosSeleccionados ?? [];
+$serviciosOtro = $serviciosOtro ?? null;
+$catalogoBienesPersonalesOptions = $catalogoBienesPersonalesOptions ?? [];
+$bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
+$catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
+$tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
+$alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
+$alumServiciosSalud = $alumServiciosSalud ?? new AlumServiciosSalud(['alumnos_id' => $alumno->id ?? null]);
+$alumAsisteMedico = $alumAsisteMedico ?? new AlumAsisteMedico(['alumnos_id' => $alumno->id ?? null]);
+$alumAsisteDentista = $alumAsisteDentista ?? new AlumAsisteDentista(['alumnos_id' => $alumno->id ?? null]);
+$alumUsoAnteojos = $alumUsoAnteojos ?? new AlumUsoAnteojos(['alumnos_id' => $alumno->id ?? null]);
+$problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
+$catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
+$catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
+$catalogoUsoAnteojosMap = $catalogoUsoAnteojosMap ?? CatalogoUsoAnteojos::dropdownOptions();
+$frecuenciasTiempoMap = $frecuenciasTiempoMap ?? FrecuenciaTiempo::dropdownOptions();
+$tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
+$otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
+$serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
+$usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
+$alumTratamientos = $alumTratamientos ?? new AlumTratamientos(['alumnos_id' => $alumno->id ?? null]);
+$tratamientos = $tratamientos ?? [new Tratamientos()];
+$catalogoTratamientosMap = $catalogoTratamientosMap ?? CatalogoTratamientos::dropdownOptions();
+
+$tratamientosMap = [];
+foreach ($tratamientos as $t) {
+    $tratamientosMap[(int)$t->catalogo_tratamientos_id] = $t;
+}
 ?>
 
 <div class="expediente-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'expediente-form']); ?>
 
     <!-- ===================== -->
     <!-- 🎯 ACORDEÓN GENERAL -->
@@ -141,11 +219,11 @@ $this->title = 'Expediente';
                     <hr class="my-4">
 
                     <!-- ===================== -->
-                    <!-- DATOS PERSONALES ADICIONALES -->
+                    <!-- DATOS PERSONALES -->
                     <!-- ===================== -->
                     <h4 class="mb-3">
                         <i class="fas fa-address-card text-info"></i>
-                        <span class="text-secondary">Datos Personales Adicionales</span>
+                        <span class="text-secondary">Datos Personales</span>
                     </h4>
 
                     <div class="row">
@@ -181,6 +259,75 @@ $this->title = 'Expediente';
                             <?= InputHelper::iconTextField($form, $datosPersonales, 'rfc', 'fa-user-tag', [
                                 'inputOptions' => ['placeholder' => 'RFC...']
                             ]) ?>
+                        </div>
+                    </div>
+
+
+
+                    <hr class="my-4">
+
+                    <!-- ===================== -->
+                    <!-- DATOS GENERALES -->
+                    <!-- ===================== -->
+                    <h4 class="mb-3 mt-4">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        <span class="text-secondary">Datos Generales</span>
+                    </h4>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_personal', 'fa-phone', [
+                                'inputOptions' => ['placeholder' => 'Teléfono personal...']
+                            ]) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_emergencia', 'fa-phone-alt', [
+                                'inputOptions' => ['placeholder' => 'Teléfono emergencia...']
+                            ]) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $datosGenerales, 'email_personal', 'fa-envelope', [
+                                'inputOptions' => ['placeholder' => 'Email personal...']
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $datosGenerales,
+                                'estados_civiles_id',
+                                'fa-ring',
+                                EstadosCiviles::getEstadosCivilesMap(),
+                                ['options' => ['placeholder' => 'Estado civil...']]
+                            ) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $datosGenerales,
+                                'nacionalidades_id',
+                                'fa-flag',
+                                Nacionalidades::getNacionalidadesMap(),
+                                ['options' => ['placeholder' => 'Nacionalidad...']]
+                            ) ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $datosGenerales,
+                                'maya_hablante',
+                                'fa-language',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Habla maya?'
+                                ]
+                            ) ?>
                         </div>
                     </div>
 
@@ -320,7 +467,6 @@ $this->title = 'Expediente';
                             ]) ?>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -336,55 +482,967 @@ $this->title = 'Expediente';
             </h2>
             <div id="collapseDatosFamiliares" class="accordion-collapse collapse" aria-labelledby="headingDatosFamiliares" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de datos familiares próximamente...</p>
+
+                    <h5 class="mb-3 mt-2">
+                        <i class="fas fa-user-friends text-primary"></i>
+                        <span class="text-secondary">Datos del Padre</span>
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_nombre', 'fa-male', [
+                                'inputOptions' => ['placeholder' => 'Nombre del padre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_paterno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_materno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido materno...']
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_ocupacion', 'fa-briefcase', [
+                                'inputOptions' => ['placeholder' => 'Ocupación del padre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDatosFamiliares,
+                                'padre_mayahablante',
+                                'fa-language',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Habla maya?'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3">
+                        <i class="fas fa-user-friends text-info"></i>
+                        <span class="text-secondary">Datos de la Madre</span>
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_nombre', 'fa-female', [
+                                'inputOptions' => ['placeholder' => 'Nombre de la madre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_paterno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_materno', 'fa-signature', [
+                                'inputOptions' => ['placeholder' => 'Apellido materno...']
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_ocupacion', 'fa-briefcase', [
+                                'inputOptions' => ['placeholder' => 'Ocupación de la madre...']
+                            ]) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDatosFamiliares,
+                                'madre_mayahablante',
+                                'fa-language',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Habla maya?'
+                                ]
+                            ) ?>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 4: SITUACIÓN SOCIOECONÓMICA -->
+        <!-- SECCIÓN 4: BECAS -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBecas">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBecas" aria-expanded="false" aria-controls="collapseBecas">
+                    🎓 IV. INFORMACIÓN DE BECAS
+                </button>
+            </h2>
+            <div id="collapseBecas" class="accordion-collapse collapse" aria-labelledby="headingBecas" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumBecas,
+                                'tiene_beca',
+                                'fa-graduation-cap',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Tiene beca?',
+                                    'options' => [
+                                        'id' => 'alumbecas-tiene_beca'
+                                    ]
+                                ]
+                            ) ?>
+                        </div>
+
+                        <div class="col-md-6" id="tipo-beca-container" style="display: none;">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumBecas,
+                                'tipos_becas_id',
+                                'fa-award',
+                                TiposBecas::getTiposBecasMap(),
+                                [
+                                    'options' => [
+                                        'placeholder' => 'Tipo de beca...',
+                                        'id' => 'alumbecas-tipos_becas_id'
+                                    ]
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3" id="otro-especificar-container" style="display: none;">
+                        <div class="col-md-12">
+                            <?= InputHelper::iconTextField($form, $alumBecas, 'otro_especificar', 'fa-edit', [
+                                'inputOptions' => [
+                                    'placeholder' => 'Especificar otro tipo de beca...',
+                                    'id' => 'alumbecas-otro_especificar'
+                                ]
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $this->registerJsFile('@web/js/expediente/expediente-becas.js', [
+                        'depends' => [\yii\web\JqueryAsset::class],
+                    ]);
+                    ?>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 5: INFORMACIÓN DE HIJOS -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingHijos">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHijos" aria-expanded="false" aria-controls="collapseHijos">
+                    👶 V. INFORMACIÓN DE HIJOS
+                </button>
+            </h2>
+
+            <div id="collapseHijos" class="accordion-collapse collapse" aria-labelledby="headingHijos" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body row g-3">
+
+                    <!-- Select tiene hijos -->
+                    <div class="col-md-6">
+                        <?= InputHelper::iconSelect2Field(
+                            $form,
+                            $alumInfoHijos,
+                            'tiene_hijos',
+                            'fa-baby',
+                            BooleanHelper::options(),
+                            [
+                                'placeholder' => '¿Tiene hijos?',
+                                'options' => ['id' => 'aluminfohijos-tiene_hijos']
+                            ]
+                        ) ?>
+                    </div>
+
+                    <!-- Cantidad de hijos -->
+                    <div class="col-md-6 d-none" id="campo-cantidad-hijos">
+                        <?= InputHelper::iconTextField(
+                            $form,
+                            $alumInfoHijos,
+                            'cantidad_hijos',
+                            'fa-hashtag',
+                            [
+                                'inputOptions' => [
+                                    'placeholder' => '¿Cuántos hijos tiene?',
+                                    'type' => 'number',
+                                    'min' => 1,
+                                    'max' => 10
+                                ]
+                            ]
+                        ) ?>
+                    </div>
+
+                    <div class="col-12 d-none" id="contenedor-hijos">
+                        <h5 class="mt-3">Información de cada hijo</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-2">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido paterno</th>
+                                        <th>Apellido materno</th>
+                                        <th>Fecha de nacimiento</th>
+                                        <th class="text-center" style="width:80px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-hijos">
+                                    <?php foreach ($edadesHijos as $i => $hijo): ?>
+                                        <tr class="hijo-item align-middle">
+                                            <input type="hidden" name="EdadesHijos[<?= $i ?>][id]" value="<?= $hijo->id ?>">
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][nombre]", $hijo->nombre, 'fa-user', '') ?></td>
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][apellido_paterno]", $hijo->apellido_paterno, 'fa-user-tag', '') ?></td>
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][apellido_materno]", $hijo->apellido_materno, 'fa-user-tag', '') ?></td>
+                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][fecha_nacimiento]", $hijo->fecha_nacimiento, 'fa-calendar', '', ['inputOptions' => ['type' => 'date', 'placeholder' => '']]) ?></td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm btn-eliminar-hijo">✖</button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach ?>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <button type="button" class="btn btn-success btn-sm" id="btn-agregar-hijo">+ Agregar hijo</button>
+                    </div>
+
+
+                    <?php
+                    $this->registerJsFile(
+                        '@web/js/expediente/expediente-hijos.js',
+                        ['depends' => [\yii\web\JqueryAsset::class]] // Si necesitas jQuery, sino puedes quitarlo
+                    );
+                    ?>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- SECCIÓN 6: SITUACIÓN SOCIOECONÓMICA -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingSituacionSocioeconomica">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSituacionSocioeconomica" aria-expanded="false" aria-controls="collapseSituacionSocioeconomica">
-                    💰 IV. SITUACIÓN SOCIOECONÓMICA
+                    💰 VI. SITUACIÓN SOCIOECONÓMICA
                 </button>
             </h2>
             <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de situación socioeconómica próximamente...</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDependeEconomicamente,
+                                'catalogo_dependencias_economicas_id',
+                                'fa-hand-holding-usd',
+                                CatalogoDependenciasEconomicas::dropdownOptions(),
+                                [
+                                    'placeholder' => 'Selecciona de quien dependes',
+                                    'id' => 'alumdependeeconomicamente-catalogo_dependencias_economicas_id',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= ($alumDependeEconomicamente->catalogo_dependencias_economicas_id ?? null) === $otroCatalogoDependenciaId ? '' : 'd-none' ?>" id="otro-dependencia-container">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumDependeEconomicamente,
+                                'otro_especificar',
+                                'fa-edit',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica otra dependencia economica...',
+                                        'id' => 'alumdependeeconomicamente-otro_especificar'
+                                    ]
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumDependenEconomica,
+                                'tiene_dependientes',
+                                'fa-user-friends',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Tiene dependientes?',
+                                    'id' => 'alumdependeneconomica-tiene_dependientes',
+                                ],
+                                ['allowClear' => true]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php $mostrarDependientes = (int)($alumDependenEconomica->tiene_dependientes ?? 0) === 1; ?>
+                    <div class="mt-3 <?= $mostrarDependientes ? '' : 'd-none' ?>" id="dependientes-section">
+                        <div class="row g-2">
+                            <?php foreach ($catalogoDependenciasOptions as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $dependientesSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input dependiente-checkbox"
+                                            name="Dependientes[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="dependiente-<?= (int)$id ?>"
+                                            data-otro-id="<?= (int)$otroCatalogoDependenciaId ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="dependiente-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2 <?= $otroCatalogoDependenciaId !== null && in_array((int)$otroCatalogoDependenciaId, $dependientesSeleccionados, true) ? '' : 'd-none' ?>" id="otro-dependiente-container">
+                            <input type="text" name="Dependientes[otro_especificar]" id="dependientes-otro" class="form-control" placeholder="<?= Yii::t('app', 'Especificar otro...') ?>" value="<?= Html::encode($dependientesOtro ?? '') ?>">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumTrabajo,
+                                'tiene_trabajo',
+                                'fa-briefcase',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Tiene trabajo?',
+                                    'id' => 'alumtrabajo-tiene_trabajo',
+                                ],
+                                ['allowClear' => true]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php $mostrarTrabajo = (int)($alumTrabajo->tiene_trabajo ?? 0) === 1; ?>
+                    <div class="row g-3 mt-2 <?= $mostrarTrabajo ? '' : 'd-none' ?>" id="trabajo-section">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'nombre_empresa',
+                                'fa-building',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Nombre de la empresa...',
+                                        'id' => 'alumtrabajo-nombre_empresa',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'puesto_ocupacion',
+                                'fa-user-tie',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Puesto u ocupación...',
+                                        'id' => 'alumtrabajo-puesto_ocupacion',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'horario_entrada',
+                                'fa-clock',
+                                [
+                                    'inputOptions' => [
+                                        'type' => 'time',
+                                        'placeholder' => 'Hora de entrada',
+                                        'id' => 'alumtrabajo-horario_entrada',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumTrabajo,
+                                'horario_salida',
+                                'fa-clock',
+                                [
+                                    'inputOptions' => [
+                                        'type' => 'time',
+                                        'placeholder' => 'Hora de salida',
+                                        'id' => 'alumtrabajo-horario_salida',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
+
+
         <!-- ===================== -->
-        <!-- SECCIÓN 5: TRANSPORTE Y ACCESO -->
+        <!-- SECCIÓN 7: BIENES Y SERVICIOS DE LA VIVIENDA -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBienesServiciosVivienda">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBienesServiciosVivienda" aria-expanded="false" aria-controls="collapseBienesServiciosVivienda">
+                    <i class="fas fa-house-user me-2 text-success"></i> VII. BIENES Y SERVICIOS DE LA VIVIENDA
+                </button>
+            </h2>
+            <div id="collapseBienesServiciosVivienda" class="accordion-collapse collapse" aria-labelledby="headingBienesServiciosVivienda" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <h4 class="mb-3">
+                        <i class="fas fa-house-user text-success"></i>
+                        <span class="text-secondary">Vivienda</span>
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumVivienda,
+                                'vives_casa_padres',
+                                'fa-people-roof',
+                                BooleanHelper::options(),
+                                [
+                                    'options' => [
+                                        'placeholder' => 'Vives con tus padres?',
+                                        'id' => 'alumvivienda-vives_casa_padres',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= ((int)($alumVivienda->vives_casa_padres ?? 1) === 0) ? '' : 'd-none' ?>" id="vivienda-otro-vives-container">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumVivienda,
+                                'otro_especificar',
+                                'fa-user-friends',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica con quien vives...',
+                                        'id' => 'alumvivienda-otro_especificar',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumVivienda,
+                                'tipos_viviendas_id',
+                                'fa-building',
+                                $tiposViviendasMap,
+                                [
+                                    'options' => [
+                                        'placeholder' => 'Selecciona el tipo de vivienda...',
+                                        'id' => 'alumvivienda-tipos_viviendas_id',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= ($tipoViviendaOtroId !== null && (int)($alumVivienda->tipos_viviendas_id ?? 0) === $tipoViviendaOtroId) ? '' : 'd-none' ?>" id="vivienda-otro-tipo-container">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumVivienda,
+                                'otro_tipo_especificar',
+                                'fa-edit',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica otro tipo de vivienda...',
+                                        'id' => 'alumvivienda-otro_tipo_especificar',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $mostrarOtroBien = $catalogoBienOtroId !== null && in_array((int)$catalogoBienOtroId, $bienesSeleccionados, true);
+                    ?>
+                    <div class="mt-4">
+                        <h5 class="mb-2">
+                            <i class="fas fa-couch text-info"></i>
+                            <span class="text-secondary">Bienes con los que cuenta tu vivienda</span>
+                        </h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoBienesOptions as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $bienesSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input vivienda-bien-checkbox"
+                                            name="ViviendaBienes[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="vivienda-bien-<?= (int)$id ?>"
+                                            data-otro-id="<?= (int)$catalogoBienOtroId ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="vivienda-bien-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2 <?= $mostrarOtroBien ? '' : 'd-none' ?>" id="vivienda-bienes-otro-container">
+                            <input type="text" name="ViviendaBienes[otro_especificar]" id="vivienda-bienes-otro" class="form-control" placeholder="Especifica otro bien..." value="<?= Html::encode($bienesOtro ?? '') ?>">
+                        </div>
+                    </div>
+                    <?php
+                    $mostrarOtroServicio = $catalogoServicioOtroId !== null && in_array((int)$catalogoServicioOtroId, $serviciosSeleccionados, true);
+                    ?>
+                    <div class="mt-4">
+                        <h5 class="mb-2">
+                            <i class="fas fa-plug text-warning"></i>
+                            <span class="text-secondary">Servicios con los que cuenta tu vivienda</span>
+                        </h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoServiciosViviendaOptions as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $serviciosSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input vivienda-servicio-checkbox"
+                                            name="ViviendaServicios[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="vivienda-servicio-<?= (int)$id ?>"
+                                            data-otro-id="<?= (int)$catalogoServicioOtroId ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="vivienda-servicio-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2 <?= $mostrarOtroServicio ? '' : 'd-none' ?>" id="vivienda-servicios-otro-container">
+                            <input
+                                type="text"
+                                name="ViviendaServicios[otro_especificar]"
+                                id="vivienda-servicios-otro"
+                                class="form-control"
+                                placeholder="Especifica otro servicio..."
+                                value="<?= Html::encode($serviciosOtro ?? '') ?>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ===================== -->
+        <!-- SECCIÓN 8: BIENES PERSONALES -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBienesPersonales">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBienesPersonales" aria-expanded="false" aria-controls="collapseBienesPersonales">
+                    <i class="fas fa-user-check me-2 text-primary"></i> VIII. BIENES PERSONALES
+                </button>
+            </h2>
+            <div id="collapseBienesPersonales" class="accordion-collapse collapse" aria-labelledby="headingBienesPersonales" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <div class="row g-2">
+                        <?php foreach ($catalogoBienesPersonalesOptions as $id => $nombre): ?>
+                            <?php $checked = in_array((int)$id, $bienesPersonalesSeleccionados, true); ?>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-check">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input bienes-personales-checkbox"
+                                        name="BienesPersonales[ids][]"
+                                        value="<?= (int)$id ?>"
+                                        id="bien-personal-<?= (int)$id ?>"
+                                        <?= $checked ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="bien-personal-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ===================== -->
+        <!-- SECCIÓN 9: TRANSPORTE Y ACCESO -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingTransporteAcceso">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTransporteAcceso" aria-expanded="false" aria-controls="collapseTransporteAcceso">
-                    🚗 V. TRANSPORTE Y ACCESO
+                    🚗 IX. TRANSPORTE Y ACCESO
                 </button>
             </h2>
             <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
-                <div class="accordion-body">
-                    <p class="text-muted">Contenido de transporte y acceso próximamente...</p>
+                <div class="accordion-body row g-3">
+                    <div class="col-md-6">
+                        <?= InputHelper::iconSelect2Field(
+                            $form,
+                            $alumTransportes,
+                            'catalogo_transportes_id',
+                            'fa-bus',
+                            $catalogoTransportesMap,
+                            ['placeholder' => 'Medio de transporte...']
+                        ) ?>
+                        <small class="text-muted">Selecciona cómo llegas a la escuela y cuánto tardas.</small>
+
+                    </div>
+                    <div class="col-md-6">
+                        <?= InputHelper::iconSelect2Field(
+                            $form,
+                            $alumTransportes,
+                            'tiempo_recorrido_transporte_id',
+                            'fa-stopwatch',
+                            $tiemposRecorridoMap,
+                            ['placeholder' => 'Tiempo de recorrido...']
+                        ) ?>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 6: SALUD -->
+        <!-- SECCIÓN 10: SALUD -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingSalud">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSalud" aria-expanded="false" aria-controls="collapseSalud">
-                    ⚕️ VI. SALUD
+                    ⚕️ X. SALUD
                 </button>
             </h2>
             <div id="collapseSalud" class="accordion-collapse collapse" aria-labelledby="headingSalud" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de salud próximamente...</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumEstadoSalud,
+                                'tuvo_problema_salud',
+                                'fa-heartbeat',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Ha tenido problemas de salud?',
+                                    'id' => 'alumestadosalud-tuvo_problema_salud',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumServiciosSalud,
+                                'tiene_servicios_salud',
+                                'fa-briefcase-medical',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Cuenta con servicios de salud?',
+                                    'id' => 'alumserviciossalud-tiene_servicios_salud',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumAsisteMedico,
+                                'frecuencia_tiempo_id',
+                                'fa-stethoscope',
+                                $frecuenciasTiempoMap,
+                                [
+                                    'placeholder' => '¿Cada cuánto va al médico?',
+                                    'id' => 'alumasistemedico-frecuencia_tiempo_id',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumAsisteDentista,
+                                'frecuencia_tiempo_id',
+                                'fa-tooth',
+                                $frecuenciasTiempoMap,
+                                [
+                                    'placeholder' => '¿Cada cuánto va al dentista?',
+                                    'id' => 'alumasistedentista-frecuencia_tiempo_id',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumUsoAnteojos,
+                                'utilizas_anteojos',
+                                'fa-glasses',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Utilizas anteojos?',
+                                    'id' => 'alumusoanteojos-utilizas_anteojos',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumTratamientos,
+                                'esta_en_tratamiento',
+                                'fa-pills',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Estás en tratamiento actualmente?',
+                                    'id' => 'alumtratamientos-esta_en_tratamiento',
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $problemasSaludSeleccionados = [];
+                    foreach ($problemasSalud as $ps) {
+                        $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
+                    }
+                    ?>
+
+                    <div id="salud-problemas-container" class="<?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <div class="mt-3 mb-3">
+                            <h5 class="mb-1">Problemas de salud</h5>
+                            <p class="text-muted small mb-0">Selecciona los problemas de salud que has tenido y su gravedad.</p>
+                        </div>
+
+                        <div id="lista-problemas" class="row g-3">
+                            <?php foreach ($catalogoProblemasSaludMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $problema = $problemasSaludSeleccionados[$id] ?? new ProblemasSalud(['catalogo_problemas_salud_id' => $id]);
+                                $seleccionado = isset($problemasSaludSeleccionados[$id]);
+                                $esOtro = $otroCatalogoProblemaId !== null && $id === (int)$otroCatalogoProblemaId;
+                                $otroClasses = 'form-field mb-0 problema-otro ' . ($seleccionado && $esOtro ? '' : 'd-none');
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100 problema-item" data-problema-id="<?= $id ?>">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                    class="form-check-input problema-checkbox"
+                                                    type="checkbox"
+                                                    id="problema-<?= $id ?>"
+                                                    name="ProblemasSalud[<?= $id ?>][selected]"
+                                                    value="1"
+                                                    <?= $seleccionado ? 'checked' : '' ?>>
+                                                <label class="form-check-label fw-semibold" for="problema-<?= $id ?>">
+                                                    <?= Html::encode($nombre) ?>
+                                                </label>
+                                                <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="problema-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $problema,
+                                                "[{$id}]tipo_gravedad_id",
+                                                'fa-exclamation-triangle',
+                                                $tipoGravedadMap,
+                                                [
+                                                    'placeholder' => 'Gravedad...',
+                                                    'class' => 'form-control problema-gravedad',
+                                                    'id' => "problema-gravedad-{$id}",
+                                                    'disabled' => !$seleccionado,
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
+
+                                            <?php if ($esOtro): ?>
+                                                <?= InputHelper::iconTextField(
+                                                    $form,
+                                                    $problema,
+                                                    "[{$id}]otro_especificar",
+                                                    'fa-keyboard',
+                                                    [
+                                                        'options' => ['class' => trim($otroClasses)],
+                                                        'inputOptions' => [
+                                                            'placeholder' => 'Especifica el problema',
+                                                            'class' => 'form-control problema-otro-input',
+                                                            'id' => "problema-otro-{$id}",
+                                                            'disabled' => !$seleccionado,
+                                                        ],
+                                                        'labelOptions' => ['class' => 'form-label fw-semibold'],
+                                                    ]
+                                                ) ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <div id="salud-tratamientos-container" class="<?= ((int)($alumTratamientos->esta_en_tratamiento ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <div class="mt-3 mb-3">
+                            <h5 class="mb-1">Tratamientos</h5>
+                            <p class="text-muted small mb-0">Selecciona los tratamientos que sigues y especifica frecuencia y fechas.</p>
+                        </div>
+
+                        <div id="lista-tratamientos" class="row g-3">
+                            <?php foreach ($catalogoTratamientosMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $tratamiento = $tratamientosMap[$id] ?? new Tratamientos(['catalogo_tratamientos_id' => $id]);
+                                $seleccionado = isset($tratamientosMap[$id]);
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100 tratamiento-item" data-tratamiento-id="<?= $id ?>">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                    class="form-check-input tratamiento-checkbox"
+                                                    type="checkbox"
+                                                    id="tratamiento-<?= $id ?>"
+                                                    name="Tratamientos[<?= $id ?>][selected]"
+                                                    value="1"
+                                                    <?= $seleccionado ? 'checked' : '' ?>>
+                                                <label class="form-check-label fw-semibold" for="tratamiento-<?= $id ?>">
+                                                    <?= Html::encode($nombre) ?>
+                                                </label>
+                                                <input type="hidden" name="Tratamientos[<?= $id ?>][catalogo_tratamientos_id]" value="<?= $id ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="tratamiento-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $tratamiento,
+                                                "[{$id}]frecuencia_tiempo_id",
+                                                'fa-sync-alt',
+                                                $frecuenciasTiempoMap,
+                                                [
+                                                    'placeholder' => 'Frecuencia...',
+                                                    'class' => 'form-control tratamiento-frecuencia',
+                                                    'id' => "tratamiento-frecuencia-{$id}",
+                                                    'disabled' => !$seleccionado,
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('Frecuencia', ['class' => 'form-label fw-semibold']) ?>
+
+                                            <div class="form-field mb-3">
+                                                <label class="form-label fw-semibold" for="tratamiento-rango-<?= $id ?>">Rango de fechas</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                                    <?= DateRangePicker::widget([
+                                                        'model' => $tratamiento,
+                                                        'attribute' => "[{$id}]fecha_inicio",
+                                                        'startAttribute' => "[{$id}]fecha_inicio",
+                                                        'endAttribute' => "[{$id}]fecha_fin",
+                                                        'convertFormat' => true,
+                                                        'value' => ($tratamiento->fecha_inicio && $tratamiento->fecha_fin)
+                                                            ? Html::encode($tratamiento->fecha_inicio . ' - ' . $tratamiento->fecha_fin)
+                                                            : '',
+                                                        'options' => [
+                                                            'id' => "tratamiento-rango-{$id}",
+                                                            'class' => 'form-control tratamiento-rango',
+                                                            'placeholder' => 'Selecciona rango...',
+                                                            'readonly' => true,
+                                                            'disabled' => !$seleccionado,
+                                                        ],
+                                                        'startInputOptions' => [
+                                                            'class' => 'd-none tratamiento-fecha tratamiento-fecha-inicio',
+                                                            'id' => "tratamiento-inicio-{$id}",
+                                                        ],
+                                                        'endInputOptions' => [
+                                                            'class' => 'd-none tratamiento-fecha tratamiento-fecha-fin',
+                                                            'id' => "tratamiento-fin-{$id}",
+                                                        ],
+                                                        'pluginOptions' => [
+                                                            'locale' => [
+                                                                'format' => 'Y-MM-DD',
+                                                                'separator' => ' - ',
+                                                            ],
+                                                            'autoUpdateInput' => false,
+                                                            'opens' => 'center',
+                                                        ],
+                                                        'pluginEvents' => [
+                                                            'apply.daterangepicker' => "function(ev, picker) {
+                                                                const val = picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD');
+                                                                $(this).val(val);
+                                                                $('#tratamiento-inicio-{$id}').val(picker.startDate.format('YYYY-MM-DD')).trigger('change');
+                                                                $('#tratamiento-fin-{$id}').val(picker.endDate.format('YYYY-MM-DD')).trigger('change');
+                                                            }",
+                                                            'cancel.daterangepicker' => "function(ev, picker) {
+                                                                $(this).val('');
+                                                                $('#tratamiento-inicio-{$id}').val('').trigger('change');
+                                                                $('#tratamiento-fin-{$id}').val('').trigger('change');
+                                                            }",
+                                                        ],
+                                                    ]) ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <div id="salud-anteojos-container" class="<?= ((int)($alumUsoAnteojos->utilizas_anteojos ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <h5 class="mt-3 mb-3">Tipo de uso de anteojos</h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoUsoAnteojosMap as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $usoAnteojosSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input uso-anteojos-checkbox"
+                                            name="UsoAnteojos[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="uso-anteojos-<?= (int)$id ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="uso-anteojos-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <div id="salud-servicios-container" class="<?= ((int)($alumServiciosSalud->tiene_servicios_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <h5 class="mt-3 mb-3">Servicios de salud</h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoServiciosSaludMap as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $serviciosSaludSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input servicio-salud-checkbox"
+                                            name="ServiciosSalud[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="servicio-salud-<?= (int)$id ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="servicio-salud-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -476,5 +1534,30 @@ JS;
 
 $this->registerJs($script, View::POS_BEGIN);
 
+$this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
+$this->registerJsVar('TIPO_VIVIENDA_OTRO_ID', $tipoViviendaOtroId);
+$this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
+$this->registerJsVar('VIVIENDA_SERVICIO_OTRO_ID', $catalogoServicioOtroId);
+$this->registerJsVar('PROBLEMA_OTRO_ID', $otroCatalogoProblemaId);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-dependencia.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-dependientes.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-trabajo.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-vivienda.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-salud.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
 
 ?>

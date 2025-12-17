@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumDependeEconomicamente;
+use common\models\AlumDependeEconomicamente;
 
 /**
- * AlumDependeEconomicamenteSearch represents the model behind the search form of `backend\models\AlumDependeEconomicamente`.
+ * AlumDependeEconomicamenteSearch represents the model behind the search form of `common\models\AlumDependeEconomicamente`.
  */
 class AlumDependeEconomicamenteSearch extends AlumDependeEconomicamente
 {

@@ -1,0 +1,89 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use yii\helpers\ArrayHelper;
+
+/**
+ * This is the model class for table "catalogo_tratamientos".
+ *
+ * @property int $id
+ * @property string $nombre
+ * @property string|null $descripcion
+ * @property int $tipos_tratamientos_id
+ *
+ * @property TiposTratamientos $tiposTratamientos
+ * @property Tratamientos[] $tratamientos
+ */
+class CatalogoTratamientos extends \yii\db\ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return 'catalogo_tratamientos';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['nombre', 'tipos_tratamientos_id'], 'required'],
+            [['tipos_tratamientos_id'], 'integer'],
+            [['nombre'], 'string', 'max' => 150],
+            [['descripcion'], 'string', 'max' => 250],
+            [['tipos_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => TiposTratamientos::class, 'targetAttribute' => ['tipos_tratamientos_id' => 'id']],
+        ];
+    }
+
+    /**
+     * Opciones para dropdown (id => nombre).
+     */
+    public static function dropdownOptions(): array
+    {
+        $records = static::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($records, 'id', 'nombre');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'nombre' => 'Nombre',
+            'descripcion' => 'Descripcion',
+            'tipos_tratamientos_id' => 'Tipos Tratamientos ID',
+        ];
+    }
+
+    /**
+     * Gets query for [[TiposTratamientos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTiposTratamientos()
+    {
+        return $this->hasOne(TiposTratamientos::class, ['id' => 'tipos_tratamientos_id']);
+    }
+
+    /**
+     * Gets query for [[Tratamientos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTratamientos()
+    {
+        return $this->hasMany(Tratamientos::class, ['catalogo_tratamientos_id' => 'id']);
+    }
+}

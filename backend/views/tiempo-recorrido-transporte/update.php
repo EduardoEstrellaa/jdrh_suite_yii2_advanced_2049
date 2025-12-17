@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\TiempoRecorridoTransporte $model */
+/** @var common\models\TiempoRecorridoTransporte $model */
 
 $this->title = Yii::t('app', 'Update Tiempo Recorrido Transporte: {name}', [
     'name' => $model->id,

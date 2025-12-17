@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\TipoGravedad $model */
+/** @var common\models\TipoGravedad $model */
 
 $this->title = Yii::t('app', 'Update Tipo Gravedad: {name}', [
     'name' => $model->id,

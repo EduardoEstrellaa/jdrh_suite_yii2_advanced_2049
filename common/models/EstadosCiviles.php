@@ -56,4 +56,9 @@ class EstadosCiviles extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DatosGenerales::class, ['estados_civiles_id' => 'id']);
     }
+
+    public static function getEstadosCivilesMap()
+    {
+        return EstadosCiviles::find()->select(['nombre', 'id'])->indexBy('id')->column();
+    }
 }

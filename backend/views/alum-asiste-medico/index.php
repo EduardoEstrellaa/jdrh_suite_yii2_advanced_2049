@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumAsisteMedico;
+use common\models\AlumAsisteMedico;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

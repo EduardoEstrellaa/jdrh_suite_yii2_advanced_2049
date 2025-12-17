@@ -4,15 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Dependientes $model */
+/** @var common\models\Dependientes $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
 <div class="dependientes-form">
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($model, 'id')->textInput() ?>
 
     <?= $form->field($model, 'alum_dependen_economica_id')->textInput() ?>
 

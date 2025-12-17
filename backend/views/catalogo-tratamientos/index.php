@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CatalogoTratamientos;
+use common\models\CatalogoTratamientos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

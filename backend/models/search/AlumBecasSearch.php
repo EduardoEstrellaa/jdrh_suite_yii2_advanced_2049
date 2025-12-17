@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumBecas;
+use common\models\AlumBecas;
 
 /**
- * AlumBecasSearch represents the model behind the search form of `backend\models\AlumBecas`.
+ * AlumBecasSearch represents the model behind the search form of `common\models\AlumBecas`.
  */
 class AlumBecasSearch extends AlumBecas
 {

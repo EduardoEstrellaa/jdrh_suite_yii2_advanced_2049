@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumAsisteDentista;
+use common\models\AlumAsisteDentista;
 
 /**
- * AlumAsisteDentistaSearch represents the model behind the search form of `backend\models\AlumAsisteDentista`.
+ * AlumAsisteDentistaSearch represents the model behind the search form of `common\models\AlumAsisteDentista`.
  */
 class AlumAsisteDentistaSearch extends AlumAsisteDentista
 {

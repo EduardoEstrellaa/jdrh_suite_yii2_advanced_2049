@@ -8,7 +8,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\PermisosHelpers;
 use common\models\RegistrosHelpers;
-use frontend\models\Perfil;
+use common\models\Perfil;
 
 class UpgradeController extends \yii\web\Controller
 {

@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Tratamientos;
+use common\models\Tratamientos;
 
 /**
- * TratamientosSearch represents the model behind the search form of `backend\models\Tratamientos`.
+ * TratamientosSearch represents the model behind the search form of `common\models\Tratamientos`.
  */
 class TratamientosSearch extends Tratamientos
 {

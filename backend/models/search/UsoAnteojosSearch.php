@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\UsoAnteojos;
+use common\models\UsoAnteojos;
 
 /**
- * UsoAnteojosSearch represents the model behind the search form of `backend\models\UsoAnteojos`.
+ * UsoAnteojosSearch represents the model behind the search form of `common\models\UsoAnteojos`.
  */
 class UsoAnteojosSearch extends UsoAnteojos
 {

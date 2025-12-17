@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\ProblemasSalud;
+use common\models\ProblemasSalud;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

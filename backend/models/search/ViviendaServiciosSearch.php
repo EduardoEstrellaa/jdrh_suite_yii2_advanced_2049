@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\ViviendaServicios;
+use common\models\ViviendaServicios;
 
 /**
- * ViviendaServiciosSearch represents the model behind the search form of `backend\models\ViviendaServicios`.
+ * ViviendaServiciosSearch represents the model behind the search form of `common\models\ViviendaServicios`.
  */
 class ViviendaServiciosSearch extends ViviendaServicios
 {

@@ -94,7 +94,7 @@ class ExpedienteController extends Controller
         }
 
         $perfil = $alumno->perfil;
-        $models = ExpedienteService::getModelsForUpdate($perfil->id);
+        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
 
         return $this->render('view', array_merge([
             'perfil' => $perfil,
@@ -110,11 +110,11 @@ class ExpedienteController extends Controller
         $alumno = $this->findAlumnoModel($id);
         $perfil = $alumno->perfil;
 
-        $models = ExpedienteService::getModelsForUpdate($perfil->id);
+        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
 
         if (Yii::$app->request->isPost) {
             try {
-                if (ExpedienteService::actualizarExpediente($perfil->id, Yii::$app->request->post())) {
+                if (ExpedienteService::actualizarExpediente($perfil->id, $alumno->id, Yii::$app->request->post())) {
                     Yii::$app->session->setFlash('success', 'Expediente actualizado correctamente.');
                     return $this->redirect(['view', 'id' => $alumno->id]);
                 } else {
@@ -140,7 +140,7 @@ class ExpedienteController extends Controller
         $perfil = $alumno->perfil;
 
         try {
-            ExpedienteService::eliminarExpediente($perfil->id);
+            ExpedienteService::eliminarExpediente($perfil->id, $alumno->id);
             Yii::$app->session->setFlash('success', 'Expediente eliminado correctamente.');
         } catch (\Throwable $e) {
             Yii::error($e->getMessage(), __METHOD__);

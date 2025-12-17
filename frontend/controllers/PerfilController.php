@@ -2,8 +2,9 @@
 
 namespace frontend\controllers;
 
-use frontend\models\Perfil;
-use frontend\models\search\PerfilSearch;
+
+use common\models\Perfil;
+use common\models\search\PerfilSearch;
 use common\models\Alumnos;
 use common\models\PermisosHelpers;
 use common\models\RegistrosHelpers;

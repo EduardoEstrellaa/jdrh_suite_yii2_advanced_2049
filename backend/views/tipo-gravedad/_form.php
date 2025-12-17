@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\TipoGravedad $model */
+/** @var common\models\TipoGravedad $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 

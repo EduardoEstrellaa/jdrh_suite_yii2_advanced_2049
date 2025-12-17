@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumTransportes;
+use common\models\AlumTransportes;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
