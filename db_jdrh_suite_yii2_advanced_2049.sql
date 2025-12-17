@@ -1480,9 +1480,9 @@ CREATE TABLE IF NOT EXISTS `equipos` (
   `fecha_alta` datetime NOT NULL,
   `numero_inventario` varchar(50) NOT NULL,
   `numero_serie` varchar(100) DEFAULT NULL,
-  `foto_equipo` varchar(250) DEFAULT NULL,
-  `foto_numero_inventario` varchar(250) DEFAULT NULL,
-  `foto_numero_serie` varchar(250) DEFAULT NULL,
+  `foto_equipo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `foto_numero_inventario` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `foto_numero_serie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `observaciones` text,
   `especificaciones` text,
   `modelos_id` int NOT NULL,
@@ -1495,8 +1495,17 @@ CREATE TABLE IF NOT EXISTS `equipos` (
   KEY `fk_equipos_tipo_equipo1_idx` (`tipo_equipo_id`),
   KEY `fk_equipos_tipo_alta1_idx` (`tipo_alta_id`),
   KEY `fk_equipos_estado_equipo1_idx` (`estado_equipo_id`),
-  KEY `fk_equipos_marcas1_idx` (`marca_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_equipos_marcas` (`marca_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `equipos`
+--
+
+INSERT INTO `equipos` (`id`, `fecha_alta`, `numero_inventario`, `numero_serie`, `foto_equipo`, `foto_numero_inventario`, `foto_numero_serie`, `observaciones`, `especificaciones`, `modelos_id`, `tipo_equipo_id`, `tipo_alta_id`, `estado_equipo_id`, `marca_id`) VALUES
+(10, '2025-12-08 00:42:37', '32432141234', '6874658657', '69361efdcca71_53613f1cfd140abdd42b01ca5a42024e.jpg', '69361efdccf85_il_fullxfull.3671126133_doj1.jpg', '69361efdcd4a9_Robin.jpg', 'NAI', 'Nai', 1, 1, 1, 2, 1),
+(12, '2025-12-08 01:33:39', '34524325', '23454325', '69362af34dcc6_8d2c550b-39d6-4a3f-bcb2-9d51ca544f94.jpg', '69362af34e113_648658124-LEGO-NINJAGO---Minifigur-Kai.jpg', '69362af34e707_c0fbf45fcbeca248a44cfbdfc4e9e2b5.jpg', 'qweqwe', 'wqqwewq', 7, 2, 1, 2, 3),
+(13, '2025-12-17 20:01:25', '10203040506070', '9879879786', '69430c158cea8_8d2c550b-39d6-4a3f-bcb2-9d51ca544f94.jpg', '69430c158d30e_c0fbf45fcbeca248a44cfbdfc4e9e2b5.jpg', '69430c158d88b_cr71.jpg', 'Ninguna observacion', 'Especificaciones ......', 4, 2, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1566,10 +1575,18 @@ INSERT INTO `estados_civiles` (`id`, `nombre`, `descripcion`) VALUES
 
 DROP TABLE IF EXISTS `estado_equipo`;
 CREATE TABLE IF NOT EXISTS `estado_equipo` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `estado_equipo`
+--
+
+INSERT INTO `estado_equipo` (`id`, `descripcion`) VALUES
+(1, 'Funciona'),
+(2, 'No Funciona');
 
 -- --------------------------------------------------------
 
@@ -1764,7 +1781,18 @@ CREATE TABLE IF NOT EXISTS `marcas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `marcas`
+--
+
+INSERT INTO `marcas` (`id`, `descripcion`) VALUES
+(1, 'HP'),
+(2, 'DELL'),
+(3, 'LENOVO'),
+(4, 'ACER'),
+(5, 'Samsung');
 
 -- --------------------------------------------------------
 
@@ -1801,7 +1829,18 @@ CREATE TABLE IF NOT EXISTS `modelos` (
   `marcas_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_modelos_marcas1_idx` (`marcas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `modelos`
+--
+
+INSERT INTO `modelos` (`id`, `descripcion`, `marcas_id`) VALUES
+(1, 'Modelo 1', 1),
+(4, 'Modelo 2', 1),
+(5, 'Modelo 1', 3),
+(7, 'Modelo 2', 3),
+(8, 'Modelo 1', 5);
 
 -- --------------------------------------------------------
 
@@ -2202,7 +2241,15 @@ CREATE TABLE IF NOT EXISTS `tipo_alta` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_alta`
+--
+
+INSERT INTO `tipo_alta` (`id`, `descripcion`) VALUES
+(1, 'Compra'),
+(2, 'Donacion');
 
 -- --------------------------------------------------------
 
@@ -2228,7 +2275,15 @@ CREATE TABLE IF NOT EXISTS `tipo_equipo` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_equipo`
+--
+
+INSERT INTO `tipo_equipo` (`id`, `descripcion`) VALUES
+(1, 'Laptop'),
+(2, 'Pc Escritorio');
 
 -- --------------------------------------------------------
 
@@ -2852,7 +2907,7 @@ ALTER TABLE `enfermedades_cronicas`
 --
 ALTER TABLE `equipos`
   ADD CONSTRAINT `fk_equipos_estado_equipo1` FOREIGN KEY (`estado_equipo_id`) REFERENCES `estado_equipo` (`id`),
-  ADD CONSTRAINT `fk_equipos_marcas1` FOREIGN KEY (`marca_id`) REFERENCES `marcas` (`id`),
+  ADD CONSTRAINT `fk_equipos_marcas` FOREIGN KEY (`marca_id`) REFERENCES `marcas` (`id`),
   ADD CONSTRAINT `fk_equipos_modelos1` FOREIGN KEY (`modelos_id`) REFERENCES `modelos` (`id`),
   ADD CONSTRAINT `fk_equipos_tipo_alta1` FOREIGN KEY (`tipo_alta_id`) REFERENCES `tipo_alta` (`id`),
   ADD CONSTRAINT `fk_equipos_tipo_equipo1` FOREIGN KEY (`tipo_equipo_id`) REFERENCES `tipo_equipo` (`id`);
