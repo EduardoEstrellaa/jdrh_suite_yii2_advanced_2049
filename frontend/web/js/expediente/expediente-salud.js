@@ -6,6 +6,9 @@
   const selectorServicios = '#alumserviciossalud-tiene_servicios_salud';
   const serviciosContainerSelector = '#salud-servicios-container';
   const servicioCheckboxSelector = '.servicio-salud-checkbox';
+  const selectorAnteojos = '#alumusoanteojos-utilizas_anteojos';
+  const anteojosContainerSelector = '#salud-anteojos-container';
+  const anteojosCheckboxSelector = '.uso-anteojos-checkbox';
 
   const getOtroId = () =>
     typeof PROBLEMA_OTRO_ID !== 'undefined' ? parseInt(PROBLEMA_OTRO_ID, 10) : null;
@@ -97,6 +100,21 @@
     }
   };
 
+  const toggleAnteojos = () => {
+    const show = parseInt($(selectorAnteojos).val(), 10) === 1;
+    $(anteojosContainerSelector).toggleClass('d-none', !show);
+
+    const $checkboxes = $(anteojosCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      $checkboxes.prop('checked', false);
+      if (first) {
+        first.setCustomValidity('');
+      }
+    }
+  };
+
   const validateOtroSalud = (event) => {
     const otroId = getOtroId();
     if (!otroId) {
@@ -169,6 +187,39 @@
     return true;
   };
 
+  const validateUsoAnteojos = (event) => {
+    const show = parseInt($(selectorAnteojos).val(), 10) === 1;
+    const $checkboxes = $(anteojosCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      if (first) {
+        first.setCustomValidity('');
+      }
+      return true;
+    }
+
+    const hasSelection = $(anteojosCheckboxSelector + ':checked').length > 0;
+    if (!hasSelection) {
+      if (first) {
+        first.setCustomValidity('Selecciona al menos una opción de uso de anteojos.');
+        if (event) {
+          first.reportValidity();
+        }
+      }
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return false;
+    }
+
+    if (first) {
+      first.setCustomValidity('');
+    }
+    return true;
+  };
+
   $(document)
     .on('change', selectorTiene, toggleProblemas)
     .on('change', checkboxSelector, function () {
@@ -182,6 +233,13 @@
     .on('change', servicioCheckboxSelector, function () {
       validateServiciosSalud();
     })
+    .on('change', selectorAnteojos, function () {
+      toggleAnteojos();
+      validateUsoAnteojos();
+    })
+    .on('change', anteojosCheckboxSelector, function () {
+      validateUsoAnteojos();
+    })
     .on('input', otroCampoSelector, function () {
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
@@ -189,7 +247,8 @@
     .on('submit', '#expediente-form', function (event) {
       const validOtro = validateOtroSalud(event);
       const validServicios = validateServiciosSalud(event);
-      if (!validOtro || !validServicios) {
+      const validAnteojos = validateUsoAnteojos(event);
+      if (!validOtro || !validServicios || !validAnteojos) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -198,10 +257,12 @@
   $(document).ready(() => {
     toggleProblemas();
     toggleServicios();
+    toggleAnteojos();
     $(checkboxSelector).each(function () {
       toggleRow($(this));
     });
     validateOtroSalud();
     validateServiciosSalud();
+    validateUsoAnteojos();
   });
 })(jQuery);

@@ -24,9 +24,11 @@ use common\models\AlumEstadoSalud;
 use common\models\AlumServiciosSalud;
 use common\models\AlumAsisteMedico;
 use common\models\AlumAsisteDentista;
+use common\models\AlumUsoAnteojos;
 use common\models\ProblemasSalud;
 use common\models\CatalogoProblemasSalud;
 use common\models\CatalogoServiciosSalud;
+use common\models\CatalogoUsoAnteojos;
 use common\models\FrecuenciaTiempo;
 use common\models\TipoGravedad;
 use kartik\checkbox\CheckboxX;
@@ -65,13 +67,16 @@ $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alu
 $alumServiciosSalud = $alumServiciosSalud ?? new AlumServiciosSalud(['alumnos_id' => $alumno->id ?? null]);
 $alumAsisteMedico = $alumAsisteMedico ?? new AlumAsisteMedico(['alumnos_id' => $alumno->id ?? null]);
 $alumAsisteDentista = $alumAsisteDentista ?? new AlumAsisteDentista(['alumnos_id' => $alumno->id ?? null]);
+$alumUsoAnteojos = $alumUsoAnteojos ?? new AlumUsoAnteojos(['alumnos_id' => $alumno->id ?? null]);
 $problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
 $catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
 $catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
+$catalogoUsoAnteojosMap = $catalogoUsoAnteojosMap ?? CatalogoUsoAnteojos::dropdownOptions();
 $frecuenciasTiempoMap = $frecuenciasTiempoMap ?? FrecuenciaTiempo::dropdownOptions();
 $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
 $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
+$usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
 ?>
 
 <div class="expediente-form">
@@ -1169,6 +1174,19 @@ $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
                                 ]
                             ) ?>
                         </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumUsoAnteojos,
+                                'utilizas_anteojos',
+                                'fa-glasses',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Utilizas anteojos?',
+                                    'id' => 'alumusoanteojos-utilizas_anteojos',
+                                ]
+                            ) ?>
+                        </div>
                     </div>
 
                     <?php
@@ -1177,6 +1195,27 @@ $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
                         $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
                     }
                     ?>
+
+                    <div id="salud-anteojos-container" class="<?= ((int)($alumUsoAnteojos->utilizas_anteojos ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <h5 class="mt-3 mb-3">Tipo de uso de anteojos</h5>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoUsoAnteojosMap as $id => $nombre): ?>
+                                <?php $checked = in_array((int)$id, $usoAnteojosSeleccionados, true); ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input uso-anteojos-checkbox"
+                                            name="UsoAnteojos[ids][]"
+                                            value="<?= (int)$id ?>"
+                                            id="uso-anteojos-<?= (int)$id ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="uso-anteojos-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
 
                     <div id="salud-servicios-container" class="<?= ((int)($alumServiciosSalud->tiene_servicios_salud ?? 0) === 1) ? '' : 'd-none' ?>">
                         <h5 class="mt-3 mb-3">Servicios de salud</h5>

@@ -12,18 +12,21 @@ use common\models\AlumEstadoSalud;
 use common\models\AlumAsisteMedico;
 use common\models\AlumAsisteDentista;
 use common\models\AlumServiciosSalud;
+use common\models\AlumUsoAnteojos;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\CatalogoProblemasSalud;
 use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoServiciosVivienda;
+use common\models\CatalogoUsoAnteojos;
 use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\ProblemasSalud;
 use common\models\FrecuenciaTiempo;
 use common\models\ServiciosSalud;
+use common\models\UsoAnteojos;
 use common\models\TiempoRecorridoTransporte;
 use common\models\TipoGravedad;
 use common\models\TiposViviendas;
@@ -62,6 +65,7 @@ class ExpedienteFacade
         $bienesPersonalesData = $this->buildBienesPersonalesData($alumnoId);
         $problemasSaludData = $this->buildProblemasSaludData($models['alumEstadoSalud'] ?? null);
         $serviciosSaludData = $this->buildServiciosSaludData($models['alumServiciosSalud'] ?? null);
+        $usoAnteojosData = $this->buildUsoAnteojosData($models['alumUsoAnteojos'] ?? null);
 
         return array_merge(
             $models,
@@ -71,6 +75,7 @@ class ExpedienteFacade
             $bienesPersonalesData,
             $problemasSaludData,
             $serviciosSaludData,
+            $usoAnteojosData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -198,6 +203,22 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildUsoAnteojosData(?AlumUsoAnteojos $alumUsoAnteojos = null): array
+    {
+        if ($alumUsoAnteojos === null || $alumUsoAnteojos->isNewRecord) {
+            return ['usoAnteojosSeleccionados' => []];
+        }
+
+        $ids = UsoAnteojos::find()
+            ->select('catalogo_uso_anteojos_id')
+            ->where(['alum_uso_anteojos_id' => $alumUsoAnteojos->id])
+            ->column();
+
+        return [
+            'usoAnteojosSeleccionados' => array_map('intval', $ids),
+        ];
+    }
+
     private function buildViviendaBienesData(?AlumVivienda $alumVivienda = null): array
     {
         if ($alumVivienda === null || $alumVivienda->isNewRecord) {
@@ -288,6 +309,7 @@ class ExpedienteFacade
             'serviciosSaludSeleccionados' => [],
             'alumAsisteMedico' => new AlumAsisteMedico(),
             'alumAsisteDentista' => new AlumAsisteDentista(),
+            'usoAnteojosSeleccionados' => [],
         ];
     }
 
@@ -307,6 +329,7 @@ class ExpedienteFacade
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
             'catalogoServiciosSaludMap' => CatalogoServiciosSalud::dropdownOptions(),
+            'catalogoUsoAnteojosMap' => CatalogoUsoAnteojos::dropdownOptions(),
             'frecuenciasTiempoMap' => FrecuenciaTiempo::dropdownOptions(),
             'tipoGravedadMap' => TipoGravedad::dropdownOptions(),
             'otroCatalogoProblemaId' => CatalogoProblemasSalud::getOtroId(),
