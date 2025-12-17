@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\TipoGravedad;
+use common\models\TipoGravedad;
 use backend\models\search\TipoGravedadSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

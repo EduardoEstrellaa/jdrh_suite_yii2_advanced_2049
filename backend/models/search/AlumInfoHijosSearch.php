@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumInfoHijos;
+use common\models\AlumInfoHijos;
 
 /**
- * AlumInfoHijosSearch represents the model behind the search form of `backend\models\AlumInfoHijos`.
+ * AlumInfoHijosSearch represents the model behind the search form of `common\models\AlumInfoHijos`.
  */
 class AlumInfoHijosSearch extends AlumInfoHijos
 {

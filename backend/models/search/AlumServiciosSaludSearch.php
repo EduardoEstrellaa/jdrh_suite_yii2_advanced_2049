@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumServiciosSalud;
+use common\models\AlumServiciosSalud;
 
 /**
- * AlumServiciosSaludSearch represents the model behind the search form of `backend\models\AlumServiciosSalud`.
+ * AlumServiciosSaludSearch represents the model behind the search form of `common\models\AlumServiciosSalud`.
  */
 class AlumServiciosSaludSearch extends AlumServiciosSalud
 {

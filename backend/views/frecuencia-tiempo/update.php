@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\FrecuenciaTiempo $model */
+/** @var common\models\FrecuenciaTiempo $model */
 
 $this->title = Yii::t('app', 'Update Frecuencia Tiempo: {name}', [
     'name' => $model->id,

@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TiempoRecorridoTransporte;
+use common\models\TiempoRecorridoTransporte;
 
 /**
- * TiempoRecorridoTransporteSearch represents the model behind the search form of `backend\models\TiempoRecorridoTransporte`.
+ * TiempoRecorridoTransporteSearch represents the model behind the search form of `common\models\TiempoRecorridoTransporte`.
  */
 class TiempoRecorridoTransporteSearch extends TiempoRecorridoTransporte
 {
@@ -18,7 +18,7 @@ class TiempoRecorridoTransporteSearch extends TiempoRecorridoTransporte
     {
         return [
             [['id'], 'integer'],
-            [['rango_tiempo'], 'safe'],
+            [['rango_tiempo', 'descripcion'], 'safe'],
         ];
     }
 
@@ -61,7 +61,8 @@ class TiempoRecorridoTransporteSearch extends TiempoRecorridoTransporte
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'rango_tiempo', $this->rango_tiempo]);
+        $query->andFilterWhere(['like', 'rango_tiempo', $this->rango_tiempo])
+            ->andFilterWhere(['like', 'descripcion', $this->descripcion]);
 
         return $dataProvider;
     }

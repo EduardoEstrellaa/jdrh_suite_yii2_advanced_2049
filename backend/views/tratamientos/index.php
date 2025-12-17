@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\Tratamientos;
+use common\models\Tratamientos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

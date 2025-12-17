@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumTransportes;
+use common\models\AlumTransportes;
 
 /**
- * AlumTransportesSearch represents the model behind the search form of `backend\models\AlumTransportes`.
+ * AlumTransportesSearch represents the model behind the search form of `common\models\AlumTransportes`.
  */
 class AlumTransportesSearch extends AlumTransportes
 {

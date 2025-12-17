@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TipoGravedad;
+use common\models\TipoGravedad;
 
 /**
- * TipoGravedadSearch represents the model behind the search form of `backend\models\TipoGravedad`.
+ * TipoGravedadSearch represents the model behind the search form of `common\models\TipoGravedad`.
  */
 class TipoGravedadSearch extends TipoGravedad
 {

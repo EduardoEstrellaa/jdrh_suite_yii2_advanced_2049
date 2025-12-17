@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\AlumBienesPersonales $model */
+/** @var common\models\AlumBienesPersonales $model */
 
 $this->title = Yii::t('app', 'Update Alum Bienes Personales: {name}', [
     'name' => $model->id,

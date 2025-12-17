@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\FrecuenciaTiempo;
+use common\models\FrecuenciaTiempo;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

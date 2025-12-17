@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\CatalogoDependenciasEconomicas $model */
+/** @var common\models\CatalogoDependenciasEconomicas $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Catalogo Dependencias Economicas'), 'url' => ['index']];
@@ -32,7 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nombre',
             'descripcion',
-            'categorias_dependencias_id',
+            [
+                'label' => Yii::t('app', 'Categoria Dependencia'),
+                'value' => $model->categoriasDependencias->nombre ?? null,
+            ],
         ],
     ]) ?>
 

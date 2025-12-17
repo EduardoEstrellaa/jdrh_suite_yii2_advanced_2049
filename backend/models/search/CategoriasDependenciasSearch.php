@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CategoriasDependencias;
+use common\models\CategoriasDependencias;
 
 /**
- * CategoriasDependenciasSearch represents the model behind the search form of `backend\models\CategoriasDependencias`.
+ * CategoriasDependenciasSearch represents the model behind the search form of `common\models\CategoriasDependencias`.
  */
 class CategoriasDependenciasSearch extends CategoriasDependencias
 {

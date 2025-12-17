@@ -1,6 +1,7 @@
 <?php
 
-use backend\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoDependenciasEconomicas;
+use common\models\CategoriasDependencias;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -33,7 +34,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nombre',
             'descripcion',
-            'categorias_dependencias_id',
+            [
+                'attribute' => 'categorias_dependencias_id',
+                'value' => static function (CatalogoDependenciasEconomicas $model) {
+                    return $model->categoriasDependencias->nombre ?? null;
+                },
+                'filter' => CategoriasDependencias::dropdownOptions(),
+                'filterInputOptions' => [
+                    'class' => 'form-control',
+                    'prompt' => Yii::t('app', 'Todas'),
+                ],
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, CatalogoDependenciasEconomicas $model, $key, $index, $column) {

@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoDependenciasEconomicas;
 use backend\models\search\CatalogoDependenciasEconomicasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

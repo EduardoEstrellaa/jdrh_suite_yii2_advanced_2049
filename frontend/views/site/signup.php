@@ -8,7 +8,7 @@ use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 use common\models\PlanLicenciaturas;
 use common\models\Generaciones;
-use frontend\models\Perfil;
+use common\models\Perfil;
 use frontend\assets\PerfilFormAsset;
 use common\helpers\InputHelper;
 

@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\DatosPersonales;
+use common\models\DatosPersonales;
 use backend\models\search\DatosPersonalesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

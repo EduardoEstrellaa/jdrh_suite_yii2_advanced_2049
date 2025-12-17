@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /* @var yii\web\View $this */
 /* @var common\models\LugaresNacimiento $lugaresNacimiento */
-/* @var common\models\DomiciliosActuales $domicilisoActuales */
+/* @var common\models\DomiciliosActuales $domiciliosActuales */
 
 $this->title = 'Actualizar Expediente';
 $this->params['breadcrumbs'][] = ['label' => 'Expedientes', 'url' => ['index']];
@@ -20,6 +20,52 @@ $this->params['breadcrumbs'][] = $this->title;
         'datosPersonales' => $datosPersonales,
         'lugaresNacimiento' => $lugaresNacimiento,
         'domiciliosActuales' => $domiciliosActuales,
+        'datosGenerales' => $datosGenerales,
+        'alumDatosFamiliares' => $alumDatosFamiliares,
+        'alumBecas' => $alumBecas,
+        'alumInfoHijos' => $alumInfoHijos,
+        'alumDependeEconomicamente' => $alumDependeEconomicamente,
+        'alumDependenEconomica' => $alumDependenEconomica,
+        'dependientes' => $dependientes ?? [],
+        'dependientesSeleccionados' => $dependientesSeleccionados ?? [],
+        'dependientesOtro' => $dependientesOtro ?? null,
+        'edadesHijos' => $edadesHijos,
+        'alumTrabajo' => $alumTrabajo,
+        'alumVivienda' => $alumVivienda,
+        'catalogoDependenciasOptions' => $catalogoDependenciasOptions,
+        'otroCatalogoDependenciaId' => $otroCatalogoDependenciaId,
+        'tiposViviendasMap' => $tiposViviendasMap,
+        'tipoViviendaOtroId' => $tipoViviendaOtroId,
+        'catalogoBienesOptions' => $catalogoBienesOptions,
+        'catalogoBienOtroId' => $catalogoBienOtroId,
+        'bienesSeleccionados' => $bienesSeleccionados ?? [],
+        'bienesOtro' => $bienesOtro ?? null,
+        'catalogoServiciosViviendaOptions' => $catalogoServiciosViviendaOptions,
+        'catalogoServicioOtroId' => $catalogoServicioOtroId,
+        'serviciosSeleccionados' => $serviciosSeleccionados ?? [],
+        'serviciosOtro' => $serviciosOtro ?? null,
+        'catalogoBienesPersonalesOptions' => $catalogoBienesPersonalesOptions,
+        'bienesPersonalesSeleccionados' => $bienesPersonalesSeleccionados ?? [],
+        'alumTransportes' => $alumTransportes,
+        'catalogoTransportesMap' => $catalogoTransportesMap,
+        'tiemposRecorridoMap' => $tiemposRecorridoMap,
+        'alumEstadoSalud' => $alumEstadoSalud ?? null,
+        'alumAsisteMedico' => $alumAsisteMedico ?? null,
+        'alumAsisteDentista' => $alumAsisteDentista ?? null,
+        'problemasSalud' => $problemasSalud ?? [],
+        'catalogoProblemasSaludMap' => $catalogoProblemasSaludMap ?? [],
+        'alumServiciosSalud' => $alumServiciosSalud ?? null,
+        'serviciosSaludSeleccionados' => $serviciosSaludSeleccionados ?? [],
+        'catalogoServiciosSaludMap' => $catalogoServiciosSaludMap ?? [],
+        'alumUsoAnteojos' => $alumUsoAnteojos ?? null,
+        'usoAnteojosSeleccionados' => $usoAnteojosSeleccionados ?? [],
+        'catalogoUsoAnteojosMap' => $catalogoUsoAnteojosMap ?? [],
+        'frecuenciasTiempoMap' => $frecuenciasTiempoMap ?? [],
+        'tipoGravedadMap' => $tipoGravedadMap ?? [],
+        'otroCatalogoProblemaId' => $otroCatalogoProblemaId ?? null,
+        'alumTratamientos' => $alumTratamientos ?? null,
+        'tratamientos' => $tratamientos ?? [],
+        'catalogoTratamientosMap' => $catalogoTratamientosMap ?? [],
     ]) ?>
 
 </div>

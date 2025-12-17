@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoTransportes;
+use common\models\CatalogoTransportes;
 
 /**
- * CatalogoTransportesSearch represents the model behind the search form of `backend\models\CatalogoTransportes`.
+ * CatalogoTransportesSearch represents the model behind the search form of `common\models\CatalogoTransportes`.
  */
 class CatalogoTransportesSearch extends CatalogoTransportes
 {

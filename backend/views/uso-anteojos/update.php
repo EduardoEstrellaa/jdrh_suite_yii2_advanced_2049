@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\UsoAnteojos $model */
+/** @var common\models\UsoAnteojos $model */
 
 $this->title = Yii::t('app', 'Update Uso Anteojos: {name}', [
     'name' => $model->id,

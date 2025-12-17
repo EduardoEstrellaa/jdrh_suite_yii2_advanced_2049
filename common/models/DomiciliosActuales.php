@@ -3,7 +3,7 @@
 namespace common\models;
 
 use Yii;
-use frontend\models\Perfil;
+use common\models\Perfil;
 
 /**
  * This is the model class for table "domicilios_actuales".

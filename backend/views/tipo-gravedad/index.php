@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\TipoGravedad;
+use common\models\TipoGravedad;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

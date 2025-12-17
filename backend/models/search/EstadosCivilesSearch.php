@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\EstadosCiviles;
+use common\models\EstadosCiviles;
 
 /**
- * EstadosCivilesSearch represents the model behind the search form of `backend\models\EstadosCiviles`.
+ * EstadosCivilesSearch represents the model behind the search form of `common\models\EstadosCiviles`.
  */
 class EstadosCivilesSearch extends EstadosCiviles
 {

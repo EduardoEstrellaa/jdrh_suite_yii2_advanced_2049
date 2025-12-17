@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\EstadosCiviles;
+use common\models\EstadosCiviles;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
