@@ -19,6 +19,8 @@ use common\models\AlumEstadoSalud;
 use common\models\ProblemasSalud;
 use common\models\AlumServiciosSalud;
 use common\models\ServiciosSalud;
+use common\models\AlumAsisteMedico;
+use common\models\AlumAsisteDentista;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumTrabajo;
 use common\models\AlumTransportes;
@@ -112,6 +114,8 @@ class ExpedienteService
             'alumTransportes' => new AlumTransportes(['alumnos_id' => $alumno->id]),
             'alumEstadoSalud' => new AlumEstadoSalud(['alumnos_id' => $alumno->id]),
             'alumServiciosSalud' => new AlumServiciosSalud(['alumnos_id' => $alumno->id]),
+            'alumAsisteMedico' => new AlumAsisteMedico(['alumnos_id' => $alumno->id]),
+            'alumAsisteDentista' => new AlumAsisteDentista(['alumnos_id' => $alumno->id]),
         ];
     }
 
@@ -135,6 +139,8 @@ class ExpedienteService
             'alumTransportes' => self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]),
             'alumEstadoSalud' => self::findOrCreateModel(AlumEstadoSalud::class, ['alumnos_id' => $alumnoId]),
             'alumServiciosSalud' => self::findOrCreateModel(AlumServiciosSalud::class, ['alumnos_id' => $alumnoId]),
+            'alumAsisteMedico' => self::findOrCreateModel(AlumAsisteMedico::class, ['alumnos_id' => $alumnoId]),
+            'alumAsisteDentista' => self::findOrCreateModel(AlumAsisteDentista::class, ['alumnos_id' => $alumnoId]),
         ];
     }
 
@@ -292,6 +298,8 @@ class ExpedienteService
             AlumBienesPersonales::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
 
+            AlumAsisteMedico::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumAsisteDentista::deleteAll(['alumnos_id' => $alumnoId]);
             $alumServiciosSalud = AlumServiciosSalud::findOne(['alumnos_id' => $alumnoId]);
             if ($alumServiciosSalud) {
                 ServiciosSalud::deleteAll(['alum_servicios_salud_id' => $alumServiciosSalud->id]);
@@ -344,6 +352,12 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumServiciosSalud) {
+                continue;
+            }
+            if ($model instanceof AlumAsisteMedico) {
+                continue;
+            }
+            if ($model instanceof AlumAsisteDentista) {
                 continue;
             }
             if ($model->isNewRecord) {

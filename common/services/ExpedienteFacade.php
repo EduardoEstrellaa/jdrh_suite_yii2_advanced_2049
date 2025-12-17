@@ -9,6 +9,8 @@ use common\models\AlumInfoHijos;
 use common\models\AlumBienesPersonales;
 use common\models\AlumVivienda;
 use common\models\AlumEstadoSalud;
+use common\models\AlumAsisteMedico;
+use common\models\AlumAsisteDentista;
 use common\models\AlumServiciosSalud;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
@@ -20,6 +22,7 @@ use common\models\CatalogoTransportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\ProblemasSalud;
+use common\models\FrecuenciaTiempo;
 use common\models\ServiciosSalud;
 use common\models\TiempoRecorridoTransporte;
 use common\models\TipoGravedad;
@@ -68,6 +71,8 @@ class ExpedienteFacade
             $bienesPersonalesData,
             $problemasSaludData,
             $serviciosSaludData,
+            ['alumAsisteMedico' => $models['alumAsisteMedico']],
+            ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
             $this->getCatalogosData()
         );
@@ -281,6 +286,8 @@ class ExpedienteFacade
         return [
             'problemasSalud' => [new ProblemasSalud()],
             'serviciosSaludSeleccionados' => [],
+            'alumAsisteMedico' => new AlumAsisteMedico(),
+            'alumAsisteDentista' => new AlumAsisteDentista(),
         ];
     }
 
@@ -300,6 +307,7 @@ class ExpedienteFacade
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
             'catalogoServiciosSaludMap' => CatalogoServiciosSalud::dropdownOptions(),
+            'frecuenciasTiempoMap' => FrecuenciaTiempo::dropdownOptions(),
             'tipoGravedadMap' => TipoGravedad::dropdownOptions(),
             'otroCatalogoProblemaId' => CatalogoProblemasSalud::getOtroId(),
         ];

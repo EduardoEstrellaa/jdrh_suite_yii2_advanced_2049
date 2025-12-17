@@ -22,9 +22,12 @@ use common\models\TiposViviendas;
 use common\models\TiempoRecorridoTransporte;
 use common\models\AlumEstadoSalud;
 use common\models\AlumServiciosSalud;
+use common\models\AlumAsisteMedico;
+use common\models\AlumAsisteDentista;
 use common\models\ProblemasSalud;
 use common\models\CatalogoProblemasSalud;
 use common\models\CatalogoServiciosSalud;
+use common\models\FrecuenciaTiempo;
 use common\models\TipoGravedad;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
@@ -60,9 +63,12 @@ $catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdo
 $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
 $alumServiciosSalud = $alumServiciosSalud ?? new AlumServiciosSalud(['alumnos_id' => $alumno->id ?? null]);
+$alumAsisteMedico = $alumAsisteMedico ?? new AlumAsisteMedico(['alumnos_id' => $alumno->id ?? null]);
+$alumAsisteDentista = $alumAsisteDentista ?? new AlumAsisteDentista(['alumnos_id' => $alumno->id ?? null]);
 $problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
 $catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
 $catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
+$frecuenciasTiempoMap = $frecuenciasTiempoMap ?? FrecuenciaTiempo::dropdownOptions();
 $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
 $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
@@ -1134,6 +1140,32 @@ $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
                                 [
                                     'placeholder' => '¿Cuenta con servicios de salud?',
                                     'id' => 'alumserviciossalud-tiene_servicios_salud',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumAsisteMedico,
+                                'frecuencia_tiempo_id',
+                                'fa-stethoscope',
+                                $frecuenciasTiempoMap,
+                                [
+                                    'placeholder' => '¿Cada cuánto va al médico?',
+                                    'id' => 'alumasistemedico-frecuencia_tiempo_id',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumAsisteDentista,
+                                'frecuencia_tiempo_id',
+                                'fa-tooth',
+                                $frecuenciasTiempoMap,
+                                [
+                                    'placeholder' => '¿Cada cuánto va al dentista?',
+                                    'id' => 'alumasistedentista-frecuencia_tiempo_id',
                                 ]
                             ) ?>
                         </div>
