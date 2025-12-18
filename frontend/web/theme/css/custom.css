@@ -75,3 +75,8 @@ File: Custom CSS (Refactor)
 #page-header-user-dropdown[aria-expanded="true"] {
     background-color: transparent !important;
 }
+
+
+html body .select2-selection {
+    display: flex !important;
+}

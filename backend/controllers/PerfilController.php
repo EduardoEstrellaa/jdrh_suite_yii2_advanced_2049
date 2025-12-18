@@ -2,11 +2,12 @@
 
 namespace backend\controllers;
 
-use frontend\models\Perfil;
+use common\models\Perfil;
 use backend\models\search\PerfilSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\User;
 
 use common\models\PermisosHelpers;
 
@@ -27,30 +28,30 @@ class PerfilController extends Controller
             [
                 'access' => [
                     'class' => \yii\filters\AccessControl::className(),
-                    'only' => ['index', 'view','create', 'update', 'delete'],
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
                     'rules' => [
                         [
                             'actions' => ['index', 'create', 'view',],
                             'allow' => true,
                             'roles' => ['@'],
                             'matchCallback' => function ($rule, $action) {
-                             return PermisosHelpers::requerirMinimoRol('Admin') 
-                             && PermisosHelpers::requerirEstado('Activo');
+                                return PermisosHelpers::requerirMinimoRol('Admin')
+                                    && PermisosHelpers::requerirEstado('Activo');
                             }
                         ],
-                         [
-                            'actions' => [ 'update', 'delete'],
+                        [
+                            'actions' => ['update', 'delete'],
                             'allow' => true,
                             'roles' => ['@'],
                             'matchCallback' => function ($rule, $action) {
-                             return PermisosHelpers::requerirMinimoRol('SuperUsuario') 
-                             && PermisosHelpers::requerirEstado('Activo');
+                                return PermisosHelpers::requerirMinimoRol('SuperUsuario')
+                                    && PermisosHelpers::requerirEstado('Activo');
                             }
                         ],
-                        
-                             
+
+
                     ],
-                         
+
                 ],
 
                 'verbs' => [
@@ -111,6 +112,7 @@ class PerfilController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'userList' => User::getUserList(),
         ]);
     }
 
@@ -162,5 +164,38 @@ class PerfilController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    public function actionCrearMiPerfil()
+    {
+        $model = new Perfil();
+        $model->user_id = Yii::$app->user->id;  // se asigna automáticamente
+
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('create-mi-perfil', [
+            'model' => $model,
+        ]);
+    }
+
+
+    /**
+     * Muestra el perfil del usuario actualmente autenticado
+     */
+    public function actionMiPerfil()
+    {
+        $userId = Yii::$app->user->id;
+        $model = Perfil::find()->where(['user_id' => $userId])->one();
+
+        if ($model === null) {
+            return $this->redirect(['crear-mi-perfil']);
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+        ]);
     }
 }

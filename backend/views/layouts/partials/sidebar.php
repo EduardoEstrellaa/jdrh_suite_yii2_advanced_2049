@@ -1137,7 +1137,10 @@ use common\models\PermisosHelpers;
                     </div>
                 </li>
 
-                <!-- TUTORÍAS Y ASIGNACIONES -->
+
+                <!--------------------------------------- TUTORÍAS Y ASIGNACIONES ---------------------------------------------------->
+
+
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarTutorias" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarTutorias">
@@ -1162,7 +1165,9 @@ use common\models\PermisosHelpers;
                 </li>
 
 
-                <!-- INVENTARIO -->
+                <!--------------------------------------------- INVENTARIO -------------------------------------------------------->
+
+
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarInventario" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarInventario">
@@ -1183,25 +1188,113 @@ use common\models\PermisosHelpers;
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="<?= Url::to(['/estado-equipo']); ?>">
-                                    <i class="ri-list-check"></i><span data-key="t-estado-equipo">Reportes por
-                                        departamento</span>
+
+                                <a class="nav-link menu-link" href="<?= Url::to(['/reportes/index']); ?>">
+                                    <i class="ri-list-check"></i> <span data-key="t-reportes">Reportes</span>
                                 </a>
                             </li>
 
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="<?= Url::to(['expediente/index']); ?>">
+                                    <i class="ri-file-list-line"></i> <span data-key="t-expediente">Expedientes de los
+                                        Alumnos</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebarInventario" data-bs-toggle="collapse"
+                                    role="button" aria-expanded="false" aria-controls="sidebarInventario">
+                                    <i class="ri-computer-line"></i> <span data-key="t-inventario">Stock General</span>
+                                </a>
+
+                                <div class="collapse menu-dropdown" id="sidebarInventario">
+                                    <ul class="nav nav-sm flex-column">
+
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/equipos']); ?>">
+                                                <i class="ri-device-line"></i> <span data-key="t-equipos">Equipos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/tipo-equipo']); ?>">
+                                                <i class="ri-layout-grid-line"></i> <span data-key="t-tipo-equipo">Tipos
+                                                    de Equipo</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/estado-equipo']); ?>">
+                                                <i class="ri-checkbox-circle-line"></i> <span
+                                                    data-key="t-estado-equipo">Estados de Equipo</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/tipo-alta']); ?>">
+                                                <i class="ri-arrow-up-circle-line"></i> <span
+                                                    data-key="t-tipo-alta">Tipos de Alta</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/baja-equipo']); ?>">
+                                                <i class="ri-arrow-down-circle-line"></i> <span
+                                                    data-key="t-baja-equipo">Bajas de Equipos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/tipo-baja']); ?>">
+                                                <i class="ri-delete-bin-line"></i> <span data-key="t-tipo-baja">Tipos de
+                                                    Baja</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/marcas']); ?>">
+                                                <i class="ri-registered-line"></i> <span
+                                                    data-key="t-marcas">Marcas</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/modelos']); ?>">
+                                                <i class="ri-list-unordered"></i> <span
+                                                    data-key="t-modelos">Modelos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/edificios']); ?>">
+                                                <i class="ri-building-line"></i> <span
+                                                    data-key="t-edificios">Edificios</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/departamentos']); ?>">
+                                                <i class="ri-community-line"></i> <span
+                                                    data-key="t-departamentos">Departamentos</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="<?= Url::to(['/asignacion']); ?>">
+                                                <i class="ri-route-line"></i> <span
+                                                    data-key="t-asignacion">Asignaciones</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link"
+                                                href="<?= Url::to(['/historial-traslado']); ?>">
+                                                <i class="ri-time-history-line"></i> <span
+                                                    data-key="t-historial-traslado">Historial de Traslados</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </li>
+
             </ul>
         </div>
-        </li>
-
-        </ul>
+        <!-- Sidebar -->
     </div>
-    <!-- Sidebar -->
-</div>
 
-<div class="sidebar-background"></div>
+    <div class="sidebar-background"></div>
 </div>
 <!-- Left Sidebar End -->
 <!-- Vertical Overlay-->

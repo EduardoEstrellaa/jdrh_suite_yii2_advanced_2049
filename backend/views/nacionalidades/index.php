@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\Nacionalidades;
+use common\models\Nacionalidades;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

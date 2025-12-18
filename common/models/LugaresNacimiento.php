@@ -35,10 +35,9 @@ class LugaresNacimiento extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'perfil_id', 'entidades_federativas_id', 'municipios_id'], 'required'],
-            [['id', 'perfil_id', 'entidades_federativas_id', 'municipios_id'], 'integer'],
+            [['perfil_id', 'entidades_federativas_id', 'municipios_id'], 'required'],
+            [['perfil_id', 'entidades_federativas_id', 'municipios_id'], 'integer'],
             [['localidad'], 'string', 'max' => 100],
-            [['id'], 'unique'],
             [['entidades_federativas_id'], 'exist', 'skipOnError' => true, 'targetClass' => EntidadesFederativas::class, 'targetAttribute' => ['entidades_federativas_id' => 'id']],
             [['municipios_id'], 'exist', 'skipOnError' => true, 'targetClass' => Municipios::class, 'targetAttribute' => ['municipios_id' => 'id']],
             [['perfil_id'], 'exist', 'skipOnError' => true, 'targetClass' => Perfil::class, 'targetAttribute' => ['perfil_id' => 'id']],
