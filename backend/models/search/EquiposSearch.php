@@ -8,6 +8,7 @@ use common\models\Equipos;
 
 class EquiposSearch extends Equipos
 {
+    public $marca_id;
     public function beforeValidate()
 {
     // NO aplicar la lógica del modelo padre en el search
@@ -19,7 +20,7 @@ class EquiposSearch extends Equipos
         return [
             [['id', 'modelos_id', 'tipo_equipo_id', 'tipo_alta_id', 'estado_equipo_id', 'marca_id'], 'integer'],
             [['fecha_alta', 'numero_inventario', 'numero_serie', 'foto_equipo', 'foto_numero_inventario',
-              'foto_numero_serie', 'observaciones', 'especificaciones'], 'safe'],
+            'foto_numero_serie', 'observaciones', 'especificaciones'], 'safe'],
         ];
     }
 

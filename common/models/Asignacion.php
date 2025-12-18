@@ -55,23 +55,25 @@ class Asignacion extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Departamentos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
+
     public function getDepartamentos()
     {
         return $this->hasOne(Departamentos::class, ['id' => 'departamentos_id']);
     }
 
-    /**
-     * Gets query for [[Equipos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getEquipos()
     {
         return $this->hasOne(Equipos::class, ['id' => 'equipos_id']);
+    }
+
+
+    public function getEquipo()
+    {
+        return $this->hasOne(Equipos::class, ['id' => 'equipos_id']);
+    }
+
+    public function getDepartamento()
+    {
+        return $this->hasOne(Departamentos::class, ['id' => 'departamentos_id']);
     }
 }

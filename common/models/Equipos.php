@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use common\models\Asignacion; // <-- IMPORTANTE: Agregado para que funcione la relación
+use common\models\BajaEquipo; // <-- IMPORTANTE: Agregado para que funcione la relación
 
 /**
  * This is the model class for table "equipos".
@@ -76,7 +78,7 @@ class Equipos extends \yii\db\ActiveRecord
         ];
     }
 
-    /** RELACIONES CORRECTAS */
+    /** RELACIONES EXISTENTES */
     public function getMarca()
     {
         return $this->hasOne(Marcas::class, ['id' => 'marca_id']);
@@ -101,6 +103,21 @@ class Equipos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(EstadoEquipo::class, ['id' => 'estado_equipo_id']);
     }
+
+    public function getAsignacion()
+    {
+
+        return $this->hasOne(Asignacion::class, ['equipos_id' => 'id'])
+                    ->orderBy(['id' => SORT_DESC]);
+    }
+
+    public function getBajaEquipo()
+    {
+
+        return $this->hasOne(BajaEquipo::class, ['equipos_id' => 'id']);
+    }
+
+
 
     public function beforeValidate()
     {
