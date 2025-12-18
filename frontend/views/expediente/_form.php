@@ -1655,5 +1655,9 @@ $this->registerJsFile(
     '@web/js/expediente/expediente-salud.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
+$this->registerJsFile(
+    '@web/js/expediente/expediente-focus-errors.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
 
 ?>
