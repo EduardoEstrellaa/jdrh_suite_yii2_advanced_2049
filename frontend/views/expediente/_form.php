@@ -89,11 +89,32 @@ $tratamientosMap = [];
 foreach ($tratamientos as $t) {
     $tratamientosMap[(int)$t->catalogo_tratamientos_id] = $t;
 }
+
+$this->registerCssFile('@web/css/expediente-form.css');
 ?>
 
 <div class="expediente-form">
 
     <?php $form = ActiveForm::begin(['id' => 'expediente-form']); ?>
+
+    <div class="expediente-card card border-0 mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-1">Completa tu expediente</h4>
+                    <p class="text-muted mb-2">Avanza sección por sección; puedes guardar cuando termines.</p>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                        <i class="fas fa-lock me-1"></i> Datos seguros
+                    </span>
+                    <span class="badge bg-info-subtle text-info px-3 py-2">
+                        <i class="fas fa-clock me-1"></i> Tiempo estimado: 8-10 min
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ===================== -->
     <!-- 🎯 ACORDEÓN GENERAL -->
@@ -111,6 +132,14 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseDatosAcademicos" class="accordion-collapse collapse show" aria-labelledby="headingDatosAcademicos" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 1</span>
+                        <div>
+                            <div class="fw-semibold">Confirma tus datos institucionales.</div>
+                            <div class="text-muted small">Solo lectura: revisa matrícula, plan y generación.</div>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-4">
@@ -157,6 +186,14 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseDatosPersonales" class="accordion-collapse collapse" aria-labelledby="headingDatosPersonales" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 2</span>
+                        <div>
+                            <div class="fw-semibold">Completa tus datos personales y de contacto.</div>
+                            <div class="text-muted small">Llena campos obligatorios y verifica teléfonos y correo.</div>
+                        </div>
+                    </div>
 
                     <!-- ===================== -->
                     <!-- INFORMACIÓN BÁSICA -->
@@ -483,6 +520,14 @@ foreach ($tratamientos as $t) {
             <div id="collapseDatosFamiliares" class="accordion-collapse collapse" aria-labelledby="headingDatosFamiliares" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
 
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 3</span>
+                        <div>
+                            <div class="fw-semibold">Cuéntanos sobre tu familia.</div>
+                            <div class="text-muted small">Nombres, apellidos y ocupaciones para padre y madre.</div>
+                        </div>
+                    </div>
+
                     <h5 class="mb-3 mt-2">
                         <i class="fas fa-user-friends text-primary"></i>
                         <span class="text-secondary">Datos del Padre</span>
@@ -588,6 +633,14 @@ foreach ($tratamientos as $t) {
             <div id="collapseBecas" class="accordion-collapse collapse" aria-labelledby="headingBecas" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
 
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 4</span>
+                        <div>
+                            <div class="fw-semibold">Registra tu beca.</div>
+                            <div class="text-muted small">Indica si cuentas con beca, su tipo y especifica si es otra.</div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <?= InputHelper::iconSelect2Field(
@@ -656,6 +709,14 @@ foreach ($tratamientos as $t) {
 
             <div id="collapseHijos" class="accordion-collapse collapse" aria-labelledby="headingHijos" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body row g-3">
+
+                    <div class="section-intro mb-2 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 5</span>
+                        <div>
+                            <div class="fw-semibold">Declara si tienes hijos.</div>
+                            <div class="text-muted small">Si respondes sí, captura los datos básicos de cada uno.</div>
+                        </div>
+                    </div>
 
                     <!-- Select tiene hijos -->
                     <div class="col-md-6">
@@ -748,6 +809,13 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 6</span>
+                        <div>
+                            <div class="fw-semibold">Situación económica y dependientes.</div>
+                            <div class="text-muted small">Indica de quién dependes, si tienes dependientes y detalles de tu trabajo.</div>
+                        </div>
+                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <?= InputHelper::iconSelect2Field(
@@ -916,6 +984,13 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseBienesServiciosVivienda" class="accordion-collapse collapse" aria-labelledby="headingBienesServiciosVivienda" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 7</span>
+                        <div>
+                            <div class="fw-semibold">Tu vivienda y servicios.</div>
+                            <div class="text-muted small">Cómo vives, tipo de vivienda y equipamiento disponible.</div>
+                        </div>
+                    </div>
                     <h4 class="mb-3">
                         <i class="fas fa-house-user text-success"></i>
                         <span class="text-secondary">Vivienda</span>
@@ -1065,6 +1140,13 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseBienesPersonales" class="accordion-collapse collapse" aria-labelledby="headingBienesPersonales" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 8</span>
+                        <div>
+                            <div class="fw-semibold">Bienes personales.</div>
+                            <div class="text-muted small">Selecciona con qué bienes personales cuentas.</div>
+                        </div>
+                    </div>
                     <div class="row g-2">
                         <?php foreach ($catalogoBienesPersonalesOptions as $id => $nombre): ?>
                             <?php $checked = in_array((int)$id, $bienesPersonalesSeleccionados, true); ?>
@@ -1096,6 +1178,13 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body row g-3">
+                    <div class="section-intro mb-2 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 9</span>
+                        <div>
+                            <div class="fw-semibold">Transporte y tiempos.</div>
+                            <div class="text-muted small">Cómo llegas a la escuela y cuánto tardas.</div>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <?= InputHelper::iconSelect2Field(
                             $form,
@@ -1133,6 +1222,13 @@ foreach ($tratamientos as $t) {
             </h2>
             <div id="collapseSalud" class="accordion-collapse collapse" aria-labelledby="headingSalud" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 10</span>
+                        <div>
+                            <div class="fw-semibold">Información de salud.</div>
+                            <div class="text-muted small">Problemas de salud, servicios, tratamientos y uso de anteojos.</div>
+                        </div>
+                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <?= InputHelper::iconSelect2Field(
