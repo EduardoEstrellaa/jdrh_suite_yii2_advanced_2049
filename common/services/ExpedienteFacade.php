@@ -9,15 +9,19 @@ use common\models\AlumInfoHijos;
 use common\models\AlumBienesPersonales;
 use common\models\AlumVivienda;
 use common\models\AlumEstadoSalud;
+use common\models\AlumAlergia;
 use common\models\AlumAsisteMedico;
 use common\models\AlumAsisteDentista;
 use common\models\AlumServiciosSalud;
 use common\models\AlumUsoAnteojos;
 use common\models\AlumTratamientos;
+use common\models\Alergias;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
 use common\models\CatalogoDependenciasEconomicas;
+use common\models\CatalogoAlergias;
 use common\models\CatalogoProblemasSalud;
+use common\models\CatalogoReaccionesAlergicas;
 use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTratamientos;
@@ -33,6 +37,7 @@ use common\models\TipoGravedad;
 use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\models\ViviendaServicios;
+use common\models\VariasReaccionesAlergicas;
 use common\models\Tratamientos;
 use common\models\ProblemasSalud;
 use common\services\support\OperationResult;
@@ -71,6 +76,7 @@ class ExpedienteFacade
         $serviciosSaludData = $this->buildServiciosSaludData($models['alumServiciosSalud'] ?? null);
         $usoAnteojosData = $this->buildUsoAnteojosData($models['alumUsoAnteojos'] ?? null);
         $tratamientosData = $this->buildTratamientosData($models['alumTratamientos'] ?? null);
+        $alergiasData = $this->buildAlergiasData($models['alumAlergia'] ?? null);
 
         return array_merge(
             $models,
@@ -82,6 +88,7 @@ class ExpedienteFacade
             $serviciosSaludData,
             $usoAnteojosData,
             $tratamientosData,
+            $alergiasData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -245,6 +252,39 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildAlergiasData(?AlumAlergia $alumAlergia = null): array
+    {
+        if ($alumAlergia === null || $alumAlergia->isNewRecord) {
+            return [
+                'alergias' => [new Alergias()],
+                'reaccionesAlergiasSeleccionadas' => [],
+            ];
+        }
+
+        $alergias = Alergias::find()
+            ->where(['alum_alergia_id' => $alumAlergia->id])
+            ->all();
+
+        $reacciones = [];
+        foreach ($alergias as $alergia) {
+            $catalogoId = (int)$alergia->catalogo_alergias_id;
+            $ids = VariasReaccionesAlergicas::find()
+                ->select('catalogo_reacciones_alergicas_id')
+                ->where(['alergias_id' => $alergia->id])
+                ->column();
+            $reacciones[$catalogoId] = array_map('intval', $ids);
+        }
+
+        if (empty($alergias)) {
+            $alergias = [new Alergias()];
+        }
+
+        return [
+            'alergias' => $alergias,
+            'reaccionesAlergiasSeleccionadas' => $reacciones,
+        ];
+    }
+
     private function buildViviendaBienesData(?AlumVivienda $alumVivienda = null): array
     {
         if ($alumVivienda === null || $alumVivienda->isNewRecord) {
@@ -331,6 +371,9 @@ class ExpedienteFacade
     private function getSaludDefaults(): array
     {
         return [
+            'alumAlergia' => new AlumAlergia(),
+            'alergias' => [new Alergias()],
+            'reaccionesAlergiasSeleccionadas' => [],
             'problemasSalud' => [new ProblemasSalud()],
             'serviciosSaludSeleccionados' => [],
             'alumAsisteMedico' => new AlumAsisteMedico(),
@@ -360,7 +403,9 @@ class ExpedienteFacade
             'catalogoBienesPersonalesOptions' => CatalogoBienesPersonales::dropdownOptions(),
             'catalogoTransportesMap' => CatalogoTransportes::dropdownOptions(),
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
+            'catalogoAlergiasMap' => CatalogoAlergias::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
+            'catalogoReaccionesAlergicasMap' => CatalogoReaccionesAlergicas::dropdownOptions(),
             'catalogoServiciosSaludMap' => CatalogoServiciosSalud::dropdownOptions(),
             'catalogoTratamientosMap' => CatalogoTratamientos::dropdownOptions(),
             'catalogoUsoAnteojosMap' => CatalogoUsoAnteojos::dropdownOptions(),

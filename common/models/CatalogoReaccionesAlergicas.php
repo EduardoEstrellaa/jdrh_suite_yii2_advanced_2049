@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "catalogo_reacciones_alergicas".
@@ -45,6 +46,20 @@ class CatalogoReaccionesAlergicas extends \yii\db\ActiveRecord
             'nombre' => 'Nombre',
             'descripcion' => 'Descripcion',
         ];
+    }
+
+    /**
+     * Opciones para dropdown (id => nombre).
+     */
+    public static function dropdownOptions(): array
+    {
+        $records = static::find()
+            ->select(['id', 'nombre'])
+            ->orderBy(['nombre' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($records, 'id', 'nombre');
     }
 
     /**

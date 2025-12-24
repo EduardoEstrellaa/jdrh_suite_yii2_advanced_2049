@@ -8,6 +8,14 @@
   const problemaGravedadSelector = '.problema-gravedad';
   const problemaOtroSelector = '.problema-otro';
   const problemaOtroInputSelector = '.problema-otro-input';
+  const selectorAlergias = '#alumalergia-padeces_alergias';
+  const alergiasContainerSelector = '#salud-alergias-container';
+  const alergiasListSelector = '#lista-alergias';
+  const alergiaItemSelector = '.alergia-item';
+  const alergiaCheckboxSelector = '.alergia-checkbox';
+  const alergiaDetalleSelector = '.alergia-detalle';
+  const alergiaGravedadSelector = '.alergia-gravedad';
+  const alergiaReaccionCheckboxSelector = '.alergia-reaccion-checkbox';
   const selectorServicios = '#alumserviciossalud-tiene_servicios_salud';
   const serviciosContainerSelector = '#salud-servicios-container';
   const servicioCheckboxSelector = '.servicio-salud-checkbox';
@@ -69,6 +77,54 @@
         $(this).val('').prop('disabled', true).removeClass('is-invalid');
         if (this.setCustomValidity) this.setCustomValidity('');
       });
+    }
+  };
+
+  const toggleAlergias = () => {
+    const show = parseInt($(selectorAlergias).val(), 10) === 1;
+    $(alergiasContainerSelector).toggleClass('d-none', !show);
+
+    if (!show) {
+      const first = $(alergiaCheckboxSelector).first()[0];
+      if (first) {
+        first.setCustomValidity('');
+      }
+      $(alergiaCheckboxSelector).prop('checked', false);
+      $(alergiaDetalleSelector).addClass('d-none');
+      $(alergiaGravedadSelector).each(function () {
+        resetSelect($(this));
+        $(this).prop('required', false).prop('disabled', true).trigger('change.select2');
+      });
+      $(alergiaReaccionCheckboxSelector)
+        .prop('checked', false)
+        .prop('disabled', true)
+        .each(function () {
+          if (this.setCustomValidity) this.setCustomValidity('');
+          $(this).removeClass('is-invalid');
+        });
+    }
+  };
+
+  const toggleAlergiaDetalle = ($checkbox) => {
+    const $row = $checkbox.closest(alergiaItemSelector);
+    const $detalle = $row.find(alergiaDetalleSelector);
+    const $gravedad = $row.find(alergiaGravedadSelector);
+    const $reacciones = $row.find(alergiaReaccionCheckboxSelector);
+    const checked = $checkbox.is(':checked');
+
+    $detalle.toggleClass('d-none', !checked);
+    $gravedad.prop('required', checked).prop('disabled', !checked).trigger('change.select2');
+    $reacciones.prop('disabled', !checked);
+
+    if (!checked) {
+      resetSelect($gravedad);
+      $reacciones.prop('checked', false);
+      $reacciones.each(function () {
+        if (this.setCustomValidity) this.setCustomValidity('');
+        $(this).removeClass('is-invalid');
+      });
+    } else {
+      initSelect2($gravedad);
     }
   };
 
@@ -172,6 +228,82 @@
           }
           return false;
         }
+      }
+    });
+
+    if (!valid && event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    return valid;
+  };
+
+  const validateAlergias = (event) => {
+    const show = parseInt($(selectorAlergias).val(), 10) === 1;
+    const $checkboxes = $(alergiaCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      if (first) {
+        first.setCustomValidity('');
+      }
+      return true;
+    }
+
+    const seleccionados = $(alergiaCheckboxSelector + ':checked');
+    if (!seleccionados.length) {
+      if (first) {
+        first.setCustomValidity('Selecciona al menos una alergia.');
+        if (event) {
+          first.reportValidity();
+        }
+      }
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return false;
+    }
+
+    if (first) {
+      first.setCustomValidity('');
+    }
+
+    let valid = true;
+    seleccionados.each(function () {
+      const $row = $(this).closest(alergiaItemSelector);
+      const $gravedad = $row.find(alergiaGravedadSelector);
+      const $reacciones = $row.find(alergiaReaccionCheckboxSelector);
+      const $reaccionesSeleccionadas = $row.find(`${alergiaReaccionCheckboxSelector}:checked`);
+      const firstReaction = $reacciones.first()[0];
+
+      $gravedad.removeClass('is-invalid');
+      if ($gravedad[0]) {
+        $gravedad[0].setCustomValidity('');
+      }
+      if (firstReaction) {
+        firstReaction.setCustomValidity('');
+      }
+      $reacciones.removeClass('is-invalid');
+
+      if (!$gravedad.val()) {
+        valid = false;
+        if ($gravedad[0]) {
+          $gravedad.addClass('is-invalid');
+          $gravedad[0].setCustomValidity('Selecciona la gravedad.');
+          if (event) $gravedad[0].reportValidity();
+        }
+        return false;
+      }
+
+      if (!$reaccionesSeleccionadas.length) {
+        valid = false;
+        if (firstReaction) {
+          firstReaction.setCustomValidity('Selecciona al menos una reaccion.');
+          if (event) firstReaction.reportValidity();
+        }
+        return false;
       }
     });
 
@@ -405,6 +537,26 @@
       $(this).removeClass('is-invalid');
       validateProblemas();
     })
+    .on('change', selectorAlergias, function () {
+      toggleAlergias();
+      validateAlergias();
+    })
+    .on('change', alergiaCheckboxSelector, function () {
+      toggleAlergiaDetalle($(this));
+      validateAlergias();
+    })
+    .on('change', alergiaGravedadSelector, function () {
+      this.setCustomValidity('');
+      $(this).removeClass('is-invalid');
+      validateAlergias();
+    })
+    .on('change', alergiaReaccionCheckboxSelector, function () {
+      const first = $(this).closest(alergiaItemSelector).find(alergiaReaccionCheckboxSelector).first()[0];
+      if (first) {
+        first.setCustomValidity('');
+      }
+      validateAlergias();
+    })
     .on('change', selectorServicios, function () {
       toggleServicios();
       validateServiciosSalud();
@@ -434,20 +586,22 @@
     .on('input', problemaOtroInputSelector, function () {
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
-    })
-    .on('submit', '#expediente-form', function (event) {
-      const validProblemas = validateProblemas(event);
-      const validServicios = validateServiciosSalud(event);
-      const validAnteojos = validateUsoAnteojos(event);
-      const validTratamientos = validateTratamientos(event);
-      if (!validProblemas || !validServicios || !validAnteojos || !validTratamientos) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    });
+  })
+  .on('submit', '#expediente-form', function (event) {
+    const validProblemas = validateProblemas(event);
+    const validAlergias = validateAlergias(event);
+    const validServicios = validateServiciosSalud(event);
+    const validAnteojos = validateUsoAnteojos(event);
+    const validTratamientos = validateTratamientos(event);
+    if (!validProblemas || !validAlergias || !validServicios || !validAnteojos || !validTratamientos) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  });
 
   $(document).ready(() => {
     toggleProblemas();
+    toggleAlergias();
     toggleServicios();
     toggleAnteojos();
     toggleTratamientos();
@@ -455,6 +609,14 @@
       toggleProblemaDetalle($(this));
     });
     $(problemaGravedadSelector).each(function () {
+      initSelect2($(this));
+    });
+    $(alergiasListSelector)
+      .find(alergiaCheckboxSelector)
+      .each(function () {
+        toggleAlergiaDetalle($(this));
+      });
+    $(alergiaGravedadSelector).each(function () {
       initSelect2($(this));
     });
     $(tratamientosListSelector)
@@ -466,6 +628,7 @@
       initSelect2($(this));
     });
     validateProblemas();
+    validateAlergias();
     validateServiciosSalud();
     validateUsoAnteojos();
     validateTratamientos();

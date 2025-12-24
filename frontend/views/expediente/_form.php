@@ -21,12 +21,15 @@ use common\models\CatalogoTransportes;
 use common\models\TiposViviendas;
 use common\models\TiempoRecorridoTransporte;
 use common\models\AlumEstadoSalud;
+use common\models\AlumAlergia;
 use common\models\AlumServiciosSalud;
 use common\models\AlumAsisteMedico;
 use common\models\AlumAsisteDentista;
 use common\models\AlumUsoAnteojos;
 use common\models\ProblemasSalud;
 use common\models\CatalogoProblemasSalud;
+use common\models\CatalogoAlergias;
+use common\models\CatalogoReaccionesAlergicas;
 use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoUsoAnteojos;
 use common\models\FrecuenciaTiempo;
@@ -34,6 +37,8 @@ use common\models\TipoGravedad;
 use common\models\CatalogoTratamientos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\Alergias;
+use common\models\VariasReaccionesAlergicas;
 use kartik\daterange\DateRangePicker;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
@@ -68,18 +73,23 @@ $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
 $catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
 $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
+$alumAlergia = $alumAlergia ?? new AlumAlergia(['alumnos_id' => $alumno->id ?? null]);
 $alumServiciosSalud = $alumServiciosSalud ?? new AlumServiciosSalud(['alumnos_id' => $alumno->id ?? null]);
 $alumAsisteMedico = $alumAsisteMedico ?? new AlumAsisteMedico(['alumnos_id' => $alumno->id ?? null]);
 $alumAsisteDentista = $alumAsisteDentista ?? new AlumAsisteDentista(['alumnos_id' => $alumno->id ?? null]);
 $alumUsoAnteojos = $alumUsoAnteojos ?? new AlumUsoAnteojos(['alumnos_id' => $alumno->id ?? null]);
+$alergias = $alergias ?? [new Alergias()];
 $problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
 $catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
+$catalogoAlergiasMap = $catalogoAlergiasMap ?? CatalogoAlergias::dropdownOptions();
 $catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
+$catalogoReaccionesAlergicasMap = $catalogoReaccionesAlergicasMap ?? CatalogoReaccionesAlergicas::dropdownOptions();
 $catalogoUsoAnteojosMap = $catalogoUsoAnteojosMap ?? CatalogoUsoAnteojos::dropdownOptions();
 $frecuenciasTiempoMap = $frecuenciasTiempoMap ?? FrecuenciaTiempo::dropdownOptions();
 $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
 $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
+$reaccionesAlergiasSeleccionadas = $reaccionesAlergiasSeleccionadas ?? [];
 $usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
 $alumTratamientos = $alumTratamientos ?? new AlumTratamientos(['alumnos_id' => $alumno->id ?? null]);
 $tratamientos = $tratamientos ?? [new Tratamientos()];
@@ -1259,6 +1269,19 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         <div class="col-md-6">
                             <?= InputHelper::iconSelect2Field(
                                 $form,
+                                $alumAlergia,
+                                'padeces_alergias',
+                                'fa-allergies',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Padeces alergias?',
+                                    'id' => 'alumalergia-padeces_alergias',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
                                 $alumAsisteMedico,
                                 'frecuencia_tiempo_id',
                                 'fa-stethoscope',
@@ -1307,6 +1330,89 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                     'id' => 'alumtratamientos-esta_en_tratamiento',
                                 ]
                             ) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $alergiasSeleccionadas = [];
+                    foreach ($alergias as $alergia) {
+                        $alergiasSeleccionadas[(int)$alergia->catalogo_alergias_id] = $alergia;
+                    }
+                    ?>
+
+                    <div id="salud-alergias-container" class="<?= ((int)($alumAlergia->padeces_alergias ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <div class="mt-3 mb-3">
+                            <h5 class="mb-1">Alergias</h5>
+                            <p class="text-muted small mb-0">Activa las alergias que padeces y registra gravedad y reacciones.</p>
+                        </div>
+
+                        <div id="lista-alergias" class="row g-3">
+                            <?php foreach ($catalogoAlergiasMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $alergia = $alergiasSeleccionadas[$id] ?? new Alergias(['catalogo_alergias_id' => $id]);
+                                $seleccionado = isset($alergiasSeleccionadas[$id]);
+                                $reaccionesSeleccionadas = $reaccionesAlergiasSeleccionadas[$id] ?? [];
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100 alergia-item" data-alergia-id="<?= $id ?>">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                    class="form-check-input alergia-checkbox"
+                                                    type="checkbox"
+                                                    id="alergia-<?= $id ?>"
+                                                    name="Alergias[<?= $id ?>][selected]"
+                                                    value="1"
+                                                    <?= $seleccionado ? 'checked' : '' ?>>
+                                                <label class="form-check-label fw-semibold" for="alergia-<?= $id ?>">
+                                                    <?= Html::encode($nombre) ?>
+                                                </label>
+                                                <input type="hidden" name="Alergias[<?= $id ?>][catalogo_alergias_id]" value="<?= $id ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="alergia-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alergia,
+                                                "[{$id}]tipo_gravedad_id",
+                                                'fa-exclamation-triangle',
+                                                $tipoGravedadMap,
+                                                [
+                                                    'placeholder' => 'Gravedad...',
+                                                    'class' => 'form-control alergia-gravedad',
+                                                    'id' => "alergia-gravedad-{$id}",
+                                                    'disabled' => !$seleccionado,
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
+
+                                            <div class="mt-2">
+                                                <p class="text-muted small mb-2">Marca las reacciones que presentas.</p>
+                                                <div class="row g-2">
+                                                    <?php foreach ($catalogoReaccionesAlergicasMap as $reaccionId => $reaccionNombre): ?>
+                                                        <?php $checked = in_array((int)$reaccionId, $reaccionesSeleccionadas, true); ?>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-check">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    class="form-check-input alergia-reaccion-checkbox"
+                                                                    name="Alergias[<?= $id ?>][reacciones][]"
+                                                                    value="<?= (int)$reaccionId ?>"
+                                                                    id="alergia-<?= $id ?>-reaccion-<?= (int)$reaccionId ?>"
+                                                                    <?= $checked ? 'checked' : '' ?>
+                                                                    <?= $seleccionado ? '' : 'disabled' ?>>
+                                                                <label class="form-check-label" for="alergia-<?= $id ?>-reaccion-<?= (int)$reaccionId ?>"><?= Html::encode($reaccionNombre) ?></label>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
 
