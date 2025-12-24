@@ -30,9 +30,8 @@ class AlumAlergia extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'alumnos_id', 'padeces_alergias'], 'required'],
-            [['id', 'alumnos_id', 'padeces_alergias'], 'integer'],
-            [['id'], 'unique'],
+            [['alumnos_id', 'padeces_alergias'], 'required'],
+            [['alumnos_id', 'padeces_alergias'], 'integer'],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
         ];
     }
