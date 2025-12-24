@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\EnfermedadesCronicas;
+use common\models\EnfermedadesCronicas;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -31,9 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'catalogo_enferm_cronicas_id',
             'alum_enfermedades_cronicas_id',
-            'otro_especificas',
+            'catalogo_enferm_cronicas_id',
+            'otro_especificar',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, EnfermedadesCronicas $model, $key, $index, $column) {

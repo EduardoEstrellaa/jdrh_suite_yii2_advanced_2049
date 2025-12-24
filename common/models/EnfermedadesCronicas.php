@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -8,9 +8,9 @@ use Yii;
  * This is the model class for table "enfermedades_cronicas".
  *
  * @property int $id
- * @property int $catalogo_enferm_cronicas_id
  * @property int $alum_enfermedades_cronicas_id
- * @property string|null $otro_especificas
+ * @property int $catalogo_enferm_cronicas_id
+ * @property string|null $otro_especificar
  *
  * @property AlumEnfermedadesCronicas $alumEnfermedadesCronicas
  * @property CatalogoEnfermCronicas $catalogoEnfermCronicas
@@ -31,9 +31,9 @@ class EnfermedadesCronicas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['catalogo_enferm_cronicas_id', 'alum_enfermedades_cronicas_id'], 'required'],
-            [['catalogo_enferm_cronicas_id', 'alum_enfermedades_cronicas_id'], 'integer'],
-            [['otro_especificas'], 'string', 'max' => 250],
+            [['alum_enfermedades_cronicas_id', 'catalogo_enferm_cronicas_id'], 'required'],
+            [['alum_enfermedades_cronicas_id', 'catalogo_enferm_cronicas_id'], 'integer'],
+            [['otro_especificar'], 'string', 'max' => 250],
             [['alum_enfermedades_cronicas_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlumEnfermedadesCronicas::class, 'targetAttribute' => ['alum_enfermedades_cronicas_id' => 'id']],
             [['catalogo_enferm_cronicas_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoEnfermCronicas::class, 'targetAttribute' => ['catalogo_enferm_cronicas_id' => 'id']],
         ];
@@ -46,9 +46,9 @@ class EnfermedadesCronicas extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'catalogo_enferm_cronicas_id' => 'Catalogo Enferm Cronicas ID',
             'alum_enfermedades_cronicas_id' => 'Alum Enfermedades Cronicas ID',
-            'otro_especificas' => 'Otro Especificas',
+            'catalogo_enferm_cronicas_id' => 'Catalogo Enferm Cronicas ID',
+            'otro_especificar' => 'Otro Especificar',
         ];
     }
 

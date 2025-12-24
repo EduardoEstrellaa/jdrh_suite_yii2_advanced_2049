@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\EnfermedadesCronicas;
+use common\models\EnfermedadesCronicas;
 
 /**
- * EnfermedadesCronicasSearch represents the model behind the search form of `backend\models\EnfermedadesCronicas`.
+ * EnfermedadesCronicasSearch represents the model behind the search form of `common\models\EnfermedadesCronicas`.
  */
 class EnfermedadesCronicasSearch extends EnfermedadesCronicas
 {
@@ -17,8 +17,8 @@ class EnfermedadesCronicasSearch extends EnfermedadesCronicas
     public function rules()
     {
         return [
-            [['id', 'catalogo_enferm_cronicas_id', 'alum_enfermedades_cronicas_id'], 'integer'],
-            [['otro_especificas'], 'safe'],
+            [['id', 'alum_enfermedades_cronicas_id', 'catalogo_enferm_cronicas_id'], 'integer'],
+            [['otro_especificar'], 'safe'],
         ];
     }
 
@@ -59,11 +59,11 @@ class EnfermedadesCronicasSearch extends EnfermedadesCronicas
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'catalogo_enferm_cronicas_id' => $this->catalogo_enferm_cronicas_id,
             'alum_enfermedades_cronicas_id' => $this->alum_enfermedades_cronicas_id,
+            'catalogo_enferm_cronicas_id' => $this->catalogo_enferm_cronicas_id,
         ]);
 
-        $query->andFilterWhere(['like', 'otro_especificas', $this->otro_especificas]);
+        $query->andFilterWhere(['like', 'otro_especificar', $this->otro_especificar]);
 
         return $dataProvider;
     }

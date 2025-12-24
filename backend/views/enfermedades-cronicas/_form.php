@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\EnfermedadesCronicas $model */
+/** @var common\models\EnfermedadesCronicas $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -12,11 +12,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'catalogo_enferm_cronicas_id')->textInput() ?>
-
     <?= $form->field($model, 'alum_enfermedades_cronicas_id')->textInput() ?>
 
-    <?= $form->field($model, 'otro_especificas')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'catalogo_enferm_cronicas_id')->textInput() ?>
+
+    <?= $form->field($model, 'otro_especificar')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
