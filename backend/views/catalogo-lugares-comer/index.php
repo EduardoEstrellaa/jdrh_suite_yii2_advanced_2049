@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CatalogoLugaresComer;
+use common\models\CatalogoLugaresComer;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

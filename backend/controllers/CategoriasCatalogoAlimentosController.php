@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CategoriasCatalogoAlimentos;
+use common\models\CategoriasCatalogoAlimentos;
 use backend\models\search\CategoriasCatalogoAlimentosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

@@ -1,25 +1,25 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "catalogo_lugares_comer".
+ * This is the model class for table "frecuencia_veces".
  *
  * @property int $id
  * @property string $nombre
  *
- * @property AlumLugaresComer[] $alumLugaresComers
+ * @property AlumConsumoAlimentos[] $alumConsumoAlimentos
  */
-class CatalogoLugaresComer extends \yii\db\ActiveRecord
+class FrecuenciaVeces extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'catalogo_lugares_comer';
+        return 'frecuencia_veces';
     }
 
     /**
@@ -45,12 +45,12 @@ class CatalogoLugaresComer extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[AlumLugaresComers]].
+     * Gets query for [[AlumConsumoAlimentos]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAlumLugaresComers()
+    public function getAlumConsumoAlimentos()
     {
-        return $this->hasMany(AlumLugaresComer::class, ['catalogo_lugares_comer_id' => 'id']);
+        return $this->hasMany(AlumConsumoAlimentos::class, ['frecuencia_veces_id' => 'id']);
     }
 }

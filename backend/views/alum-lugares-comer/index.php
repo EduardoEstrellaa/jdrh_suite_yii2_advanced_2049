@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumLugaresComer;
+use common\models\AlumLugaresComer;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

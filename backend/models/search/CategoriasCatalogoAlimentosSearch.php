@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CategoriasCatalogoAlimentos;
+use common\models\CategoriasCatalogoAlimentos;
 
 /**
- * CategoriasCatalogoAlimentosSearch represents the model behind the search form of `backend\models\CategoriasCatalogoAlimentos`.
+ * CategoriasCatalogoAlimentosSearch represents the model behind the search form of `common\models\CategoriasCatalogoAlimentos`.
  */
 class CategoriasCatalogoAlimentosSearch extends CategoriasCatalogoAlimentos
 {
