@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $nombre
+ * @property string|null $descripcion
  * @property int $tipo_alergias_id
  *
  * @property Alergias[] $alergias
@@ -33,6 +34,7 @@ class CatalogoAlergias extends \yii\db\ActiveRecord
             [['nombre', 'tipo_alergias_id'], 'required'],
             [['tipo_alergias_id'], 'integer'],
             [['nombre'], 'string', 'max' => 150],
+            [['descripcion'], 'string', 'max' => 250],
             [['tipo_alergias_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoAlergias::class, 'targetAttribute' => ['tipo_alergias_id' => 'id']],
         ];
     }
@@ -45,6 +47,7 @@ class CatalogoAlergias extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
+            'descripcion' => 'Descripcion',
             'tipo_alergias_id' => 'Tipo Alergias ID',
         ];
     }

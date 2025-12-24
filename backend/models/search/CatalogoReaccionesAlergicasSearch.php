@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoReaccionesAlergicas;
+use common\models\CatalogoReaccionesAlergicas;
 
 /**
- * CatalogoReaccionesAlergicasSearch represents the model behind the search form of `backend\models\CatalogoReaccionesAlergicas`.
+ * CatalogoReaccionesAlergicasSearch represents the model behind the search form of `common\models\CatalogoReaccionesAlergicas`.
  */
 class CatalogoReaccionesAlergicasSearch extends CatalogoReaccionesAlergicas
 {

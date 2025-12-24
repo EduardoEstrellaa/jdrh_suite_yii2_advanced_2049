@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -33,9 +33,8 @@ class Alergias extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'alum_alergia_id', 'catalogo_alergias_id', 'tipo_gravedad_id'], 'required'],
-            [['id', 'alum_alergia_id', 'catalogo_alergias_id', 'tipo_gravedad_id'], 'integer'],
-            [['id'], 'unique'],
+            [['alum_alergia_id', 'catalogo_alergias_id', 'tipo_gravedad_id'], 'required'],
+            [['alum_alergia_id', 'catalogo_alergias_id', 'tipo_gravedad_id'], 'integer'],
             [['alum_alergia_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlumAlergia::class, 'targetAttribute' => ['alum_alergia_id' => 'id']],
             [['catalogo_alergias_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoAlergias::class, 'targetAttribute' => ['catalogo_alergias_id' => 'id']],
             [['tipo_gravedad_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoGravedad::class, 'targetAttribute' => ['tipo_gravedad_id' => 'id']],

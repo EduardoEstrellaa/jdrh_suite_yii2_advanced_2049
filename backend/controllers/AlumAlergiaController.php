@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\AlumAlergia;
+use common\models\AlumAlergia;
 use backend\models\search\AlumAlergiaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

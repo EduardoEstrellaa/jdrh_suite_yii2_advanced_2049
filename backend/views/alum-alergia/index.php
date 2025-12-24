@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumAlergia;
+use common\models\AlumAlergia;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

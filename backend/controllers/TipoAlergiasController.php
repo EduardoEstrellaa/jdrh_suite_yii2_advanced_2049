@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\TipoAlergias;
+use common\models\TipoAlergias;
 use backend\models\search\TipoAlergiasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

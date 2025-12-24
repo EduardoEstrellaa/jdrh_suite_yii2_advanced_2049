@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TipoAlergias;
+use common\models\TipoAlergias;
 
 /**
- * TipoAlergiasSearch represents the model behind the search form of `backend\models\TipoAlergias`.
+ * TipoAlergiasSearch represents the model behind the search form of `common\models\TipoAlergias`.
  */
 class TipoAlergiasSearch extends TipoAlergias
 {
