@@ -8,6 +8,13 @@
   const problemaGravedadSelector = '.problema-gravedad';
   const problemaOtroSelector = '.problema-otro';
   const problemaOtroInputSelector = '.problema-otro-input';
+  const selectorEnfermedadesCronicas = '#alumenfermedadescronicas-padece_enfermedades_cronicas';
+  const enfermedadesCronicasContainerSelector = '#salud-enfermedades-cronicas-container';
+  const enfermedadesCronicasListSelector = '#lista-enfermedades-cronicas';
+  const enfermedadCronicaItemSelector = '.enfermedad-cronica-item';
+  const enfermedadCronicaCheckboxSelector = '.enfermedad-cronica-checkbox';
+  const enfermedadCronicaDetalleSelector = '.enfermedad-cronica-detalle';
+  const enfermedadCronicaOtroSelector = '.enfermedad-cronica-otro';
   const selectorAlergias = '#alumalergia-padeces_alergias';
   const alergiasContainerSelector = '#salud-alergias-container';
   const alergiasListSelector = '#lista-alergias';
@@ -36,6 +43,10 @@
     width: '100%',
     allowClear: true,
   };
+  const enfermedadCronicaOtroId = (() => {
+    const val = parseInt(window.ENFERMEDAD_CRONICA_OTRO_ID, 10);
+    return Number.isNaN(val) ? null : val;
+  })();
   const problemaOtroId = (() => {
     const val = parseInt(window.PROBLEMA_OTRO_ID, 10);
     return Number.isNaN(val) ? null : val;
@@ -77,6 +88,48 @@
         $(this).val('').prop('disabled', true).removeClass('is-invalid');
         if (this.setCustomValidity) this.setCustomValidity('');
       });
+    }
+  };
+
+  const toggleEnfermedadesCronicas = () => {
+    const show = parseInt($(selectorEnfermedadesCronicas).val(), 10) === 1;
+    $(enfermedadesCronicasContainerSelector).toggleClass('d-none', !show);
+
+    if (!show) {
+      const first = $(enfermedadCronicaCheckboxSelector).first()[0];
+      if (first) {
+        first.setCustomValidity('');
+      }
+      $(enfermedadCronicaCheckboxSelector).prop('checked', false);
+      $(enfermedadCronicaDetalleSelector).addClass('d-none');
+      $(enfermedadCronicaOtroSelector)
+        .val('')
+        .prop('disabled', true)
+        .each(function () {
+          if (this.setCustomValidity) this.setCustomValidity('');
+          $(this).removeClass('is-invalid');
+        });
+    }
+  };
+
+  const toggleEnfermedadCronicaDetalle = ($checkbox) => {
+    const $row = $checkbox.closest(enfermedadCronicaItemSelector);
+    const $detalle = $row.find(enfermedadCronicaDetalleSelector);
+    const $otro = $row.find(enfermedadCronicaOtroSelector);
+    const checked = $checkbox.is(':checked');
+    const enfermedadId = parseInt($row.data('enfermedad-id'), 10);
+    const esOtro = Number.isInteger(enfermedadCronicaOtroId) && enfermedadId === enfermedadCronicaOtroId;
+
+    $detalle.toggleClass('d-none', !checked || !esOtro);
+    $otro.prop('disabled', !checked || !esOtro);
+
+    if (!checked || !esOtro) {
+      $otro.val('').removeClass('is-invalid');
+      if ($otro[0]) {
+        $otro[0].setCustomValidity('');
+      }
+    } else if ($otro.length) {
+      setTimeout(() => $otro.trigger('focus'), 0);
     }
   };
 
@@ -228,6 +281,70 @@
           }
           return false;
         }
+      }
+    });
+
+    if (!valid && event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    return valid;
+  };
+
+  const validateEnfermedadesCronicas = (event) => {
+    const show = parseInt($(selectorEnfermedadesCronicas).val(), 10) === 1;
+    const $checkboxes = $(enfermedadCronicaCheckboxSelector);
+    const first = $checkboxes.first()[0];
+
+    if (!show) {
+      if (first) {
+        first.setCustomValidity('');
+      }
+      return true;
+    }
+
+    const seleccionados = $(enfermedadCronicaCheckboxSelector + ':checked');
+    if (!seleccionados.length) {
+      if (first) {
+        first.setCustomValidity('Selecciona al menos una enfermedad crónica.');
+        if (event) {
+          first.reportValidity();
+        }
+      }
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return false;
+    }
+
+    if (first) {
+      first.setCustomValidity('');
+    }
+
+    let valid = true;
+    seleccionados.each(function () {
+      const $row = $(this).closest(enfermedadCronicaItemSelector);
+      const enfermedadId = parseInt($row.data('enfermedad-id'), 10);
+      const esOtro = Number.isInteger(enfermedadCronicaOtroId) && enfermedadId === enfermedadCronicaOtroId;
+      if (!esOtro) {
+        return;
+      }
+      const $otro = $row.find(enfermedadCronicaOtroSelector);
+      const val = ($otro.val() || '').trim();
+      $otro.removeClass('is-invalid');
+      if ($otro[0]) {
+        $otro[0].setCustomValidity('');
+      }
+      if (!val) {
+        valid = false;
+        if ($otro[0]) {
+          $otro.addClass('is-invalid');
+          $otro[0].setCustomValidity('Especifica la enfermedad crónica.');
+          if (event) $otro[0].reportValidity();
+        }
+        return false;
       }
     });
 
@@ -537,6 +654,21 @@
       $(this).removeClass('is-invalid');
       validateProblemas();
     })
+    .on('change', selectorEnfermedadesCronicas, function () {
+      toggleEnfermedadesCronicas();
+      validateEnfermedadesCronicas();
+    })
+    .on('change', enfermedadCronicaCheckboxSelector, function () {
+      toggleEnfermedadCronicaDetalle($(this));
+      validateEnfermedadesCronicas();
+    })
+    .on('input', enfermedadCronicaOtroSelector, function () {
+      if (this.setCustomValidity) {
+        this.setCustomValidity('');
+      }
+      $(this).removeClass('is-invalid');
+      validateEnfermedadesCronicas();
+    })
     .on('change', selectorAlergias, function () {
       toggleAlergias();
       validateAlergias();
@@ -589,11 +721,12 @@
   })
   .on('submit', '#expediente-form', function (event) {
     const validProblemas = validateProblemas(event);
+    const validEnfermedades = validateEnfermedadesCronicas(event);
     const validAlergias = validateAlergias(event);
     const validServicios = validateServiciosSalud(event);
     const validAnteojos = validateUsoAnteojos(event);
     const validTratamientos = validateTratamientos(event);
-    if (!validProblemas || !validAlergias || !validServicios || !validAnteojos || !validTratamientos) {
+    if (!validProblemas || !validEnfermedades || !validAlergias || !validServicios || !validAnteojos || !validTratamientos) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -601,6 +734,7 @@
 
   $(document).ready(() => {
     toggleProblemas();
+    toggleEnfermedadesCronicas();
     toggleAlergias();
     toggleServicios();
     toggleAnteojos();
@@ -611,6 +745,11 @@
     $(problemaGravedadSelector).each(function () {
       initSelect2($(this));
     });
+    $(enfermedadesCronicasListSelector)
+      .find(enfermedadCronicaCheckboxSelector)
+      .each(function () {
+        toggleEnfermedadCronicaDetalle($(this));
+      });
     $(alergiasListSelector)
       .find(alergiaCheckboxSelector)
       .each(function () {
@@ -628,6 +767,7 @@
       initSelect2($(this));
     });
     validateProblemas();
+    validateEnfermedadesCronicas();
     validateAlergias();
     validateServiciosSalud();
     validateUsoAnteojos();

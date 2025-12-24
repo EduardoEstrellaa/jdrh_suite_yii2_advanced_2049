@@ -21,6 +21,7 @@ use common\models\CatalogoTransportes;
 use common\models\TiposViviendas;
 use common\models\TiempoRecorridoTransporte;
 use common\models\AlumEstadoSalud;
+use common\models\AlumEnfermedadesCronicas;
 use common\models\AlumAlergia;
 use common\models\AlumServiciosSalud;
 use common\models\AlumAsisteMedico;
@@ -28,6 +29,7 @@ use common\models\AlumAsisteDentista;
 use common\models\AlumUsoAnteojos;
 use common\models\ProblemasSalud;
 use common\models\CatalogoProblemasSalud;
+use common\models\CatalogoEnfermCronicas;
 use common\models\CatalogoAlergias;
 use common\models\CatalogoReaccionesAlergicas;
 use common\models\CatalogoServiciosSalud;
@@ -37,6 +39,7 @@ use common\models\TipoGravedad;
 use common\models\CatalogoTratamientos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\EnfermedadesCronicas;
 use common\models\Alergias;
 use common\models\VariasReaccionesAlergicas;
 use kartik\daterange\DateRangePicker;
@@ -73,14 +76,17 @@ $bienesPersonalesSeleccionados = $bienesPersonalesSeleccionados ?? [];
 $catalogoTransportesMap = $catalogoTransportesMap ?? CatalogoTransportes::dropdownOptions();
 $tiemposRecorridoMap = $tiemposRecorridoMap ?? TiempoRecorridoTransporte::dropdownOptions();
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
+$alumEnfermedadesCronicas = $alumEnfermedadesCronicas ?? new AlumEnfermedadesCronicas(['alumnos_id' => $alumno->id ?? null]);
 $alumAlergia = $alumAlergia ?? new AlumAlergia(['alumnos_id' => $alumno->id ?? null]);
 $alumServiciosSalud = $alumServiciosSalud ?? new AlumServiciosSalud(['alumnos_id' => $alumno->id ?? null]);
 $alumAsisteMedico = $alumAsisteMedico ?? new AlumAsisteMedico(['alumnos_id' => $alumno->id ?? null]);
 $alumAsisteDentista = $alumAsisteDentista ?? new AlumAsisteDentista(['alumnos_id' => $alumno->id ?? null]);
 $alumUsoAnteojos = $alumUsoAnteojos ?? new AlumUsoAnteojos(['alumnos_id' => $alumno->id ?? null]);
+$enfermedadesCronicas = $enfermedadesCronicas ?? [new EnfermedadesCronicas()];
 $alergias = $alergias ?? [new Alergias()];
 $problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
 $catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
+$catalogoEnfermCronicasMap = $catalogoEnfermCronicasMap ?? CatalogoEnfermCronicas::dropdownOptions();
 $catalogoAlergiasMap = $catalogoAlergiasMap ?? CatalogoAlergias::dropdownOptions();
 $catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
 $catalogoReaccionesAlergicasMap = $catalogoReaccionesAlergicasMap ?? CatalogoReaccionesAlergicas::dropdownOptions();
@@ -88,7 +94,9 @@ $catalogoUsoAnteojosMap = $catalogoUsoAnteojosMap ?? CatalogoUsoAnteojos::dropdo
 $frecuenciasTiempoMap = $frecuenciasTiempoMap ?? FrecuenciaTiempo::dropdownOptions();
 $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
+$otroCatalogoEnfermCronicaId = $otroCatalogoEnfermCronicaId ?? CatalogoEnfermCronicas::getOtroId();
 $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
+$enfermedadesCronicasSeleccionadas = $enfermedadesCronicasSeleccionadas ?? [];
 $reaccionesAlergiasSeleccionadas = $reaccionesAlergiasSeleccionadas ?? [];
 $usoAnteojosSeleccionados = $usoAnteojosSeleccionados ?? [];
 $alumTratamientos = $alumTratamientos ?? new AlumTratamientos(['alumnos_id' => $alumno->id ?? null]);
@@ -1269,6 +1277,19 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         <div class="col-md-6">
                             <?= InputHelper::iconSelect2Field(
                                 $form,
+                                $alumEnfermedadesCronicas,
+                                'padece_enfermedades_cronicas',
+                                'fa-notes-medical',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => '¿Padeces enfermedades crónicas?',
+                                    'id' => 'alumenfermedadescronicas-padece_enfermedades_cronicas',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
                                 $alumAlergia,
                                 'padeces_alergias',
                                 'fa-allergies',
@@ -1330,6 +1351,61 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                     'id' => 'alumtratamientos-esta_en_tratamiento',
                                 ]
                             ) ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $enfermedadesCronicasSeleccionadas = $enfermedadesCronicasSeleccionadas ?? [];
+                    ?>
+
+                    <div id="salud-enfermedades-cronicas-container" class="<?= ((int)($alumEnfermedadesCronicas->padece_enfermedades_cronicas ?? 0) === 1) ? '' : 'd-none' ?>">
+                        <div class="mt-3 mb-3">
+                            <h5 class="mb-1">Enfermedades crónicas</h5>
+                            <p class="text-muted small mb-0">Activa las enfermedades crónicas que padeces y detalla si aplica.</p>
+                        </div>
+
+                        <div id="lista-enfermedades-cronicas" class="row g-3">
+                            <?php foreach ($catalogoEnfermCronicasMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $enfermedad = $enfermedadesCronicasSeleccionadas[$id] ?? new EnfermedadesCronicas(['catalogo_enferm_cronicas_id' => $id]);
+                                $seleccionada = isset($enfermedadesCronicasSeleccionadas[$id]);
+                                $esOtro = $otroCatalogoEnfermCronicaId !== null && $id === (int)$otroCatalogoEnfermCronicaId;
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100 enfermedad-cronica-item" data-enfermedad-id="<?= $id ?>">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                    class="form-check-input enfermedad-cronica-checkbox"
+                                                    type="checkbox"
+                                                    id="enfermedad-cronica-<?= $id ?>"
+                                                    name="EnfermedadesCronicas[<?= $id ?>][selected]"
+                                                    value="1"
+                                                    <?= $seleccionada ? 'checked' : '' ?>>
+                                                <label class="form-check-label fw-semibold" for="enfermedad-cronica-<?= $id ?>">
+                                                    <?= Html::encode($nombre) ?>
+                                                </label>
+                                                <input type="hidden" name="EnfermedadesCronicas[<?= $id ?>][catalogo_enferm_cronicas_id]" value="<?= $id ?>">
+                                            </div>
+                                        </div>
+
+                                        <?php if ($esOtro): ?>
+                                            <div class="enfermedad-cronica-detalle mt-3 <?= $seleccionada ? '' : 'd-none' ?>">
+                                                <label class="form-label fw-semibold" for="enfermedad-cronica-otro-<?= $id ?>">Especifica</label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control enfermedad-cronica-otro"
+                                                    name="EnfermedadesCronicas[<?= $id ?>][otro_especificar]"
+                                                    id="enfermedad-cronica-otro-<?= $id ?>"
+                                                    placeholder="Describe la enfermedad"
+                                                    value="<?= Html::encode($enfermedad->otro_especificar) ?>"
+                                                    <?= $seleccionada ? '' : 'disabled' ?>>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
 
@@ -1741,6 +1817,7 @@ $this->registerJsVar('TIPO_VIVIENDA_OTRO_ID', $tipoViviendaOtroId);
 $this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
 $this->registerJsVar('VIVIENDA_SERVICIO_OTRO_ID', $catalogoServicioOtroId);
 $this->registerJsVar('PROBLEMA_OTRO_ID', $otroCatalogoProblemaId);
+$this->registerJsVar('ENFERMEDAD_CRONICA_OTRO_ID', $otroCatalogoEnfermCronicaId);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
