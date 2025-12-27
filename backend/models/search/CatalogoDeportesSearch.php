@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoDeportes;
+use common\models\CatalogoDeportes;
 
 /**
- * CatalogoDeportesSearch represents the model behind the search form of `backend\models\CatalogoDeportes`.
+ * CatalogoDeportesSearch represents the model behind the search form of `common\models\CatalogoDeportes`.
  */
 class CatalogoDeportesSearch extends CatalogoDeportes
 {

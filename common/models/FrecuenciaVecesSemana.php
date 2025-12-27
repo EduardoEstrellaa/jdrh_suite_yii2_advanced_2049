@@ -1,25 +1,26 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "catalogo_actividad_ejercicio".
+ * This is the model class for table "frecuencia_veces_semana".
  *
  * @property int $id
  * @property string $nombre
  *
+ * @property AlumHabitosConsumo[] $alumHabitosConsumos
  * @property EjercicioFisico[] $ejercicioFisicos
  */
-class CatalogoActividadEjercicio extends \yii\db\ActiveRecord
+class FrecuenciaVecesSemana extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'catalogo_actividad_ejercicio';
+        return 'frecuencia_veces_semana';
     }
 
     /**
@@ -45,12 +46,22 @@ class CatalogoActividadEjercicio extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[AlumHabitosConsumos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAlumHabitosConsumos()
+    {
+        return $this->hasMany(AlumHabitosConsumo::class, ['frecuencia_veces_semana_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[EjercicioFisicos]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getEjercicioFisicos()
     {
-        return $this->hasMany(EjercicioFisico::class, ['catalogo_actividad_ejercicio_id' => 'id']);
+        return $this->hasMany(EjercicioFisico::class, ['frecuencia_veces_semana_id' => 'id']);
     }
 }

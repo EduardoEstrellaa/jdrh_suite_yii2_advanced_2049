@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CatalogoActividadEjercicio;
+use common\models\CatalogoActividadEjercicio;
 use backend\models\search\CatalogoActividadEjercicioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

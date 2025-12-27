@@ -1,27 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "alum_ejercicio".
+ * This is the model class for table "alum_deportes".
  *
  * @property int $id
  * @property int $alumnos_id
- * @property int $haces_ejercicio_fisico
+ * @property int $practicas_algun_deporte
  *
  * @property Alumnos $alumnos
- * @property EjercicioFisico[] $ejercicioFisicos
+ * @property Deportes[] $deportes
  */
-class AlumEjercicio extends \yii\db\ActiveRecord
+class AlumDeportes extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'alum_ejercicio';
+        return 'alum_deportes';
     }
 
     /**
@@ -30,8 +30,8 @@ class AlumEjercicio extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alumnos_id', 'haces_ejercicio_fisico'], 'required'],
-            [['alumnos_id', 'haces_ejercicio_fisico'], 'integer'],
+            [['alumnos_id', 'practicas_algun_deporte'], 'required'],
+            [['alumnos_id', 'practicas_algun_deporte'], 'integer'],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
         ];
     }
@@ -44,7 +44,7 @@ class AlumEjercicio extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'alumnos_id' => 'Alumnos ID',
-            'haces_ejercicio_fisico' => 'Haces Ejercicio Fisico',
+            'practicas_algun_deporte' => 'Practicas Algun Deporte',
         ];
     }
 
@@ -59,12 +59,12 @@ class AlumEjercicio extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[EjercicioFisicos]].
+     * Gets query for [[Deportes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getEjercicioFisicos()
+    public function getDeportes()
     {
-        return $this->hasMany(EjercicioFisico::class, ['alum_ejercicio_id' => 'id']);
+        return $this->hasMany(Deportes::class, ['alum_deportes_id' => 'id']);
     }
 }

@@ -1,27 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "alum_deportes".
+ * This is the model class for table "alum_ejercicio".
  *
  * @property int $id
  * @property int $alumnos_id
- * @property int $practicas_algun_deporte
+ * @property int $haces_ejercicio_fisico
  *
  * @property Alumnos $alumnos
- * @property Deportes[] $deportes
+ * @property EjercicioFisico[] $ejercicioFisicos
  */
-class AlumDeportes extends \yii\db\ActiveRecord
+class AlumEjercicio extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'alum_deportes';
+        return 'alum_ejercicio';
     }
 
     /**
@@ -30,8 +30,8 @@ class AlumDeportes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alumnos_id', 'practicas_algun_deporte'], 'required'],
-            [['alumnos_id', 'practicas_algun_deporte'], 'integer'],
+            [['alumnos_id', 'haces_ejercicio_fisico'], 'required'],
+            [['alumnos_id', 'haces_ejercicio_fisico'], 'integer'],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
         ];
     }
@@ -44,7 +44,7 @@ class AlumDeportes extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'alumnos_id' => 'Alumnos ID',
-            'practicas_algun_deporte' => 'Practicas Algun Deporte',
+            'haces_ejercicio_fisico' => 'Haces Ejercicio Fisico',
         ];
     }
 
@@ -59,12 +59,12 @@ class AlumDeportes extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Deportes]].
+     * Gets query for [[EjercicioFisicos]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDeportes()
+    public function getEjercicioFisicos()
     {
-        return $this->hasMany(Deportes::class, ['alum_deportes_id' => 'id']);
+        return $this->hasMany(EjercicioFisico::class, ['alum_ejercicio_id' => 'id']);
     }
 }

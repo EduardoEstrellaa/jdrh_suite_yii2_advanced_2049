@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\FrecuenciaVecesSemana $model */
+/** @var common\models\FrecuenciaVecesSemana $model */
 
 $this->title = Yii::t('app', 'Create Frecuencia Veces Semana');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Frecuencia Veces Semanas'), 'url' => ['index']];

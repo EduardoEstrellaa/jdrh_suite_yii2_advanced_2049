@@ -1738,8 +1738,8 @@ $this->registerCssFile('@web/css/expediente-form.css');
             </div>
         </div>
 
-                <!-- ===================== -->
-                <!-- SECCION 11: ALIMENTACION -->
+        <!-- ===================== -->
+        <!-- SECCION 11: ALIMENTACION -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingAlimentacion">
@@ -1779,9 +1779,9 @@ $this->registerCssFile('@web/css/expediente-form.css');
                             <?php foreach ($catalogoLugaresComerOrdenados as $id => $nombreLimpio): ?>
                                 <?php
                                 $id = (int)$id;
-                                  $checked = in_array($id, $lugaresComerSeleccionados, true);
-                                  $esNombreOtro = mb_strtolower($nombreLimpio, 'UTF-8') === 'otro';
-                                  $esOtro = ($catalogoLugarComerOtroId !== null && $id === (int)$catalogoLugarComerOtroId) || $esNombreOtro;
+                                $checked = in_array($id, $lugaresComerSeleccionados, true);
+                                $esNombreOtro = mb_strtolower($nombreLimpio, 'UTF-8') === 'otro';
+                                $esOtro = ($catalogoLugarComerOtroId !== null && $id === (int)$catalogoLugarComerOtroId) || $esNombreOtro;
                                 ?>
                                 <div class="col-sm-6 col-md-4">
                                     <div class="form-check">
@@ -1835,7 +1835,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                 ?>
                                 <div class="consumo-alimento-item consumo-tile d-flex align-items-center gap-3 flex-wrap">
                                     <div class="d-flex align-items-center gap-2 consumo-tile-title">
-                                <span class="consumo-marker" aria-hidden="true"></span>
+                                        <span class="consumo-marker" aria-hidden="true"></span>
                                         <span class="fw-semibold"><?= Html::encode($nombre) ?></span>
                                     </div>
                                     <div class="consumo-tile-select flex-grow-1">
@@ -1862,14 +1862,14 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
-        
+
         <!-- ===================== -->
-        <!-- SECCIÓN 8: ACTIVIDAD FÍSICA Y DEPORTE -->
+        <!-- SECCIÓN 12: ACTIVIDAD FÍSICA Y DEPORTE -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingActividadFisica">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseActividadFisica" aria-expanded="false" aria-controls="collapseActividadFisica">
-                    🏋️ VIII. ACTIVIDAD FÍSICA Y DEPORTE
+                    🏋️ XII. ACTIVIDAD FÍSICA Y DEPORTE
                 </button>
             </h2>
             <div id="collapseActividadFisica" class="accordion-collapse collapse" aria-labelledby="headingActividadFisica" data-bs-parent="#expedienteAccordion">
@@ -1880,12 +1880,12 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 9: HÁBITOS DE CONSUMO -->
+        <!-- SECCIÓN 13: HÁBITOS DE CONSUMO -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHabitosConsumo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHabitosConsumo" aria-expanded="false" aria-controls="collapseHabitosConsumo">
-                    🚬 IX. HÁBITOS DE CONSUMO
+                    🚬 XIII. HÁBITOS DE CONSUMO
                 </button>
             </h2>
             <div id="collapseHabitosConsumo" class="accordion-collapse collapse" aria-labelledby="headingHabitosConsumo" data-bs-parent="#expedienteAccordion">
@@ -1896,12 +1896,12 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 10: RECREACIÓN Y USO DEL TIEMPO LIBRE -->
+        <!-- SECCIÓN 14: RECREACIÓN Y USO DEL TIEMPO LIBRE -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingRecreacion">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecreacion" aria-expanded="false" aria-controls="collapseRecreacion">
-                    💻 X. RECREACIÓN Y USO DEL TIEMPO LIBRE
+                    💻 XIV. RECREACIÓN Y USO DEL TIEMPO LIBRE
                 </button>
             </h2>
             <div id="collapseRecreacion" class="accordion-collapse collapse" aria-labelledby="headingRecreacion" data-bs-parent="#expedienteAccordion">

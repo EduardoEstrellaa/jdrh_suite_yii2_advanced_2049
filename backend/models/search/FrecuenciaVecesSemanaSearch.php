@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\FrecuenciaVecesSemana;
+use common\models\FrecuenciaVecesSemana;
 
 /**
- * FrecuenciaVecesSemanaSearch represents the model behind the search form of `backend\models\FrecuenciaVecesSemana`.
+ * FrecuenciaVecesSemanaSearch represents the model behind the search form of `common\models\FrecuenciaVecesSemana`.
  */
 class FrecuenciaVecesSemanaSearch extends FrecuenciaVecesSemana
 {
