@@ -51,6 +51,8 @@ use common\models\Alergias;
 use common\models\VariasReaccionesAlergicas;
 use common\models\AlumDeportes;
 use common\models\AlumEjercicio;
+use common\models\AlumHabitosConsumo;
+use common\models\CatalogoCigarrosDia;
 use common\models\EjercicioFisico;
 use kartik\daterange\DateRangePicker;
 use kartik\checkbox\CheckboxX;
@@ -66,6 +68,7 @@ $alumDependenEconomica = $alumDependenEconomica ?? new AlumDependenEconomica();
 $alumTrabajo = $alumTrabajo ?? new AlumTrabajo();
 $alumVivienda = $alumVivienda ?? new AlumVivienda(['alumnos_id' => $alumno->id ?? null]);
 $alumTransportes = $alumTransportes ?? new AlumTransportes(['alumnos_id' => $alumno->id ?? null]);
+$alumHabitosConsumo = $alumHabitosConsumo ?? new AlumHabitosConsumo(['alumnos_id' => $alumno->id ?? null]);
 $catalogoDependenciasOptions = $catalogoDependenciasOptions ?? [];
 $otroCatalogoDependenciaId = $otroCatalogoDependenciaId ?? null;
 $dependientes = $dependientes ?? [];
@@ -90,6 +93,7 @@ $alumEjercicio = $alumEjercicio ?? new AlumEjercicio(['alumnos_id' => $alumno->i
 $catalogoDeportesMap = $catalogoDeportesMap ?? CatalogoDeportes::dropdownOptions();
 $catalogoActividadesEjercicioMap = $catalogoActividadesEjercicioMap ?? CatalogoActividadEjercicio::dropdownOptions();
 $frecuenciasVecesSemanaMap = $frecuenciasVecesSemanaMap ?? FrecuenciaVecesSemana::dropdownOptions();
+$catalogoCigarrosDiaMap = $catalogoCigarrosDiaMap ?? CatalogoCigarrosDia::dropdownOptions();
 $deportesSeleccionados = $deportesSeleccionados ?? [];
 $ejercicioFisicos = $ejercicioFisicos ?? [];
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
@@ -2036,7 +2040,109 @@ $this->registerCssFile('@web/css/expediente-form.css');
             </h2>
             <div id="collapseHabitosConsumo" class="accordion-collapse collapse" aria-labelledby="headingHabitosConsumo" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de hábitos de consumo próximamente...</p>
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 13</span>
+                        <div>
+                            <div class="fw-semibold">Habitos de tabaco, alcohol y otras adicciones.</div>
+                            <div class="text-muted small">Activa solo lo que aplica y detalla frecuencia o cantidad.</div>
+                        </div>
+                    </div>
+
+                    <?php
+                    $mostrarCigarros = (int)($alumHabitosConsumo->fumas ?? 0) === 1;
+                    $mostrarAlcohol = (int)($alumHabitosConsumo->tomas_alcohol ?? 0) === 1;
+                    $mostrarAdicciones = (int)($alumHabitosConsumo->tienes_adicciones ?? 0) === 1;
+                    ?>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumHabitosConsumo,
+                                'fumas',
+                                'fa-smoking',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => 'Fumas?',
+                                    'id' => 'alumhabitoconsumo-fumas',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumHabitosConsumo,
+                                'tomas_alcohol',
+                                'fa-wine-glass',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => 'Consumes alcohol?',
+                                    'id' => 'alumhabitoconsumo-tomas_alcohol',
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6 <?= $mostrarCigarros ? '' : 'd-none' ?>" id="habitos-cigarrillos">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumHabitosConsumo,
+                                'catalogo_cigarros_dia_id',
+                                'fa-smoking',
+                                $catalogoCigarrosDiaMap,
+                                [
+                                    'placeholder' => 'Cigarros por dia',
+                                    'id' => 'alumhabitoconsumo-catalogo_cigarros_dia_id',
+                                ],
+                                ['allowClear' => true]
+                            )->label('Si fumas, cuantos cigarros por dia?', ['class' => 'form-label fw-semibold']) ?>
+                        </div>
+                        <div class="col-md-6 <?= $mostrarAlcohol ? '' : 'd-none' ?>" id="habitos-alcohol">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumHabitosConsumo,
+                                'frecuencia_veces_semana_id',
+                                'fa-calendar-week',
+                                $frecuenciasVecesSemanaMap,
+                                [
+                                    'placeholder' => 'Frecuencia semanal',
+                                    'id' => 'alumhabitoconsumo-frecuencia_veces_semana_id',
+                                ],
+                                ['allowClear' => true]
+                            )->label('Frecuencia de consumo de alcohol', ['class' => 'form-label fw-semibold']) ?>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumHabitosConsumo,
+                                'tienes_adicciones',
+                                'fa-capsules',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => 'Tienes alguna adiccion?',
+                                    'id' => 'alumhabitoconsumo-tienes_adicciones',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6 <?= $mostrarAdicciones ? '' : 'd-none' ?>" id="habitos-adicciones">
+                            <?= InputHelper::iconTextField(
+                                $form,
+                                $alumHabitosConsumo,
+                                'especificiar_adiccion',
+                                'fa-pen',
+                                [
+                                    'inputOptions' => [
+                                        'placeholder' => 'Especifica la adiccion',
+                                        'id' => 'alumhabitoconsumo-especificiar_adiccion',
+                                    ],
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2117,8 +2223,13 @@ $this->registerJsFile(
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
+    '@web/js/expediente/expediente-habitos.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
     '@web/js/expediente/expediente-focus-errors.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 
 ?>
+

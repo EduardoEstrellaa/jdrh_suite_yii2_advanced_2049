@@ -27,6 +27,9 @@ use common\models\AlumUsoAnteojos;
 use common\models\UsoAnteojos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\CatalogoCigarrosDia;
+use common\models\FrecuenciaVecesSemana;
+use common\models\AlumHabitosConsumo;
 use common\models\AlumConsumoAlimentos;
 use common\models\AlumLugaresComer;
 use common\models\EnfermedadesCronicas;
@@ -123,6 +126,11 @@ class ExpedienteService
     public static function getModelsForCreate($perfil, $alumno)
     {
         return [
+            'alumHabitosConsumo' => new AlumHabitosConsumo([
+                'alumnos_id' => $alumno->id,
+                'catalogo_cigarros_dia_id' => self::getDefaultCatalogoId(CatalogoCigarrosDia::class),
+                'frecuencia_veces_semana_id' => self::getDefaultCatalogoId(FrecuenciaVecesSemana::class),
+            ]),
             'datosPersonales' => new DatosPersonales(['perfil_id' => $perfil->id]),
             'lugaresNacimiento' => new LugaresNacimiento(['perfil_id' => $perfil->id]),
             'domiciliosActuales' => new DomiciliosActuales(['perfil_id' => $perfil->id]),
@@ -168,6 +176,7 @@ class ExpedienteService
             'alumTransportes' => self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]),
             'alumDeportes' => self::findOrCreateModel(AlumDeportes::class, ['alumnos_id' => $alumnoId]),
             'alumEjercicio' => self::findOrCreateModel(AlumEjercicio::class, ['alumnos_id' => $alumnoId]),
+            'alumHabitosConsumo' => self::findOrCreateHabitosConsumo($alumnoId),
             'alumEstadoSalud' => self::findOrCreateModel(AlumEstadoSalud::class, ['alumnos_id' => $alumnoId]),
             'alumServiciosSalud' => self::findOrCreateModel(AlumServiciosSalud::class, ['alumnos_id' => $alumnoId]),
             'alumAsisteMedico' => self::findOrCreateModel(AlumAsisteMedico::class, ['alumnos_id' => $alumnoId]),
@@ -188,6 +197,22 @@ class ExpedienteService
                 $model->$key = $value;
             }
         }
+        return $model;
+    }
+
+    private static function findOrCreateHabitosConsumo(int $alumnoId): AlumHabitosConsumo
+    {
+        $model = AlumHabitosConsumo::find()->where(['alumnos_id' => $alumnoId])->one();
+        if ($model) {
+            return $model;
+        }
+
+        $model = new AlumHabitosConsumo([
+            'alumnos_id' => $alumnoId,
+            'catalogo_cigarros_dia_id' => self::getDefaultCatalogoId(CatalogoCigarrosDia::class),
+            'frecuencia_veces_semana_id' => self::getDefaultCatalogoId(FrecuenciaVecesSemana::class),
+        ]);
+
         return $model;
     }
 
@@ -250,6 +275,10 @@ class ExpedienteService
         if ($model instanceof AlumVivienda) {
             self::normalizeViviendaFields($model);
         }
+
+        if ($model instanceof AlumHabitosConsumo) {
+            self::normalizeHabitosConsumoFields($model);
+        }
     }
 
     private static function normalizeBecaFields(AlumBecas $alumBecas): void
@@ -300,6 +329,45 @@ class ExpedienteService
         }
     }
 
+    private static function normalizeHabitosConsumoFields(AlumHabitosConsumo $alumHabitosConsumo): void
+    {
+        $defaultCigarrosId = self::getDefaultCatalogoId(CatalogoCigarrosDia::class);
+        $defaultFrecuenciaId = self::getDefaultCatalogoId(FrecuenciaVecesSemana::class);
+
+        if ((int)$alumHabitosConsumo->fumas === 1) {
+            if ($alumHabitosConsumo->catalogo_cigarros_dia_id === null) {
+                $alumHabitosConsumo->catalogo_cigarros_dia_id = $defaultCigarrosId;
+            }
+        } else {
+            $alumHabitosConsumo->catalogo_cigarros_dia_id = self::getDefaultCatalogoId(CatalogoCigarrosDia::class);
+        }
+
+        if ((int)$alumHabitosConsumo->tomas_alcohol === 1) {
+            if ($alumHabitosConsumo->frecuencia_veces_semana_id === null) {
+                $alumHabitosConsumo->frecuencia_veces_semana_id = $defaultFrecuenciaId;
+            }
+        } else {
+            $alumHabitosConsumo->frecuencia_veces_semana_id = $defaultFrecuenciaId;
+        }
+
+        if ((int)$alumHabitosConsumo->tienes_adicciones !== 1) {
+            $alumHabitosConsumo->especificiar_adiccion = null;
+        } else {
+            $alumHabitosConsumo->especificiar_adiccion = trim((string)$alumHabitosConsumo->especificiar_adiccion) ?: null;
+        }
+    }
+
+    private static function getDefaultCatalogoId(string $className): ?int
+    {
+        /** @var \yii\db\ActiveRecord $className */
+        $id = $className::find()
+            ->select('id')
+            ->orderBy(['id' => SORT_ASC])
+            ->scalar();
+
+        return $id !== false ? (int)$id : 1;
+    }
+
     /**
      * Sincroniza colecciones relacionadas después de guardar los modelos base.
      */
@@ -342,6 +410,7 @@ class ExpedienteService
             AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
             AlumLugaresComer::deleteAll(['alumnos_id' => $alumnoId]);
             AlumConsumoAlimentos::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumHabitosConsumo::deleteAll(['alumnos_id' => $alumnoId]);
             $alumDeportes = AlumDeportes::findOne(['alumnos_id' => $alumnoId]);
             if ($alumDeportes) {
                 Deportes::deleteAll(['alum_deportes_id' => $alumDeportes->id]);
@@ -455,6 +524,9 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumEjercicio) {
+                continue;
+            }
+            if ($model instanceof AlumHabitosConsumo) {
                 continue;
             }
             if ($model->isNewRecord) {

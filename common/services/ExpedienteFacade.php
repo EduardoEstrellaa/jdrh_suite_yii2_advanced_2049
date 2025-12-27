@@ -30,6 +30,7 @@ use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTratamientos;
 use common\models\CatalogoUsoAnteojos;
+use common\models\CatalogoCigarrosDia;
 use common\models\CatalogoTransportes;
 use common\models\CatalogoLugaresComer;
 use common\models\CatalogoAlimentos;
@@ -549,6 +550,7 @@ class ExpedienteFacade
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
             'catalogoEnfermCronicasMap' => CatalogoEnfermCronicas::dropdownOptions(),
             'otroCatalogoEnfermCronicaId' => CatalogoEnfermCronicas::getOtroId(),
+            'catalogoCigarrosDiaMap' => CatalogoCigarrosDia::dropdownOptions(),
             'catalogoLugaresComerMap' => CatalogoLugaresComer::dropdownOptions(),
             'catalogoLugarComerOtroId' => CatalogoLugaresComer::getOtroId(),
             'catalogoAlimentosMap' => CatalogoAlimentos::dropdownOptions(),

@@ -36,8 +36,9 @@ class AlumHabitosConsumo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alumnos_id', 'fumas', 'catalogo_cigarros_dia_id', 'tomas_alcohol', 'frecuencia_veces_semana_id', 'tienes_adicciones'], 'required'],
+            [['alumnos_id', 'fumas', 'tomas_alcohol', 'tienes_adicciones'], 'required'],
             [['alumnos_id', 'fumas', 'catalogo_cigarros_dia_id', 'tomas_alcohol', 'frecuencia_veces_semana_id', 'tienes_adicciones'], 'integer'],
+            [['fumas', 'tomas_alcohol', 'tienes_adicciones'], 'in', 'range' => [0, 1]],
             [['especificiar_adiccion'], 'string', 'max' => 250],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
             [['catalogo_cigarros_dia_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoCigarrosDia::class, 'targetAttribute' => ['catalogo_cigarros_dia_id' => 'id']],
@@ -54,11 +55,11 @@ class AlumHabitosConsumo extends \yii\db\ActiveRecord
             'id' => 'ID',
             'alumnos_id' => 'Alumnos ID',
             'fumas' => 'Fumas',
-            'catalogo_cigarros_dia_id' => 'Catalogo Cigarros Dia ID',
-            'tomas_alcohol' => 'Tomas Alcohol',
-            'frecuencia_veces_semana_id' => 'Frecuencia Veces Semana ID',
-            'tienes_adicciones' => 'Tienes Adicciones',
-            'especificiar_adiccion' => 'Especificiar Adiccion',
+            'catalogo_cigarros_dia_id' => 'Cigarros al dia',
+            'tomas_alcohol' => 'Consumes alcohol',
+            'frecuencia_veces_semana_id' => 'Frecuencia semanal de alcohol',
+            'tienes_adicciones' => 'Tienes adicciones',
+            'especificiar_adiccion' => 'Especificar adiccion',
         ];
     }
 
