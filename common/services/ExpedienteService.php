@@ -27,6 +27,8 @@ use common\models\AlumUsoAnteojos;
 use common\models\UsoAnteojos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\AlumRecreacionTiempo;
+use common\models\UsosInternet;
 use common\models\CatalogoCigarrosDia;
 use common\models\FrecuenciaVecesSemana;
 use common\models\AlumHabitosConsumo;
@@ -63,6 +65,7 @@ use common\services\support\LugaresComerManager;
 use common\services\support\ConsumoAlimentosManager;
 use common\services\support\DeportesManager;
 use common\services\support\EjercicioFisicoManager;
+use common\services\support\RecreacionTiempoManager;
 
 class ExpedienteService
 {
@@ -153,6 +156,7 @@ class ExpedienteService
             'alumTratamientos' => new AlumTratamientos(['alumnos_id' => $alumno->id]),
             'alumEnfermedadesCronicas' => new AlumEnfermedadesCronicas(['alumnos_id' => $alumno->id]),
             'alumAlergia' => new AlumAlergia(['alumnos_id' => $alumno->id]),
+            'alumRecreacionTiempo' => new AlumRecreacionTiempo(['alumnos_id' => $alumno->id]),
         ];
     }
 
@@ -185,6 +189,7 @@ class ExpedienteService
             'alumTratamientos' => self::findOrCreateModel(AlumTratamientos::class, ['alumnos_id' => $alumnoId]),
             'alumEnfermedadesCronicas' => self::findOrCreateModel(AlumEnfermedadesCronicas::class, ['alumnos_id' => $alumnoId]),
             'alumAlergia' => self::findOrCreateModel(AlumAlergia::class, ['alumnos_id' => $alumnoId]),
+            'alumRecreacionTiempo' => self::findOrCreateModel(AlumRecreacionTiempo::class, ['alumnos_id' => $alumnoId]),
         ];
     }
 
@@ -279,6 +284,10 @@ class ExpedienteService
         if ($model instanceof AlumHabitosConsumo) {
             self::normalizeHabitosConsumoFields($model);
         }
+
+        if ($model instanceof AlumRecreacionTiempo) {
+            self::normalizeRecreacionFields($model);
+        }
     }
 
     private static function normalizeBecaFields(AlumBecas $alumBecas): void
@@ -357,6 +366,13 @@ class ExpedienteService
         }
     }
 
+    private static function normalizeRecreacionFields(AlumRecreacionTiempo $alumRecreacionTiempo): void
+    {
+        if ((int)$alumRecreacionTiempo->tienes_acceso_internet !== 1) {
+            $alumRecreacionTiempo->catalogo_lugares_acceso_principal_id = null;
+        }
+    }
+
     private static function getDefaultCatalogoId(string $className): ?int
     {
         /** @var \yii\db\ActiveRecord $className */
@@ -388,6 +404,7 @@ class ExpedienteService
         ViviendaBienesManager::sync($models['alumVivienda'], $post);
         ViviendaServiciosManager::sync($models['alumVivienda'], $post);
         AlumBienesPersonalesManager::sync($alumnoId, $post);
+        RecreacionTiempoManager::sync($models['alumRecreacionTiempo'], $post);
     }
 
     /**
@@ -466,6 +483,11 @@ class ExpedienteService
                 Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);
                 $alumDependen->delete();
             }
+            $alumRecreacionTiempo = AlumRecreacionTiempo::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumRecreacionTiempo) {
+                UsosInternet::deleteAll(['alum_recreacion_tiempo_id' => $alumRecreacionTiempo->id]);
+                $alumRecreacionTiempo->delete();
+            }
             $alumVivienda = AlumVivienda::findOne(['alumnos_id' => $alumnoId]);
             if ($alumVivienda) {
                 ViviendaBienes::deleteAll(['alum_vivienda_id' => $alumVivienda->id]);
@@ -527,6 +549,9 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumHabitosConsumo) {
+                continue;
+            }
+            if ($model instanceof AlumRecreacionTiempo) {
                 continue;
             }
             if ($model->isNewRecord) {

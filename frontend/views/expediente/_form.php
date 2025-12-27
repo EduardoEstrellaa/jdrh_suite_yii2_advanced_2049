@@ -54,6 +54,9 @@ use common\models\AlumEjercicio;
 use common\models\AlumHabitosConsumo;
 use common\models\CatalogoCigarrosDia;
 use common\models\EjercicioFisico;
+use common\models\AlumRecreacionTiempo;
+use common\models\CatalogoLugaresAccesoPrincipal;
+use common\models\CatalogoUsosInternet;
 use kartik\daterange\DateRangePicker;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
@@ -94,6 +97,10 @@ $catalogoDeportesMap = $catalogoDeportesMap ?? CatalogoDeportes::dropdownOptions
 $catalogoActividadesEjercicioMap = $catalogoActividadesEjercicioMap ?? CatalogoActividadEjercicio::dropdownOptions();
 $frecuenciasVecesSemanaMap = $frecuenciasVecesSemanaMap ?? FrecuenciaVecesSemana::dropdownOptions();
 $catalogoCigarrosDiaMap = $catalogoCigarrosDiaMap ?? CatalogoCigarrosDia::dropdownOptions();
+$alumRecreacionTiempo = $alumRecreacionTiempo ?? new AlumRecreacionTiempo(['alumnos_id' => $alumno->id ?? null]);
+$catalogoLugaresAccesoMap = $catalogoLugaresAccesoMap ?? CatalogoLugaresAccesoPrincipal::dropdownOptions();
+$catalogoUsosInternetMap = $catalogoUsosInternetMap ?? CatalogoUsosInternet::dropdownOptions();
+$usosInternetSeleccionados = $usosInternetSeleccionados ?? [];
 $deportesSeleccionados = $deportesSeleccionados ?? [];
 $ejercicioFisicos = $ejercicioFisicos ?? [];
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
@@ -2158,11 +2165,102 @@ $this->registerCssFile('@web/css/expediente-form.css');
             </h2>
             <div id="collapseRecreacion" class="accordion-collapse collapse" aria-labelledby="headingRecreacion" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de recreación y uso del tiempo libre próximamente...</p>
+                    <?php
+                    $mostrarAcceso = (int)($alumRecreacionTiempo->tienes_acceso_internet ?? 0) === 1;
+                    $mostrarUsos = $mostrarAcceso && (int)($alumRecreacionTiempo->sabes_usar_internet ?? 0) === 1;
+                    ?>
+
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 14</span>
+                        <div>
+                            <div class="fw-semibold">Tu conexión y uso de internet.</div>
+                            <div class="text-muted small">Indica si sabes y puedes usar internet y para qué lo utilizas.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumRecreacionTiempo,
+                                'sabes_usar_internet',
+                                'fa-laptop',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => ' Sabes usar internet?',
+                                    'id' => 'alumrecreaciontiempo-sabes_usar_internet',
+                                ]
+                            ) ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumRecreacionTiempo,
+                                'tienes_acceso_internet',
+                                'fa-wifi',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => ' Tienes acceso a internet?',
+                                    'id' => 'alumrecreaciontiempo-tienes_acceso_internet',
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6 <?= $mostrarAcceso ? '' : 'd-none' ?>" id="recreacion-lugar-acceso">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumRecreacionTiempo,
+                                'catalogo_lugares_acceso_principal_id',
+                                'fa-map-marker-alt',
+                                $catalogoLugaresAccesoMap,
+                                [
+                                    'placeholder' => 'Lugar principal de acceso',
+                                    'id' => 'alumrecreaciontiempo-catalogo_lugares_acceso_principal_id',
+                                ],
+                                ['allowClear' => true]
+                            )->label('¿Dónde te conectas principalmente?', ['class' => 'form-label fw-semibold']) ?>
+                        </div>
+                    </div>
+
+                    <div id="recreacion-usos" class="mt-4 <?= $mostrarUsos ? '' : 'd-none' ?>">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <div>
+                                <h5 class="mb-1">Usos principales de internet</h5>
+                                <p class="text-muted small mb-0">Activa todas las opciones que apliquen.</p>
+                            </div>
+                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Selecciona al menos una</span>
+                        </div>
+
+                        <div class="row g-3">
+                            <?php foreach ($catalogoUsosInternetMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $checked = in_array($id, $usosInternetSeleccionados, true);
+                                ?>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border rounded p-3 h-100">
+                                        <div class="form-check form-switch">
+                                            <input
+                                                class="form-check-input recreacion-uso-checkbox"
+                                                type="checkbox"
+                                                id="uso-internet-<?= $id ?>"
+                                                name="UsosInternet[ids][]"
+                                                value="<?= $id ?>"
+                                                <?= $checked ? 'checked' : '' ?>>
+                                            <label class="form-check-label fw-semibold" for="uso-internet-<?= $id ?>">
+                                                <?= Html::encode($nombre) ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div> <!-- /accordion -->
 
     <!-- BOTONES -->
@@ -2227,9 +2325,12 @@ $this->registerJsFile(
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
+    '@web/js/expediente/expediente-recreacion.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
     '@web/js/expediente/expediente-focus-errors.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 
 ?>
-

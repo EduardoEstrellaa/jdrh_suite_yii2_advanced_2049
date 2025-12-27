@@ -16,6 +16,7 @@ use common\models\AlumAsisteDentista;
 use common\models\AlumServiciosSalud;
 use common\models\AlumUsoAnteojos;
 use common\models\AlumTratamientos;
+use common\models\AlumRecreacionTiempo;
 use common\models\AlumConsumoAlimentos;
 use common\models\AlumLugaresComer;
 use common\models\Alergias;
@@ -30,6 +31,8 @@ use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTratamientos;
 use common\models\CatalogoUsoAnteojos;
+use common\models\CatalogoLugaresAccesoPrincipal;
+use common\models\CatalogoUsosInternet;
 use common\models\CatalogoCigarrosDia;
 use common\models\CatalogoTransportes;
 use common\models\CatalogoLugaresComer;
@@ -56,6 +59,7 @@ use common\models\AlumDeportes;
 use common\models\AlumEjercicio;
 use common\models\Deportes;
 use common\models\EjercicioFisico;
+use common\models\UsosInternet;
 use common\services\support\OperationResult;
 
 class ExpedienteFacade
@@ -73,6 +77,7 @@ class ExpedienteFacade
             $this->getViviendaDefaults(),
             $this->getAlimentacionDefaults($alumno->id),
             $this->getActividadFisicaDefaults(),
+            $this->getRecreacionDefaults(),
             $this->getSaludDefaults(),
             $this->getTratamientosDefaults(),
             $this->getCatalogosData()
@@ -100,6 +105,7 @@ class ExpedienteFacade
         $consumoAlimentosData = $this->buildConsumoAlimentosData($alumnoId);
         $deportesData = $this->buildDeportesData($models['alumDeportes'] ?? null);
         $ejercicioData = $this->buildEjercicioFisicoData($models['alumEjercicio'] ?? null);
+        $recreacionData = $this->buildRecreacionData($models['alumRecreacionTiempo'] ?? null);
 
         return array_merge(
             $models,
@@ -117,6 +123,7 @@ class ExpedienteFacade
             $consumoAlimentosData,
             $deportesData,
             $ejercicioData,
+            $recreacionData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -484,6 +491,22 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildRecreacionData(?AlumRecreacionTiempo $alumRecreacionTiempo = null): array
+    {
+        if ($alumRecreacionTiempo === null || $alumRecreacionTiempo->isNewRecord) {
+            return $this->getRecreacionDefaults();
+        }
+
+        $ids = UsosInternet::find()
+            ->select('catalogo_usos_internet_id')
+            ->where(['alum_recreacion_tiempo_id' => $alumRecreacionTiempo->id])
+            ->column();
+
+        return [
+            'usosInternetSeleccionados' => array_map('intval', $ids),
+        ];
+    }
+
     private function getViviendaDefaults(): array
     {
         return [
@@ -507,6 +530,13 @@ class ExpedienteFacade
         return [
             'deportesSeleccionados' => [],
             'ejercicioFisicos' => [],
+        ];
+    }
+
+    private function getRecreacionDefaults(): array
+    {
+        return [
+            'usosInternetSeleccionados' => [],
         ];
     }
 
@@ -567,6 +597,8 @@ class ExpedienteFacade
             'frecuenciasTiempoMap' => FrecuenciaTiempo::dropdownOptions(),
             'tipoGravedadMap' => TipoGravedad::dropdownOptions(),
             'otroCatalogoProblemaId' => CatalogoProblemasSalud::getOtroId(),
+            'catalogoLugaresAccesoMap' => CatalogoLugaresAccesoPrincipal::dropdownOptions(),
+            'catalogoUsosInternetMap' => CatalogoUsosInternet::dropdownOptions(),
         ];
     }
 }

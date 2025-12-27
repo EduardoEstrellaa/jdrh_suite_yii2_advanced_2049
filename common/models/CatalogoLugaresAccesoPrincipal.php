@@ -45,6 +45,18 @@ class CatalogoLugaresAccesoPrincipal extends \yii\db\ActiveRecord
     }
 
     /**
+     * Returns a map id => nombre for dropdowns.
+     */
+    public static function dropdownOptions(): array
+    {
+        return static::find()
+            ->select('nombre')
+            ->indexBy('id')
+            ->orderBy('nombre')
+            ->column();
+    }
+
+    /**
      * Gets query for [[AlumRecreacionTiempos]].
      *
      * @return \yii\db\ActiveQuery

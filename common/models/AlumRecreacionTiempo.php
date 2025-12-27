@@ -33,8 +33,16 @@ class AlumRecreacionTiempo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alumnos_id', 'sabes_usar_internet', 'tienes_acceso_internet', 'catalogo_lugares_acceso_principal_id'], 'required'],
+            [['alumnos_id', 'sabes_usar_internet', 'tienes_acceso_internet'], 'required', 'strict' => true],
             [['alumnos_id', 'sabes_usar_internet', 'tienes_acceso_internet', 'catalogo_lugares_acceso_principal_id'], 'integer'],
+            [
+                ['catalogo_lugares_acceso_principal_id'],
+                'required',
+                'when' => static function ($model) {
+                    return (int)$model->tienes_acceso_internet === 1;
+                },
+                'whenClient' => "function () { return parseInt($('#alumrecreaciontiempo-tienes_acceso_internet').val(), 10) === 1; }",
+            ],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
             [['catalogo_lugares_acceso_principal_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoLugaresAccesoPrincipal::class, 'targetAttribute' => ['catalogo_lugares_acceso_principal_id' => 'id']],
         ];

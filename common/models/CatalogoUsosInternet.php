@@ -45,6 +45,18 @@ class CatalogoUsosInternet extends \yii\db\ActiveRecord
     }
 
     /**
+     * Returns a map id => nombre for dropdowns.
+     */
+    public static function dropdownOptions(): array
+    {
+        return static::find()
+            ->select('nombre')
+            ->indexBy('id')
+            ->orderBy('nombre')
+            ->column();
+    }
+
+    /**
      * Gets query for [[UsosInternets]].
      *
      * @return \yii\db\ActiveQuery
