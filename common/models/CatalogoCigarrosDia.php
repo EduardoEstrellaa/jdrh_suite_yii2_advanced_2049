@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -14,8 +14,6 @@ use Yii;
  */
 class CatalogoCigarrosDia extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -55,5 +53,4 @@ class CatalogoCigarrosDia extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AlumHabitosConsumo::class, ['catalogo_cigarros_dia_id' => 'id']);
     }
-
 }

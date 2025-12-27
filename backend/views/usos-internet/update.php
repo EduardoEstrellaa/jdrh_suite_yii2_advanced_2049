@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\UsosInternet $model */
+/** @var common\models\UsosInternet $model */
 
 $this->title = Yii::t('app', 'Update Usos Internet: {name}', [
     'name' => $model->id,

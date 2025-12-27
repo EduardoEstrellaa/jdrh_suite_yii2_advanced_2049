@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\UsosInternet;
+use common\models\UsosInternet;
 
 /**
- * UsosInternetSearch represents the model behind the search form of `backend\models\UsosInternet`.
+ * UsosInternetSearch represents the model behind the search form of `common\models\UsosInternet`.
  */
 class UsosInternetSearch extends UsosInternet
 {
@@ -34,11 +34,10 @@ class UsosInternetSearch extends UsosInternet
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params)
     {
         $query = UsosInternet::find();
 
@@ -48,7 +47,7 @@ class UsosInternetSearch extends UsosInternet
             'query' => $query,
         ]);
 
-        $this->load($params, $formName);
+        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

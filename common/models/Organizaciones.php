@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -17,8 +17,6 @@ use Yii;
  */
 class Organizaciones extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -33,7 +31,6 @@ class Organizaciones extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['otra_organizacion_especificar'], 'default', 'value' => null],
             [['alum_organizacion_id', 'catalogo_organizaciones_id'], 'required'],
             [['alum_organizacion_id', 'catalogo_organizaciones_id'], 'integer'],
             [['otra_organizacion_especificar'], 'string', 'max' => 250],
@@ -74,5 +71,4 @@ class Organizaciones extends \yii\db\ActiveRecord
     {
         return $this->hasOne(CatalogoOrganizaciones::class, ['id' => 'catalogo_organizaciones_id']);
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -22,8 +22,6 @@ use Yii;
  */
 class AlumHabitosConsumo extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -38,7 +36,6 @@ class AlumHabitosConsumo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['especificiar_adiccion'], 'default', 'value' => null],
             [['alumnos_id', 'fumas', 'catalogo_cigarros_dia_id', 'tomas_alcohol', 'frecuencia_veces_semana_id', 'tienes_adicciones'], 'required'],
             [['alumnos_id', 'fumas', 'catalogo_cigarros_dia_id', 'tomas_alcohol', 'frecuencia_veces_semana_id', 'tienes_adicciones'], 'integer'],
             [['especificiar_adiccion'], 'string', 'max' => 250],
@@ -94,5 +91,4 @@ class AlumHabitosConsumo extends \yii\db\ActiveRecord
     {
         return $this->hasOne(FrecuenciaVecesSemana::class, ['id' => 'frecuencia_veces_semana_id']);
     }
-
 }

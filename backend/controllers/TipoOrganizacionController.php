@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\TipoOrganizacion;
+use common\models\TipoOrganizacion;
 use backend\models\search\TipoOrganizacionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoLugaresAccesoPrincipal;
+use common\models\CatalogoLugaresAccesoPrincipal;
 
 /**
- * CatalogoLugaresAccesoPrincipalSearch represents the model behind the search form of `backend\models\CatalogoLugaresAccesoPrincipal`.
+ * CatalogoLugaresAccesoPrincipalSearch represents the model behind the search form of `common\models\CatalogoLugaresAccesoPrincipal`.
  */
 class CatalogoLugaresAccesoPrincipalSearch extends CatalogoLugaresAccesoPrincipal
 {
@@ -35,11 +35,10 @@ class CatalogoLugaresAccesoPrincipalSearch extends CatalogoLugaresAccesoPrincipa
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params)
     {
         $query = CatalogoLugaresAccesoPrincipal::find();
 
@@ -49,7 +48,7 @@ class CatalogoLugaresAccesoPrincipalSearch extends CatalogoLugaresAccesoPrincipa
             'query' => $query,
         ]);
 
-        $this->load($params, $formName);
+        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

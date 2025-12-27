@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -16,8 +16,6 @@ use Yii;
  */
 class UsosInternet extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -70,5 +68,4 @@ class UsosInternet extends \yii\db\ActiveRecord
     {
         return $this->hasOne(CatalogoUsosInternet::class, ['id' => 'catalogo_usos_internet_id']);
     }
-
 }

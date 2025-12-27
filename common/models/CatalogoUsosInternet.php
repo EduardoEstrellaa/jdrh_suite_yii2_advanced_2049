@@ -1,27 +1,25 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "catalogo_lugares_acceso_principal".
+ * This is the model class for table "catalogo_usos_internet".
  *
  * @property int $id
  * @property string $nombre
  *
- * @property AlumRecreacionTiempo[] $alumRecreacionTiempos
+ * @property UsosInternet[] $usosInternets
  */
-class CatalogoLugaresAccesoPrincipal extends \yii\db\ActiveRecord
+class CatalogoUsosInternet extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'catalogo_lugares_acceso_principal';
+        return 'catalogo_usos_internet';
     }
 
     /**
@@ -31,7 +29,7 @@ class CatalogoLugaresAccesoPrincipal extends \yii\db\ActiveRecord
     {
         return [
             [['nombre'], 'required'],
-            [['nombre'], 'string', 'max' => 150],
+            [['nombre'], 'string', 'max' => 250],
         ];
     }
 
@@ -47,13 +45,12 @@ class CatalogoLugaresAccesoPrincipal extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[AlumRecreacionTiempos]].
+     * Gets query for [[UsosInternets]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAlumRecreacionTiempos()
+    public function getUsosInternets()
     {
-        return $this->hasMany(AlumRecreacionTiempo::class, ['catalogo_lugares_acceso_principal_id' => 'id']);
+        return $this->hasMany(UsosInternet::class, ['catalogo_usos_internet_id' => 'id']);
     }
-
 }

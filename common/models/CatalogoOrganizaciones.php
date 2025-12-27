@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $nombre
+ * @property string|null $descripcion
  * @property int $tipo_organizacion_id
  *
  * @property Organizaciones[] $organizaciones
@@ -16,8 +17,6 @@ use Yii;
  */
 class CatalogoOrganizaciones extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -35,6 +34,7 @@ class CatalogoOrganizaciones extends \yii\db\ActiveRecord
             [['nombre', 'tipo_organizacion_id'], 'required'],
             [['tipo_organizacion_id'], 'integer'],
             [['nombre'], 'string', 'max' => 150],
+            [['descripcion'], 'string', 'max' => 250],
             [['tipo_organizacion_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoOrganizacion::class, 'targetAttribute' => ['tipo_organizacion_id' => 'id']],
         ];
     }
@@ -47,6 +47,7 @@ class CatalogoOrganizaciones extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
+            'descripcion' => 'Descripcion',
             'tipo_organizacion_id' => 'Tipo Organizacion ID',
         ];
     }
@@ -70,5 +71,4 @@ class CatalogoOrganizaciones extends \yii\db\ActiveRecord
     {
         return $this->hasOne(TipoOrganizacion::class, ['id' => 'tipo_organizacion_id']);
     }
-
 }

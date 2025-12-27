@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\UsosInternet;
+use common\models\UsosInternet;
 use backend\models\search\UsosInternetSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

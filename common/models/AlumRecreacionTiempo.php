@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -19,8 +19,6 @@ use Yii;
  */
 class AlumRecreacionTiempo extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -85,5 +83,4 @@ class AlumRecreacionTiempo extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UsosInternet::class, ['alum_recreacion_tiempo_id' => 'id']);
     }
-
 }

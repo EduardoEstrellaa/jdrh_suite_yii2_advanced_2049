@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoCigarrosDia;
+use common\models\CatalogoCigarrosDia;
 
 /**
- * CatalogoCigarrosDiaSearch represents the model behind the search form of `backend\models\CatalogoCigarrosDia`.
+ * CatalogoCigarrosDiaSearch represents the model behind the search form of `common\models\CatalogoCigarrosDia`.
  */
 class CatalogoCigarrosDiaSearch extends CatalogoCigarrosDia
 {
@@ -35,11 +35,10 @@ class CatalogoCigarrosDiaSearch extends CatalogoCigarrosDia
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params)
     {
         $query = CatalogoCigarrosDia::find();
 
@@ -49,7 +48,7 @@ class CatalogoCigarrosDiaSearch extends CatalogoCigarrosDia
             'query' => $query,
         ]);
 
-        $this->load($params, $formName);
+        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

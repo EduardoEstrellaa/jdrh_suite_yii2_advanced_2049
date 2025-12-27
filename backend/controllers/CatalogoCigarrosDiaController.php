@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CatalogoCigarrosDia;
+use common\models\CatalogoCigarrosDia;
 use backend\models\search\CatalogoCigarrosDiaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
