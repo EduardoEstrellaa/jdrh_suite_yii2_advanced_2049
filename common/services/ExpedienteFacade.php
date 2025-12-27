@@ -33,9 +33,12 @@ use common\models\CatalogoUsoAnteojos;
 use common\models\CatalogoTransportes;
 use common\models\CatalogoLugaresComer;
 use common\models\CatalogoAlimentos;
+use common\models\CatalogoActividadEjercicio;
+use common\models\CatalogoDeportes;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\FrecuenciaVeces;
+use common\models\FrecuenciaVecesSemana;
 use common\models\FrecuenciaTiempo;
 use common\models\ServiciosSalud;
 use common\models\UsoAnteojos;
@@ -48,6 +51,10 @@ use common\models\VariasReaccionesAlergicas;
 use common\models\Tratamientos;
 use common\models\EnfermedadesCronicas;
 use common\models\ProblemasSalud;
+use common\models\AlumDeportes;
+use common\models\AlumEjercicio;
+use common\models\Deportes;
+use common\models\EjercicioFisico;
 use common\services\support\OperationResult;
 
 class ExpedienteFacade
@@ -64,6 +71,7 @@ class ExpedienteFacade
             $this->getDependientesDefaults(),
             $this->getViviendaDefaults(),
             $this->getAlimentacionDefaults($alumno->id),
+            $this->getActividadFisicaDefaults(),
             $this->getSaludDefaults(),
             $this->getTratamientosDefaults(),
             $this->getCatalogosData()
@@ -89,6 +97,8 @@ class ExpedienteFacade
         $alergiasData = $this->buildAlergiasData($models['alumAlergia'] ?? null);
         $lugaresComerData = $this->buildLugaresComerData($alumnoId);
         $consumoAlimentosData = $this->buildConsumoAlimentosData($alumnoId);
+        $deportesData = $this->buildDeportesData($models['alumDeportes'] ?? null);
+        $ejercicioData = $this->buildEjercicioFisicoData($models['alumEjercicio'] ?? null);
 
         return array_merge(
             $models,
@@ -104,6 +114,8 @@ class ExpedienteFacade
             $alergiasData,
             $lugaresComerData,
             $consumoAlimentosData,
+            $deportesData,
+            $ejercicioData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -306,6 +318,33 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildDeportesData(?AlumDeportes $alumDeportes = null): array
+    {
+        if ($alumDeportes === null || $alumDeportes->isNewRecord) {
+            return ['deportesSeleccionados' => []];
+        }
+
+        $ids = Deportes::find()
+            ->select('catalogo_deportes_id')
+            ->where(['alum_deportes_id' => $alumDeportes->id])
+            ->column();
+
+        return ['deportesSeleccionados' => array_map('intval', $ids)];
+    }
+
+    private function buildEjercicioFisicoData(?AlumEjercicio $alumEjercicio = null): array
+    {
+        if ($alumEjercicio === null || $alumEjercicio->isNewRecord) {
+            return ['ejercicioFisicos' => []];
+        }
+
+        $ejercicios = EjercicioFisico::find()
+            ->where(['alum_ejercicio_id' => $alumEjercicio->id])
+            ->all();
+
+        return ['ejercicioFisicos' => $ejercicios];
+    }
+
     private function buildEnfermedadesCronicasData(?AlumEnfermedadesCronicas $alumEnfermedadesCronicas = null): array
     {
         if ($alumEnfermedadesCronicas === null || $alumEnfermedadesCronicas->isNewRecord) {
@@ -462,6 +501,14 @@ class ExpedienteFacade
         ];
     }
 
+    private function getActividadFisicaDefaults(): array
+    {
+        return [
+            'deportesSeleccionados' => [],
+            'ejercicioFisicos' => [],
+        ];
+    }
+
     private function getSaludDefaults(): array
     {
         return [
@@ -506,6 +553,9 @@ class ExpedienteFacade
             'catalogoLugarComerOtroId' => CatalogoLugaresComer::getOtroId(),
             'catalogoAlimentosMap' => CatalogoAlimentos::dropdownOptions(),
             'frecuenciasVecesMap' => FrecuenciaVeces::dropdownOptions(),
+            'catalogoDeportesMap' => CatalogoDeportes::dropdownOptions(),
+            'catalogoActividadesEjercicioMap' => CatalogoActividadEjercicio::dropdownOptions(),
+            'frecuenciasVecesSemanaMap' => FrecuenciaVecesSemana::dropdownOptions(),
             'catalogoAlergiasMap' => CatalogoAlergias::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
             'catalogoReaccionesAlergicasMap' => CatalogoReaccionesAlergicas::dropdownOptions(),

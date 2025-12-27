@@ -32,6 +32,7 @@ class AlumEjercicio extends \yii\db\ActiveRecord
         return [
             [['alumnos_id', 'haces_ejercicio_fisico'], 'required'],
             [['alumnos_id', 'haces_ejercicio_fisico'], 'integer'],
+            ['haces_ejercicio_fisico', 'in', 'range' => [0, 1]],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
         ];
     }
@@ -43,8 +44,8 @@ class AlumEjercicio extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'alumnos_id' => 'Alumnos ID',
-            'haces_ejercicio_fisico' => 'Haces Ejercicio Fisico',
+            'alumnos_id' => 'Alumno',
+            'haces_ejercicio_fisico' => 'Haces ejercicio fisico?',
         ];
     }
 

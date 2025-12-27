@@ -41,6 +41,10 @@ use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\models\ViviendaServicios;
 use common\models\AlumBienesPersonales;
+use common\models\AlumDeportes;
+use common\models\AlumEjercicio;
+use common\models\Deportes;
+use common\models\EjercicioFisico;
 use common\services\support\DependientesManager;
 use common\services\support\HijosManager;
 use common\services\support\ViviendaBienesManager;
@@ -54,6 +58,8 @@ use common\services\support\AlergiasManager;
 use common\services\support\EnfermedadesCronicasManager;
 use common\services\support\LugaresComerManager;
 use common\services\support\ConsumoAlimentosManager;
+use common\services\support\DeportesManager;
+use common\services\support\EjercicioFisicoManager;
 
 class ExpedienteService
 {
@@ -129,6 +135,8 @@ class ExpedienteService
             'alumTrabajo' => new AlumTrabajo(['alumnos_id' => $alumno->id]),
             'alumVivienda' => new AlumVivienda(['alumnos_id' => $alumno->id]),
             'alumTransportes' => new AlumTransportes(['alumnos_id' => $alumno->id]),
+            'alumDeportes' => new AlumDeportes(['alumnos_id' => $alumno->id]),
+            'alumEjercicio' => new AlumEjercicio(['alumnos_id' => $alumno->id]),
             'alumEstadoSalud' => new AlumEstadoSalud(['alumnos_id' => $alumno->id]),
             'alumServiciosSalud' => new AlumServiciosSalud(['alumnos_id' => $alumno->id]),
             'alumAsisteMedico' => new AlumAsisteMedico(['alumnos_id' => $alumno->id]),
@@ -158,6 +166,8 @@ class ExpedienteService
             'alumTrabajo' => self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]),
             'alumVivienda' => self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]),
             'alumTransportes' => self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]),
+            'alumDeportes' => self::findOrCreateModel(AlumDeportes::class, ['alumnos_id' => $alumnoId]),
+            'alumEjercicio' => self::findOrCreateModel(AlumEjercicio::class, ['alumnos_id' => $alumnoId]),
             'alumEstadoSalud' => self::findOrCreateModel(AlumEstadoSalud::class, ['alumnos_id' => $alumnoId]),
             'alumServiciosSalud' => self::findOrCreateModel(AlumServiciosSalud::class, ['alumnos_id' => $alumnoId]),
             'alumAsisteMedico' => self::findOrCreateModel(AlumAsisteMedico::class, ['alumnos_id' => $alumnoId]),
@@ -295,6 +305,8 @@ class ExpedienteService
      */
     private static function syncAggregates(array $models, array $post, int $alumnoId): void
     {
+        DeportesManager::sync($models['alumDeportes'], $post);
+        EjercicioFisicoManager::sync($models['alumEjercicio'], $post);
         ProblemasSaludManager::sync($models['alumEstadoSalud'], $post);
         ServiciosSaludManager::sync($models['alumServiciosSalud'], $post);
         UsoAnteojosManager::sync($models['alumUsoAnteojos'], $post);
@@ -330,6 +342,16 @@ class ExpedienteService
             AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
             AlumLugaresComer::deleteAll(['alumnos_id' => $alumnoId]);
             AlumConsumoAlimentos::deleteAll(['alumnos_id' => $alumnoId]);
+            $alumDeportes = AlumDeportes::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumDeportes) {
+                Deportes::deleteAll(['alum_deportes_id' => $alumDeportes->id]);
+                $alumDeportes->delete();
+            }
+            $alumEjercicio = AlumEjercicio::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumEjercicio) {
+                EjercicioFisico::deleteAll(['alum_ejercicio_id' => $alumEjercicio->id]);
+                $alumEjercicio->delete();
+            }
 
             AlumAsisteMedico::deleteAll(['alumnos_id' => $alumnoId]);
             AlumAsisteDentista::deleteAll(['alumnos_id' => $alumnoId]);
@@ -427,6 +449,12 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumAlergia) {
+                continue;
+            }
+            if ($model instanceof AlumDeportes) {
+                continue;
+            }
+            if ($model instanceof AlumEjercicio) {
                 continue;
             }
             if ($model->isNewRecord) {

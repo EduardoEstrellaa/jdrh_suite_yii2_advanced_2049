@@ -32,6 +32,7 @@ class AlumDeportes extends \yii\db\ActiveRecord
         return [
             [['alumnos_id', 'practicas_algun_deporte'], 'required'],
             [['alumnos_id', 'practicas_algun_deporte'], 'integer'],
+            ['practicas_algun_deporte', 'in', 'range' => [0, 1]],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
         ];
     }
@@ -43,8 +44,8 @@ class AlumDeportes extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'alumnos_id' => 'Alumnos ID',
-            'practicas_algun_deporte' => 'Practicas Algun Deporte',
+            'alumnos_id' => 'Alumno',
+            'practicas_algun_deporte' => 'Practicas algun deporte?',
         ];
     }
 
