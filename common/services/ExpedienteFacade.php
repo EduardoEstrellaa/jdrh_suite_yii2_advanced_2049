@@ -16,6 +16,8 @@ use common\models\AlumAsisteDentista;
 use common\models\AlumServiciosSalud;
 use common\models\AlumUsoAnteojos;
 use common\models\AlumTratamientos;
+use common\models\AlumConsumoAlimentos;
+use common\models\AlumLugaresComer;
 use common\models\Alergias;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
@@ -29,8 +31,11 @@ use common\models\CatalogoServiciosVivienda;
 use common\models\CatalogoTratamientos;
 use common\models\CatalogoUsoAnteojos;
 use common\models\CatalogoTransportes;
+use common\models\CatalogoLugaresComer;
+use common\models\CatalogoAlimentos;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
+use common\models\FrecuenciaVeces;
 use common\models\FrecuenciaTiempo;
 use common\models\ServiciosSalud;
 use common\models\UsoAnteojos;
@@ -58,6 +63,7 @@ class ExpedienteFacade
             $models,
             $this->getDependientesDefaults(),
             $this->getViviendaDefaults(),
+            $this->getAlimentacionDefaults($alumno->id),
             $this->getSaludDefaults(),
             $this->getTratamientosDefaults(),
             $this->getCatalogosData()
@@ -81,6 +87,8 @@ class ExpedienteFacade
         $tratamientosData = $this->buildTratamientosData($models['alumTratamientos'] ?? null);
         $enfermedadesCronicasData = $this->buildEnfermedadesCronicasData($models['alumEnfermedadesCronicas'] ?? null);
         $alergiasData = $this->buildAlergiasData($models['alumAlergia'] ?? null);
+        $lugaresComerData = $this->buildLugaresComerData($alumnoId);
+        $consumoAlimentosData = $this->buildConsumoAlimentosData($alumnoId);
 
         return array_merge(
             $models,
@@ -94,6 +102,8 @@ class ExpedienteFacade
             $tratamientosData,
             $enfermedadesCronicasData,
             $alergiasData,
+            $lugaresComerData,
+            $consumoAlimentosData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -257,6 +267,45 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildLugaresComerData(int $alumnoId): array
+    {
+        $lugares = AlumLugaresComer::findAll(['alumnos_id' => $alumnoId]);
+        $seleccionados = [];
+        $otroTexto = null;
+        $otrosPorId = [];
+        $otroId = CatalogoLugaresComer::getOtroId();
+
+        foreach ($lugares as $lugar) {
+            $catalogoId = (int)$lugar->catalogo_lugares_comer_id;
+            $seleccionados[] = $catalogoId;
+            if ($otroId !== null && $catalogoId === $otroId) {
+                $otroTexto = $lugar->otro_especificar;
+            }
+            if ($lugar->otro_especificar !== null && $lugar->otro_especificar !== '') {
+                $otrosPorId[$catalogoId] = $lugar->otro_especificar;
+            }
+        }
+
+        return [
+            'lugaresComerSeleccionados' => $seleccionados,
+            'lugarComerOtro' => $otroTexto,
+            'lugaresComerOtroMap' => $otrosPorId,
+        ];
+    }
+
+    private function buildConsumoAlimentosData(int $alumnoId): array
+    {
+        $consumos = AlumConsumoAlimentos::findAll(['alumnos_id' => $alumnoId]);
+
+        if (empty($consumos)) {
+            $consumos = [new AlumConsumoAlimentos(['alumnos_id' => $alumnoId])];
+        }
+
+        return [
+            'consumoAlimentos' => $consumos,
+        ];
+    }
+
     private function buildEnfermedadesCronicasData(?AlumEnfermedadesCronicas $alumEnfermedadesCronicas = null): array
     {
         if ($alumEnfermedadesCronicas === null || $alumEnfermedadesCronicas->isNewRecord) {
@@ -403,6 +452,16 @@ class ExpedienteFacade
         ];
     }
 
+    private function getAlimentacionDefaults(int $alumnoId): array
+    {
+        return [
+            'lugaresComerSeleccionados' => [],
+            'lugarComerOtro' => null,
+            'lugaresComerOtroMap' => [],
+            'consumoAlimentos' => [new AlumConsumoAlimentos(['alumnos_id' => $alumnoId])],
+        ];
+    }
+
     private function getSaludDefaults(): array
     {
         return [
@@ -443,6 +502,10 @@ class ExpedienteFacade
             'tiemposRecorridoMap' => TiempoRecorridoTransporte::dropdownOptions(),
             'catalogoEnfermCronicasMap' => CatalogoEnfermCronicas::dropdownOptions(),
             'otroCatalogoEnfermCronicaId' => CatalogoEnfermCronicas::getOtroId(),
+            'catalogoLugaresComerMap' => CatalogoLugaresComer::dropdownOptions(),
+            'catalogoLugarComerOtroId' => CatalogoLugaresComer::getOtroId(),
+            'catalogoAlimentosMap' => CatalogoAlimentos::dropdownOptions(),
+            'frecuenciasVecesMap' => FrecuenciaVeces::dropdownOptions(),
             'catalogoAlergiasMap' => CatalogoAlergias::dropdownOptions(),
             'catalogoProblemasSaludMap' => CatalogoProblemasSalud::dropdownOptions(),
             'catalogoReaccionesAlergicasMap' => CatalogoReaccionesAlergicas::dropdownOptions(),

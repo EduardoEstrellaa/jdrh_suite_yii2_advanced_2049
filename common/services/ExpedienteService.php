@@ -27,6 +27,8 @@ use common\models\AlumUsoAnteojos;
 use common\models\UsoAnteojos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\AlumConsumoAlimentos;
+use common\models\AlumLugaresComer;
 use common\models\EnfermedadesCronicas;
 use common\models\Alergias;
 use common\models\VariasReaccionesAlergicas;
@@ -50,6 +52,8 @@ use common\services\support\UsoAnteojosManager;
 use common\services\support\TratamientosManager;
 use common\services\support\AlergiasManager;
 use common\services\support\EnfermedadesCronicasManager;
+use common\services\support\LugaresComerManager;
+use common\services\support\ConsumoAlimentosManager;
 
 class ExpedienteService
 {
@@ -297,6 +301,8 @@ class ExpedienteService
         TratamientosManager::sync($models['alumTratamientos'], $post);
         EnfermedadesCronicasManager::sync($models['alumEnfermedadesCronicas'], $post);
         AlergiasManager::sync($models['alumAlergia'], $post);
+        LugaresComerManager::sync($alumnoId, $post);
+        ConsumoAlimentosManager::sync($alumnoId, $post);
         HijosManager::sync($models['alumInfoHijos'], $post);
         DependientesManager::sync($models['alumDependenEconomica'], $post);
         ViviendaBienesManager::sync($models['alumVivienda'], $post);
@@ -322,6 +328,8 @@ class ExpedienteService
             AlumTrabajo::deleteAll(['alumnos_id' => $alumnoId]);
             AlumBienesPersonales::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumLugaresComer::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumConsumoAlimentos::deleteAll(['alumnos_id' => $alumnoId]);
 
             AlumAsisteMedico::deleteAll(['alumnos_id' => $alumnoId]);
             AlumAsisteDentista::deleteAll(['alumnos_id' => $alumnoId]);

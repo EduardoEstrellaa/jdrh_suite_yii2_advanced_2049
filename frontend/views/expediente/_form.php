@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -35,10 +35,14 @@ use common\models\CatalogoReaccionesAlergicas;
 use common\models\CatalogoServiciosSalud;
 use common\models\CatalogoUsoAnteojos;
 use common\models\FrecuenciaTiempo;
+use common\models\FrecuenciaVeces;
 use common\models\TipoGravedad;
 use common\models\CatalogoTratamientos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\CatalogoLugaresComer;
+use common\models\CatalogoAlimentos;
+use common\models\AlumConsumoAlimentos;
 use common\models\EnfermedadesCronicas;
 use common\models\Alergias;
 use common\models\VariasReaccionesAlergicas;
@@ -86,6 +90,14 @@ $enfermedadesCronicas = $enfermedadesCronicas ?? [new EnfermedadesCronicas()];
 $alergias = $alergias ?? [new Alergias()];
 $problemasSalud = $problemasSalud ?? [new ProblemasSalud()];
 $catalogoProblemasSaludMap = $catalogoProblemasSaludMap ?? CatalogoProblemasSalud::dropdownOptions();
+$catalogoLugaresComerMap = $catalogoLugaresComerMap ?? CatalogoLugaresComer::dropdownOptions();
+$catalogoLugarComerOtroId = $catalogoLugarComerOtroId ?? CatalogoLugaresComer::getOtroId();
+$lugaresComerSeleccionados = $lugaresComerSeleccionados ?? [];
+$lugarComerOtro = $lugarComerOtro ?? null;
+$lugaresComerOtroMap = $lugaresComerOtroMap ?? [];
+$catalogoAlimentosMap = $catalogoAlimentosMap ?? CatalogoAlimentos::dropdownOptions();
+$frecuenciasVecesMap = $frecuenciasVecesMap ?? FrecuenciaVeces::dropdownOptions();
+$consumoAlimentos = $consumoAlimentos ?? [new AlumConsumoAlimentos(['alumnos_id' => $alumno->id ?? null])];
 $catalogoEnfermCronicasMap = $catalogoEnfermCronicasMap ?? CatalogoEnfermCronicas::dropdownOptions();
 $catalogoAlergiasMap = $catalogoAlergiasMap ?? CatalogoAlergias::dropdownOptions();
 $catalogoServiciosSaludMap = $catalogoServiciosSaludMap ?? CatalogoServiciosSalud::dropdownOptions();
@@ -95,6 +107,7 @@ $frecuenciasTiempoMap = $frecuenciasTiempoMap ?? FrecuenciaTiempo::dropdownOptio
 $tipoGravedadMap = $tipoGravedadMap ?? TipoGravedad::dropdownOptions();
 $otroCatalogoProblemaId = $otroCatalogoProblemaId ?? CatalogoProblemasSalud::getOtroId();
 $otroCatalogoEnfermCronicaId = $otroCatalogoEnfermCronicaId ?? CatalogoEnfermCronicas::getOtroId();
+$alumnoId = (int)($alumno->id ?? 0);
 $serviciosSaludSeleccionados = $serviciosSaludSeleccionados ?? [];
 $enfermedadesCronicasSeleccionadas = $enfermedadesCronicasSeleccionadas ?? [];
 $reaccionesAlergiasSeleccionadas = $reaccionesAlergiasSeleccionadas ?? [];
@@ -1725,22 +1738,131 @@ $this->registerCssFile('@web/css/expediente-form.css');
             </div>
         </div>
 
-        <!-- ===================== -->
-        <!-- SECCIÓN 7: ALIMENTACIÓN -->
+                <!-- ===================== -->
+                <!-- SECCION 11: ALIMENTACION -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingAlimentacion">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAlimentacion" aria-expanded="false" aria-controls="collapseAlimentacion">
-                    🍽️ VII. ALIMENTACIÓN
+                    🍽️ XI. ALIMENTACION
                 </button>
             </h2>
             <div id="collapseAlimentacion" class="accordion-collapse collapse" aria-labelledby="headingAlimentacion" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
-                    <p class="text-muted">Contenido de alimentación próximamente...</p>
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 11</span>
+                        <div>
+                            <div class="fw-semibold">Alimentacion y consumo.</div>
+                            <div class="text-muted small">Lugares donde comes y frecuencia de tus alimentos.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="mb-2">Lugares donde sueles comer</h5>
+                        <p class="text-muted small mb-3">Selecciona todos los lugares aplicables.</p>
+                        <?php
+                        $catalogoLugaresComerOrdenados = [];
+                        $catalogoLugaresComerOtros = [];
+                        foreach ($catalogoLugaresComerMap as $idTmp => $nombreTmp) {
+                            $nombreLimpioTmp = trim((string)$nombreTmp);
+                            $esOtroTmp = ($catalogoLugarComerOtroId !== null && (int)$idTmp === (int)$catalogoLugarComerOtroId)
+                                || mb_strtolower($nombreLimpioTmp, 'UTF-8') === 'otro';
+                            if ($esOtroTmp) {
+                                $catalogoLugaresComerOtros[$idTmp] = $nombreLimpioTmp;
+                            } else {
+                                $catalogoLugaresComerOrdenados[$idTmp] = $nombreLimpioTmp;
+                            }
+                        }
+                        $catalogoLugaresComerOrdenados += $catalogoLugaresComerOtros;
+                        ?>
+                        <div class="row g-2">
+                            <?php foreach ($catalogoLugaresComerOrdenados as $id => $nombreLimpio): ?>
+                                <?php
+                                $id = (int)$id;
+                                  $checked = in_array($id, $lugaresComerSeleccionados, true);
+                                  $esNombreOtro = mb_strtolower($nombreLimpio, 'UTF-8') === 'otro';
+                                  $esOtro = ($catalogoLugarComerOtroId !== null && $id === (int)$catalogoLugarComerOtroId) || $esNombreOtro;
+                                ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input lugar-comer-checkbox"
+                                            name="AlumLugaresComer[<?= $id ?>][catalogo_lugares_comer_id]"
+                                            value="<?= $id ?>"
+                                            id="lugar-comer-<?= $id ?>"
+                                            data-es-otro="<?= $esOtro ? '1' : '0' ?>"
+                                            <?= $checked ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="lugar-comer-<?= $id ?>"><?= Html::encode($nombreLimpio) ?></label>
+                                    </div>
+                                    <?php if ($esOtro): ?>
+                                        <div class="mt-2 lugar-comer-otro-container <?= $checked ? '' : 'd-none' ?>">
+                                            <label class="form-label small text-muted" for="lugar-comer-otro"><?= Yii::t('app', 'Especifica otro lugar') ?></label>
+                                            <input
+                                                type="text"
+                                                class="form-control lugar-comer-otro-input"
+                                                name="AlumLugaresComer[<?= $id ?>][otro_especificar]"
+                                                id="lugar-comer-otro"
+                                                value="<?= Html::encode($lugaresComerOtroMap[$id] ?? $lugarComerOtro) ?>"
+                                                <?= $checked ? '' : 'disabled' ?>>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    $consumoMap = [];
+                    foreach ($consumoAlimentos as $cons) {
+                        $consumoMap[(int)$cons->catalogo_alimentos_id] = $cons;
+                    }
+                    ?>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                            <h5 class="mb-0">Consumo de alimentos</h5>
+                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Frecuencia semanal</span>
+                        </div>
+                        <p class="text-muted small mb-3">Ajusta la frecuencia de cada alimento de manera rápida.</p>
+                        <div id="lista-consumo-alimentos" class="consumo-tiles">
+                            <?php foreach ($catalogoAlimentosMap as $id => $nombre): ?>
+                                <?php
+                                $id = (int)$id;
+                                $consumo = $consumoMap[$id] ?? new AlumConsumoAlimentos([
+                                    'alumnos_id' => $alumnoId,
+                                    'catalogo_alimentos_id' => $id,
+                                ]);
+                                ?>
+                                <div class="consumo-alimento-item consumo-tile d-flex align-items-center gap-3 flex-wrap">
+                                    <div class="d-flex align-items-center gap-2 consumo-tile-title">
+                                <span class="consumo-marker" aria-hidden="true"></span>
+                                        <span class="fw-semibold"><?= Html::encode($nombre) ?></span>
+                                    </div>
+                                    <div class="consumo-tile-select flex-grow-1">
+                                        <?= InputHelper::iconSelect2Field(
+                                            $form,
+                                            $consumo,
+                                            "[{$id}]frecuencia_veces_id",
+                                            'fa-clock',
+                                            $frecuenciasVecesMap,
+                                            [
+                                                'placeholder' => 'Frecuencia',
+                                                'class' => 'form-control consumo-frecuencia-select',
+                                                'id' => "consumo-frecuencia-{$id}",
+                                            ],
+                                            ['allowClear' => true]
+                                        ) ?>
+                                        <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][catalogo_alimentos_id]" value="<?= $id ?>">
+                                        <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][alumnos_id]" value="<?= $alumnoId ?>">
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
+        
         <!-- ===================== -->
         <!-- SECCIÓN 8: ACTIVIDAD FÍSICA Y DEPORTE -->
         <!-- ===================== -->
@@ -1818,6 +1940,8 @@ $this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
 $this->registerJsVar('VIVIENDA_SERVICIO_OTRO_ID', $catalogoServicioOtroId);
 $this->registerJsVar('PROBLEMA_OTRO_ID', $otroCatalogoProblemaId);
 $this->registerJsVar('ENFERMEDAD_CRONICA_OTRO_ID', $otroCatalogoEnfermCronicaId);
+$this->registerJsVar('LUGAR_COMER_OTRO_ID', $catalogoLugarComerOtroId);
+$alumnoId = (int)($alumno->id ?? 0);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
@@ -1836,6 +1960,10 @@ $this->registerJsFile(
 );
 $this->registerJsFile(
     '@web/js/expediente/expediente-salud.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-alimentacion.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
