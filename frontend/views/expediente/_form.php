@@ -194,7 +194,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingDatosAcademicos">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosAcademicos" aria-expanded="true" aria-controls="collapseDatosAcademicos">
-                    📚 I. DATOS ACADÉMICOS
+                    <i class="fas fa-graduation-cap me-2 text-primary"></i> I. DATOS ACADÉMICOS
                 </button>
             </h2>
             <div id="collapseDatosAcademicos" class="accordion-collapse collapse show" aria-labelledby="headingDatosAcademicos" data-bs-parent="#expedienteAccordion">
@@ -243,12 +243,12 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 2: DATOS PERSONALES -->
+        <!-- SECCION 2: DATOS PERSONALES -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingDatosPersonales">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosPersonales" aria-expanded="false" aria-controls="collapseDatosPersonales">
-                    🧍‍♂️ II. DATOS PERSONALES
+                    <i class="fas fa-id-card me-2 text-info"></i> II. DATOS PERSONALES
                 </button>
             </h2>
             <div id="collapseDatosPersonales" class="accordion-collapse collapse" aria-labelledby="headingDatosPersonales" data-bs-parent="#expedienteAccordion">
@@ -262,326 +262,311 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         </div>
                     </div>
 
-                    <!-- ===================== -->
-                    <!-- INFORMACIÓN BÁSICA -->
-                    <!-- ===================== -->
-                    <h4 class="mb-3 mt-2">
-                        <i class="fas fa-user text-primary"></i>
-                        <span class="text-secondary">Información Básica</span>
-                    </h4>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $perfil, 'nombre', 'fa-user', [
-                                'inputOptions' => [
-                                    'class' => 'form-control bg-light',
-                                    'readonly' => true,
-                                    'value' => Html::encode($perfil->nombre ?? '')
-                                ]
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $perfil, 'apellido', 'fa-user', [
-                                'inputOptions' => [
-                                    'class' => 'form-control bg-light',
-                                    'readonly' => true,
-                                    'value' => Html::encode($perfil->apellido ?? '')
-                                ]
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $perfil, 'fecha_nacimiento', 'fa-calendar', [
-                                'inputOptions' => [
-                                    'class' => 'form-control bg-light',
-                                    'readonly' => true,
-                                    'value' => Html::encode($perfil->fecha_nacimiento ?? '')
-                                ]
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $perfil, 'generoNombre', 'fa-venus-mars', [
-                                'inputOptions' => [
-                                    'class' => 'form-control bg-light',
-                                    'readonly' => true,
-                                    'value' => Html::encode($perfil->generoNombre ?? '')
-                                ]
-                            ]) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $perfil, 'username', 'fa-at', [
-                                'inputOptions' => [
-                                    'class' => 'form-control bg-light',
-                                    'readonly' => true,
-                                    'value' => Html::encode($perfil->username ?? '')
-                                ]
-                            ]) ?>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-
-                    <!-- ===================== -->
-                    <!-- DATOS PERSONALES -->
-                    <!-- ===================== -->
-                    <h4 class="mb-3">
-                        <i class="fas fa-address-card text-info"></i>
-                        <span class="text-secondary">Datos Personales</span>
-                    </h4>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $datosPersonales, 'curp', 'fa-id-card', [
-                                'inputOptions' => ['placeholder' => 'CURP...']
-                            ]) ?>
-                            <div class="mt-1">
-                                <small class="text-muted">
-                                    <i class="fas fa-question-circle"></i>
-                                    ¿No sabes tu CURP?
-                                    <a href="https://www.gob.mx/curp/" target="_blank" class="text-primary">
-                                        Consúltala aquí
-                                    </a>
-                                </small>
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold">
+                                    <i class="fas fa-user-circle me-2"></i> Perfil institucional
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $perfil, 'nombre', 'fa-user', [
+                                                'inputOptions' => [
+                                                    'class' => 'form-control bg-light',
+                                                    'readonly' => true,
+                                                    'value' => Html::encode($perfil->nombre ?? '')
+                                                ]
+                                            ]) ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $perfil, 'apellido', 'fa-user', [
+                                                'inputOptions' => [
+                                                    'class' => 'form-control bg-light',
+                                                    'readonly' => true,
+                                                    'value' => Html::encode($perfil->apellido ?? '')
+                                                ]
+                                            ]) ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $perfil, 'fecha_nacimiento', 'fa-calendar', [
+                                                'inputOptions' => [
+                                                    'class' => 'form-control bg-light',
+                                                    'readonly' => true,
+                                                    'value' => Html::encode($perfil->fecha_nacimiento ?? '')
+                                                ]
+                                            ]) ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $perfil, 'generoNombre', 'fa-venus-mars', [
+                                                'inputOptions' => [
+                                                    'class' => 'form-control bg-light',
+                                                    'readonly' => true,
+                                                    'value' => Html::encode($perfil->generoNombre ?? '')
+                                                ]
+                                            ]) ?>
+                                        </div>
+                                        <div class="col-12">
+                                            <?= InputHelper::iconTextField($form, $perfil, 'username', 'fa-at', [
+                                                'inputOptions' => [
+                                                    'class' => 'form-control bg-light',
+                                                    'readonly' => true,
+                                                    'value' => Html::encode($perfil->username ?? '')
+                                                ]
+                                            ]) ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $datosPersonales, 'nss', 'fa-hospital-user', [
-                                'inputOptions' => ['placeholder' => 'NSS...']
-                            ]) ?>
-                            <div class="mt-1">
-                                <small class="text-muted">
-                                    <i class="fas fa-question-circle"></i>
-                                    ¿No sabes tu NSS?
-                                    <a href="https://www.imss.gob.mx/tramites/imss02008" target="_blank" class="text-primary">
-                                        Consúltala aquí
-                                    </a>
-                                </small>
+
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-warning-subtle text-warning fw-semibold">
+                                    <i class="fas fa-id-badge me-2"></i> Identificacion oficial
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <?= InputHelper::iconTextField($form, $datosPersonales, 'curp', 'fa-id-card', [
+                                                'inputOptions' => ['placeholder' => 'Ingresa tu CURP...']
+                                            ])->label('CURP') ?>
+                                            <div class="mt-1">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-question-circle"></i>
+                                                    ¿No sabes tu CURP?
+                                                    <a href="https://www.gob.mx/curp/" target="_blank" class="text-primary">
+                                                        Consultala aqui
+                                                    </a>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <?= InputHelper::iconTextField($form, $datosPersonales, 'nss', 'fa-hospital-user', [
+                                                'inputOptions' => ['placeholder' => 'Ingresa tu NSS...']
+                                            ])->label('Número de seguro social') ?>
+                                            <div class="mt-1">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-question-circle"></i>
+                                                    ¿No sabes tu NSS?
+                                                    <a href="https://www.imss.gob.mx/tramites/imss02008" target="_blank" class="text-primary">
+                                                        Consultala aqui
+                                                    </a>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <?= InputHelper::iconTextField($form, $datosPersonales, 'rfc', 'fa-user-tag', [
+                                                'inputOptions' => ['placeholder' => 'Ingresa tu RFC...']
+                                            ])->label('RFC') ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $datosPersonales, 'rfc', 'fa-user-tag', [
-                                'inputOptions' => ['placeholder' => 'RFC...']
-                            ]) ?>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-lg-12">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold">
+                                    <i class="fas fa-address-card me-2"></i> Contacto y datos generales
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_personal', 'fa-phone', [
+                                                'inputOptions' => ['placeholder' => 'Teléfono personal...']
+                                            ])->label('Teléfono personal') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_emergencia', 'fa-phone-alt', [
+                                                'inputOptions' => ['placeholder' => 'Teléfono de emergencia...']
+                                            ])->label('Teléfono de emergencia') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconTextField($form, $datosGenerales, 'email_personal', 'fa-envelope', [
+                                                'inputOptions' => ['placeholder' => 'Correo electrónico personal...']
+                                            ])->label('Correo electrónico personal') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $datosGenerales,
+                                                'estados_civiles_id',
+                                                'fa-ring',
+                                                EstadosCiviles::getEstadosCivilesMap(),
+                                                ['options' => ['placeholder' => 'Estado civil...']]
+                                            )->label('Estado civil') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $datosGenerales,
+                                                'nacionalidades_id',
+                                                'fa-flag',
+                                                Nacionalidades::getNacionalidadesMap(),
+                                                ['options' => ['placeholder' => 'Nacionalidad...']]
+                                            )->label('Nacionalidad') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $datosGenerales,
+                                                'maya_hablante',
+                                                'fa-language',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'placeholder' => '¿Habla maya?'
+                                                ]
+                                            )->label('¿Habla maya?') ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-
-
-                    <hr class="my-4">
-
-                    <!-- ===================== -->
-                    <!-- DATOS GENERALES -->
-                    <!-- ===================== -->
-                    <h4 class="mb-3 mt-4">
-                        <i class="fas fa-info-circle text-primary"></i>
-                        <span class="text-secondary">Datos Generales</span>
-                    </h4>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_personal', 'fa-phone', [
-                                'inputOptions' => ['placeholder' => 'Teléfono personal...']
-                            ]) ?>
+                    <div class="row g-3 mt-3">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-warning-subtle text-warning fw-semibold">
+                                    <i class="fas fa-birthday-cake me-2"></i> Lugar de Nacimiento
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $lugaresNacimiento,
+                                                'entidades_federativas_id',
+                                                'fa-map-marker-alt',
+                                                EntidadesFederativas::getEntidadesFederativasMap(),
+                                                [
+                                                    'options' => [
+                                                        'id' => 'lugaresnacimiento-entidades_federativas_id',
+                                                        'placeholder' => 'Entidad federativa...'
+                                                    ]
+                                                ]
+                                            )->label('Entidad federativa') ?>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $lugaresNacimiento,
+                                                'municipios_id',
+                                                'fa-city',
+                                                [],
+                                                [
+                                                    'options' => [
+                                                        'id' => 'lugaresnacimiento-municipios_id',
+                                                        'placeholder' => 'Municipio...',
+                                                        'disabled' => true
+                                                    ]
+                                                ]
+                                            )->label('Municipio') ?>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconTextField($form, $lugaresNacimiento, 'localidad', 'fa-map-pin', [
+                                                'inputOptions' => [
+                                                    'placeholder' => 'Localidad...',
+                                                    'id' => 'lugaresnacimiento-localidad',
+                                                    'disabled' => true
+                                                ]
+                                            ])->label('Localidad') ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $datosGenerales, 'tlf_emergencia', 'fa-phone-alt', [
-                                'inputOptions' => ['placeholder' => 'Teléfono emergencia...']
-                            ]) ?>
-                        </div>
-
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $datosGenerales, 'email_personal', 'fa-envelope', [
-                                'inputOptions' => ['placeholder' => 'Email personal...']
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $datosGenerales,
-                                'estados_civiles_id',
-                                'fa-ring',
-                                EstadosCiviles::getEstadosCivilesMap(),
-                                ['options' => ['placeholder' => 'Estado civil...']]
-                            ) ?>
-                        </div>
-
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $datosGenerales,
-                                'nacionalidades_id',
-                                'fa-flag',
-                                Nacionalidades::getNacionalidadesMap(),
-                                ['options' => ['placeholder' => 'Nacionalidad...']]
-                            ) ?>
-                        </div>
-
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $datosGenerales,
-                                'maya_hablante',
-                                'fa-language',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Habla maya?'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <!-- ===================== -->
-                    <!-- LUGAR DE NACIMIENTO -->
-                    <!-- ===================== -->
-                    <h4 class="mb-3">
-                        <i class="fas fa-birthday-cake text-warning"></i>
-                        <span class="text-secondary">Lugar de Nacimiento</span>
-                    </h4>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $lugaresNacimiento,
-                                'entidades_federativas_id',
-                                'fa-map-marker-alt',
-                                EntidadesFederativas::getEntidadesFederativasMap(),
-                                [
-                                    'options' => [
-                                        'id' => 'lugaresnacimiento-entidades_federativas_id',
-                                        'placeholder' => 'Entidad federativa...'
-                                    ]
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $lugaresNacimiento,
-                                'municipios_id',
-                                'fa-city',
-                                [],
-                                [
-                                    'options' => [
-                                        'id' => 'lugaresnacimiento-municipios_id',
-                                        'placeholder' => 'Municipio...',
-                                        'disabled' => true
-                                    ]
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $lugaresNacimiento, 'localidad', 'fa-map-pin', [
-                                'inputOptions' => [
-                                    'placeholder' => 'Localidad...',
-                                    'id' => 'lugaresnacimiento-localidad',
-                                    'disabled' => true
-                                ]
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <!-- ===================== -->
-                    <!-- DOMICILIO ACTUAL -->
-                    <!-- ===================== -->
-                    <h4 class="mb-3">
-                        <i class="fas fa-home text-success"></i>
-                        <span class="text-secondary">Domicilio Actual</span>
-                    </h4>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $domiciliosActuales,
-                                'entidades_federativas_id',
-                                'fa-map-marker-alt',
-                                EntidadesFederativas::getEntidadesFederativasMap(),
-                                [
-                                    'options' => [
-                                        'id' => 'domiciliosactuales-entidades_federativas_id',
-                                        'placeholder' => 'Entidad federativa...'
-                                    ]
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $domiciliosActuales,
-                                'municipios_id',
-                                'fa-city',
-                                [],
-                                [
-                                    'options' => [
-                                        'id' => 'domiciliosactuales-municipios_id',
-                                        'placeholder' => 'Municipio...',
-                                        'disabled' => true
-                                    ]
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'localidad', 'fa-map-pin', [
-                                'inputOptions' => [
-                                    'placeholder' => 'Localidad...',
-                                    'id' => 'domiciliosactuales-localidad',
-                                    'disabled' => true
-                                ]
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'calle', 'fa-road', [
-                                'inputOptions' => ['placeholder' => 'Calle...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'numero_exterior', 'fa-door-open', [
-                                'inputOptions' => ['placeholder' => 'Número exterior...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'numero_interior', 'fa-door-closed', [
-                                'inputOptions' => ['placeholder' => 'Número interior...']
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'colonia', 'fa-map', [
-                                'inputOptions' => ['placeholder' => 'Colonia...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'codigo_postal', 'fa-envelope', [
-                                'inputOptions' => ['placeholder' => 'Código postal...']
-                            ]) ?>
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold">
+                                    <i class="fas fa-home me-2"></i> Domicilio actual
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $domiciliosActuales,
+                                                'entidades_federativas_id',
+                                                'fa-map-marker-alt',
+                                                EntidadesFederativas::getEntidadesFederativasMap(),
+                                                [
+                                                    'options' => [
+                                                        'id' => 'domiciliosactuales-entidades_federativas_id',
+                                                        'placeholder' => 'Entidad federativa...'
+                                                    ]
+                                                ]
+                                            )->label('Entidad federativa') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $domiciliosActuales,
+                                                'municipios_id',
+                                                'fa-city',
+                                                [],
+                                                [
+                                                    'options' => [
+                                                        'id' => 'domiciliosactuales-municipios_id',
+                                                        'placeholder' => 'Municipio...',
+                                                        'disabled' => true
+                                                    ]
+                                                ]
+                                            )->label('Municipio') ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'localidad', 'fa-map-pin', [
+                                                'inputOptions' => [
+                                                    'placeholder' => 'Localidad...',
+                                                    'id' => 'domiciliosactuales-localidad',
+                                                    'disabled' => true
+                                                ]
+                                            ])->label('Localidad') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'calle', 'fa-road', [
+                                                'inputOptions' => ['placeholder' => 'Calle...']
+                                            ])->label('Calle') ?>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'numero_exterior', 'fa-door-open', [
+                                                'inputOptions' => ['placeholder' => 'Número exterior...']
+                                            ])->label('Número exterior') ?>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'numero_interior', 'fa-door-closed', [
+                                                'inputOptions' => ['placeholder' => 'Número interior...']
+                                            ])->label('Número interior') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'colonia', 'fa-map', [
+                                                'inputOptions' => ['placeholder' => 'Colonia...']
+                                            ])->label('Colonia') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $domiciliosActuales, 'codigo_postal', 'fa-envelope', [
+                                                'inputOptions' => ['placeholder' => 'Código postal...']
+                                            ])->label('Código postal') ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- ===================== -->
-        <!-- SECCIÓN 3: DATOS FAMILIARES -->
+        <!-- SECCION 3: DATOS FAMILIARES -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingDatosFamiliares">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosFamiliares" aria-expanded="false" aria-controls="collapseDatosFamiliares">
-                    👨‍👩‍👧 III. DATOS FAMILIARES
+                    <i class="fas fa-people-group me-2 text-success"></i> III. DATOS FAMILIARES
                 </button>
             </h2>
             <div id="collapseDatosFamiliares" class="accordion-collapse collapse" aria-labelledby="headingDatosFamiliares" data-bs-parent="#expedienteAccordion">
@@ -694,7 +679,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingBecas">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBecas" aria-expanded="false" aria-controls="collapseBecas">
-                    🎓 IV. INFORMACIÓN DE BECAS
+                    <i class="fas fa-hand-holding-usd me-2 text-warning"></i> IV. INFORMACIÓN DE BECAS
                 </button>
             </h2>
             <div id="collapseBecas" class="accordion-collapse collapse" aria-labelledby="headingBecas" data-bs-parent="#expedienteAccordion">
@@ -770,7 +755,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHijos">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHijos" aria-expanded="false" aria-controls="collapseHijos">
-                    👶 V. INFORMACIÓN DE HIJOS
+                    <i class="fas fa-children me-2 text-info"></i> V. INFORMACIÓN DE HIJOS
                 </button>
             </h2>
 
@@ -871,7 +856,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingSituacionSocioeconomica">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSituacionSocioeconomica" aria-expanded="false" aria-controls="collapseSituacionSocioeconomica">
-                    💰 VI. SITUACIÓN SOCIOECONÓMICA
+                    <i class="fas fa-piggy-bank me-2 text-primary"></i> VI. SITUACIÓN SOCIOECONÓMICA
                 </button>
             </h2>
             <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
@@ -1240,7 +1225,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingTransporteAcceso">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTransporteAcceso" aria-expanded="false" aria-controls="collapseTransporteAcceso">
-                    🚗 IX. TRANSPORTE Y ACCESO
+                    <i class="fas fa-bus me-2 text-warning"></i> IX. TRANSPORTE Y ACCESO
                 </button>
             </h2>
             <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
@@ -1284,7 +1269,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingSalud">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSalud" aria-expanded="false" aria-controls="collapseSalud">
-                    ⚕️ X. SALUD
+                    <i class="fas fa-heartbeat me-2 text-danger"></i> X. SALUD
                 </button>
             </h2>
             <div id="collapseSalud" class="accordion-collapse collapse" aria-labelledby="headingSalud" data-bs-parent="#expedienteAccordion">
@@ -1780,7 +1765,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingAlimentacion">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAlimentacion" aria-expanded="false" aria-controls="collapseAlimentacion">
-                    🍽️ XI. ALIMENTACION
+                    <i class="fas fa-utensils me-2 text-success"></i> XI. ALIMENTACION
                 </button>
             </h2>
             <div id="collapseAlimentacion" class="accordion-collapse collapse" aria-labelledby="headingAlimentacion" data-bs-parent="#expedienteAccordion">
@@ -1905,7 +1890,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingActividadFisica">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseActividadFisica" aria-expanded="false" aria-controls="collapseActividadFisica">
-                    🏋️ XII. ACTIVIDAD FÍSICA Y DEPORTE
+                    <i class="fas fa-dumbbell me-2 text-primary"></i> XII. ACTIVIDAD FÍSICA Y DEPORTE
                 </button>
             </h2>
             <div id="collapseActividadFisica" class="accordion-collapse collapse" aria-labelledby="headingActividadFisica" data-bs-parent="#expedienteAccordion">
@@ -2049,7 +2034,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHabitosConsumo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHabitosConsumo" aria-expanded="false" aria-controls="collapseHabitosConsumo">
-                    🚬 XIII. HÁBITOS DE CONSUMO
+                    <i class="fas fa-wine-bottle me-2 text-warning"></i> XIII. HÁBITOS DE CONSUMO
                 </button>
             </h2>
             <div id="collapseHabitosConsumo" class="accordion-collapse collapse" aria-labelledby="headingHabitosConsumo" data-bs-parent="#expedienteAccordion">
@@ -2167,7 +2152,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingRecreacion">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecreacion" aria-expanded="false" aria-controls="collapseRecreacion">
-                    💻 XIV. RECREACIÓN Y USO DEL TIEMPO LIBRE
+                    <i class="fas fa-gamepad me-2 text-info"></i> XIV. RECREACIÓN Y USO DEL TIEMPO LIBRE
                 </button>
             </h2>
             <div id="collapseRecreacion" class="accordion-collapse collapse" aria-labelledby="headingRecreacion" data-bs-parent="#expedienteAccordion">
@@ -2275,7 +2260,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOrganizaciones">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrganizaciones" aria-expanded="false" aria-controls="collapseOrganizaciones">
-                    XV. PARTICIPACION EN ORGANIZACIONES
+                    <i class="fas fa-handshake me-2 text-primary"></i> XV. PARTICIPACION EN ORGANIZACIONES
                 </button>
             </h2>
             <div id="collapseOrganizaciones" class="accordion-collapse collapse" aria-labelledby="headingOrganizaciones" data-bs-parent="#expedienteAccordion">
