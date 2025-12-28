@@ -818,100 +818,169 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
-
+        
         <!-- ===================== -->
-        <!-- SECCIÓN 5: INFORMACIÓN DE HIJOS -->
+        <!-- SECCIàN 5: INFORMACIàN DE HIJOS -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHijos">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHijos" aria-expanded="false" aria-controls="collapseHijos">
-                    <i class="fas fa-children me-2 text-info"></i> V. INFORMACIÓN DE HIJOS
+                    <i class="fas fa-children me-2 text-info"></i> V. INFORMACIàN DE HIJOS
                 </button>
             </h2>
 
             <div id="collapseHijos" class="accordion-collapse collapse" aria-labelledby="headingHijos" data-bs-parent="#expedienteAccordion">
-                <div class="accordion-body row g-3">
+                <div class="accordion-body">
+                    <?php $tieneHijos = (int)($alumInfoHijos->tiene_hijos ?? 0) === 1; ?>
 
-                    <div class="section-intro mb-2 d-flex align-items-center gap-2">
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 5</span>
                         <div>
                             <div class="fw-semibold">Declara si tienes hijos.</div>
-                            <div class="text-muted small">Si respondes sí, captura los datos básicos de cada uno.</div>
+                            <div class="text-muted small">Si respondes si, captura los datos basicos de cada uno.</div>
                         </div>
                     </div>
 
-                    <!-- Select tiene hijos -->
-                    <div class="col-md-6">
-                        <?= InputHelper::iconSelect2Field(
-                            $form,
-                            $alumInfoHijos,
-                            'tiene_hijos',
-                            'fa-baby',
-                            BooleanHelper::options(),
-                            [
-                                'placeholder' => '¿Tiene hijos?',
-                                'options' => ['id' => 'aluminfohijos-tiene_hijos']
-                            ]
-                        ) ?>
-                    </div>
+                    <div class="row g-3 align-items-stretch">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-info-subtle text-info fw-semibold d-flex align-items-center">
+                                    <i class="fas fa-baby me-2"></i> Situacion familiar
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3 align-items-start">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold mb-2" for="aluminfohijos-tiene_hijos">Tiene hijos?</label>
+                                            <div class="w-100">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumInfoHijos,
+                                                'tiene_hijos',
+                                                'fa-baby',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'placeholder' => 'Selecciona una opcion',
+                                                    'options' => ['id' => 'aluminfohijos-tiene_hijos']
+                                                ]
+                                            )->label(false) ?>
+                                            </div>
+                                        </div>
 
-                    <!-- Cantidad de hijos -->
-                    <div class="col-md-6 d-none" id="campo-cantidad-hijos">
-                        <?= InputHelper::iconTextField(
-                            $form,
-                            $alumInfoHijos,
-                            'cantidad_hijos',
-                            'fa-hashtag',
-                            [
-                                'inputOptions' => [
-                                    'placeholder' => '¿Cuántos hijos tiene?',
-                                    'type' => 'number',
-                                    'min' => 1,
-                                    'max' => 10
-                                ]
-                            ]
-                        ) ?>
-                    </div>
+                                        <div class="col-md-6 <?= $tieneHijos ? '' : 'd-none' ?>" id="campo-cantidad-hijos">
+                                            <label class="form-label fw-semibold mb-2" for="aluminfohijos-cantidad_hijos">Cantidad de hijos</label>
+                                            <div class="input-group">
+                                                <button type="button" class="btn btn-outline-secondary" id="btn-restar-hijo"><i class="fas fa-minus"></i></button>
+                                                <?= Html::activeInput('number', $alumInfoHijos, 'cantidad_hijos', [
+                                                    'class' => 'form-control text-center fw-semibold',
+                                                    'placeholder' => '0',
+                                                    'min' => 1,
+                                                    'max' => 10,
+                                                    'id' => 'aluminfohijos-cantidad_hijos',
+                                                ]) ?>
+                                                <button type="button" class="btn btn-outline-secondary" id="btn-sumar-hijo"><i class="fas fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 <?= $tieneHijos ? '' : 'd-none' ?>" id="contenedor-hijos">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                            <div>
+                                                <h6 class="mb-1">Datos de cada hijo</h6>
+                                                <p class="text-muted small mb-0">Ingresa nombre completo y fecha de nacimiento.</p>
+                                            </div>
+                                            <button type="button" class="btn btn-success btn-sm" id="btn-agregar-hijo">
+                                                <i class="fas fa-plus me-1"></i> Agregar hijo
+                                            </button>
+                                        </div>
 
-                    <div class="col-12 d-none" id="contenedor-hijos">
-                        <h5 class="mt-3">Información de cada hijo</h5>
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle mb-2">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellido paterno</th>
-                                        <th>Apellido materno</th>
-                                        <th>Fecha de nacimiento</th>
-                                        <th class="text-center" style="width:80px;">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="lista-hijos">
-                                    <?php foreach ($edadesHijos as $i => $hijo): ?>
-                                        <tr class="hijo-item align-middle">
-                                            <input type="hidden" name="EdadesHijos[<?= $i ?>][id]" value="<?= $hijo->id ?>">
-                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][nombre]", $hijo->nombre, 'fa-user', '') ?></td>
-                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][apellido_paterno]", $hijo->apellido_paterno, 'fa-user-tag', '') ?></td>
-                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][apellido_materno]", $hijo->apellido_materno, 'fa-user-tag', '') ?></td>
-                                            <td><?= InputHelper::iconFieldArray("EdadesHijos[$i][fecha_nacimiento]", $hijo->fecha_nacimiento, 'fa-calendar', '', ['inputOptions' => ['type' => 'date', 'placeholder' => '']]) ?></td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-danger btn-sm btn-eliminar-hijo">✖</button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach ?>
-                                </tbody>
-
-                            </table>
+                                        <div id="lista-hijos" class="row g-3">
+                                            <?php foreach ($edadesHijos as $i => $hijo): ?>
+                                                <div class="col-12 hijo-item">
+                                                    <div class="card border-0 shadow-sm h-100">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                                                <span class="badge bg-info-subtle text-info hijo-index">Hijo #<?= $i + 1 ?></span>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-hijo">
+                                                                    <i class="fas fa-trash"></i> Quitar
+                                                                </button>
+                                                            </div>
+                                                            <input type="hidden" class="hijo-id-field" name="EdadesHijos[<?= $i ?>][id]" value="<?= $hijo->id ?>">
+                                                            <div class="row g-3">
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label small text-muted mb-1">Nombre(s)</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                                        <input type="text" class="form-control" name="EdadesHijos[<?= $i ?>][nombre]" value="<?= Html::encode($hijo->nombre) ?>" data-field="nombre" placeholder="Nombre(s)" required pattern=".*\S.*">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label small text-muted mb-1">Apellido paterno</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                                                        <input type="text" class="form-control" name="EdadesHijos[<?= $i ?>][apellido_paterno]" value="<?= Html::encode($hijo->apellido_paterno) ?>" data-field="apellido_paterno" placeholder="Apellido paterno" required pattern=".*\S.*">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label small text-muted mb-1">Apellido materno</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                                                        <input type="text" class="form-control" name="EdadesHijos[<?= $i ?>][apellido_materno]" value="<?= Html::encode($hijo->apellido_materno) ?>" data-field="apellido_materno" placeholder="Apellido materno" required pattern=".*\S.*">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label small text-muted mb-1">Fecha de nacimiento</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                                                        <input type="date" class="form-control" name="EdadesHijos[<?= $i ?>][fecha_nacimiento]" value="<?= Html::encode($hijo->fecha_nacimiento) ?>" data-field="fecha_nacimiento" required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <?php endforeach ?>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 <?= $tieneHijos ? '' : 'd-none' ?>" id="tip-cantidad-hijos">
+                                            <div class="form-text text-muted small">Usa los botones para ajustar; se crean las tarjetas automaticamente.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <button type="button" class="btn btn-success btn-sm" id="btn-agregar-hijo">+ Agregar hijo</button>
+                    <div class="row g-3 mt-3">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold">
+                                    <i class="fas fa-lightbulb me-2"></i> Consejos rapidos
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Si no tienes hijos, elige "No" y continua.
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Usa + y - para ajustar la cantidad; puedes agregar o quitar tarjetas.
+                                        </li>
+                                        <li class="d-flex align-items-start">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Verifica nombres y fechas, se usan para reportes oficiales.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
                     <?php
                     $this->registerJsFile(
                         '@web/js/expediente/expediente-hijos.js',
-                        ['depends' => [\yii\web\JqueryAsset::class]] // Si necesitas jQuery, sino puedes quitarlo
+                        ['depends' => [\yii\web\JqueryAsset::class]]
                     );
                     ?>
 
@@ -919,7 +988,6 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
-
         <!-- ===================== -->
         <!-- SECCIÓN 6: SITUACIÓN SOCIOECONÓMICA -->
         <!-- ===================== -->
