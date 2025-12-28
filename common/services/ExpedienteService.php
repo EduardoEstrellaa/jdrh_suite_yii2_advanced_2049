@@ -29,6 +29,8 @@ use common\models\AlumTratamientos;
 use common\models\Tratamientos;
 use common\models\AlumRecreacionTiempo;
 use common\models\UsosInternet;
+use common\models\AlumOrganizacion;
+use common\models\Organizaciones;
 use common\models\CatalogoCigarrosDia;
 use common\models\FrecuenciaVecesSemana;
 use common\models\AlumHabitosConsumo;
@@ -66,6 +68,7 @@ use common\services\support\ConsumoAlimentosManager;
 use common\services\support\DeportesManager;
 use common\services\support\EjercicioFisicoManager;
 use common\services\support\RecreacionTiempoManager;
+use common\services\support\OrganizacionesManager;
 
 class ExpedienteService
 {
@@ -157,6 +160,7 @@ class ExpedienteService
             'alumEnfermedadesCronicas' => new AlumEnfermedadesCronicas(['alumnos_id' => $alumno->id]),
             'alumAlergia' => new AlumAlergia(['alumnos_id' => $alumno->id]),
             'alumRecreacionTiempo' => new AlumRecreacionTiempo(['alumnos_id' => $alumno->id]),
+            'alumOrganizacion' => new AlumOrganizacion(['alumnos_id' => $alumno->id]),
         ];
     }
 
@@ -190,6 +194,7 @@ class ExpedienteService
             'alumEnfermedadesCronicas' => self::findOrCreateModel(AlumEnfermedadesCronicas::class, ['alumnos_id' => $alumnoId]),
             'alumAlergia' => self::findOrCreateModel(AlumAlergia::class, ['alumnos_id' => $alumnoId]),
             'alumRecreacionTiempo' => self::findOrCreateModel(AlumRecreacionTiempo::class, ['alumnos_id' => $alumnoId]),
+            'alumOrganizacion' => self::findOrCreateModel(AlumOrganizacion::class, ['alumnos_id' => $alumnoId]),
         ];
     }
 
@@ -405,6 +410,7 @@ class ExpedienteService
         ViviendaServiciosManager::sync($models['alumVivienda'], $post);
         AlumBienesPersonalesManager::sync($alumnoId, $post);
         RecreacionTiempoManager::sync($models['alumRecreacionTiempo'], $post);
+        OrganizacionesManager::sync($models['alumOrganizacion'], $post);
     }
 
     /**
@@ -488,6 +494,11 @@ class ExpedienteService
                 UsosInternet::deleteAll(['alum_recreacion_tiempo_id' => $alumRecreacionTiempo->id]);
                 $alumRecreacionTiempo->delete();
             }
+            $alumOrganizacion = AlumOrganizacion::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumOrganizacion) {
+                Organizaciones::deleteAll(['alum_organizacion_id' => $alumOrganizacion->id]);
+                $alumOrganizacion->delete();
+            }
             $alumVivienda = AlumVivienda::findOne(['alumnos_id' => $alumnoId]);
             if ($alumVivienda) {
                 ViviendaBienes::deleteAll(['alum_vivienda_id' => $alumVivienda->id]);
@@ -552,6 +563,9 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumRecreacionTiempo) {
+                continue;
+            }
+            if ($model instanceof AlumOrganizacion) {
                 continue;
             }
             if ($model->isNewRecord) {

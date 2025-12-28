@@ -30,8 +30,9 @@ class AlumOrganizacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alumnos_id', 'participas_organizacion'], 'required'],
+            [['alumnos_id', 'participas_organizacion'], 'required', 'strict' => true],
             [['alumnos_id', 'participas_organizacion'], 'integer'],
+            ['participas_organizacion', 'in', 'range' => [0, 1]],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
         ];
     }
@@ -44,7 +45,7 @@ class AlumOrganizacion extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'alumnos_id' => 'Alumnos ID',
-            'participas_organizacion' => 'Participas Organizacion',
+            'participas_organizacion' => 'Participas en alguna organizacion',
         ];
     }
 

@@ -57,6 +57,8 @@ use common\models\EjercicioFisico;
 use common\models\AlumRecreacionTiempo;
 use common\models\CatalogoLugaresAccesoPrincipal;
 use common\models\CatalogoUsosInternet;
+use common\models\AlumOrganizacion;
+use common\models\CatalogoOrganizaciones;
 use kartik\daterange\DateRangePicker;
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Url;
@@ -101,6 +103,11 @@ $alumRecreacionTiempo = $alumRecreacionTiempo ?? new AlumRecreacionTiempo(['alum
 $catalogoLugaresAccesoMap = $catalogoLugaresAccesoMap ?? CatalogoLugaresAccesoPrincipal::dropdownOptions();
 $catalogoUsosInternetMap = $catalogoUsosInternetMap ?? CatalogoUsosInternet::dropdownOptions();
 $usosInternetSeleccionados = $usosInternetSeleccionados ?? [];
+$alumOrganizacion = $alumOrganizacion ?? new AlumOrganizacion(['alumnos_id' => $alumno->id ?? null]);
+$catalogoOrganizacionesGrouped = $catalogoOrganizacionesGrouped ?? CatalogoOrganizaciones::groupedOptionsByTipo();
+$catalogoOrganizacionOtroId = $catalogoOrganizacionOtroId ?? CatalogoOrganizaciones::getOtroId();
+$organizacionesSeleccionadas = $organizacionesSeleccionadas ?? [];
+$organizacionesOtroMap = $organizacionesOtroMap ?? [];
 $deportesSeleccionados = $deportesSeleccionados ?? [];
 $ejercicioFisicos = $ejercicioFisicos ?? [];
 $alumEstadoSalud = $alumEstadoSalud ?? new AlumEstadoSalud(['alumnos_id' => $alumno->id ?? null]);
@@ -2261,6 +2268,107 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
+
+        <!-- ===================== -->
+        <!-- SECCIàN 15: ORGANIZACIONES -->
+        <!-- ===================== -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOrganizaciones">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrganizaciones" aria-expanded="false" aria-controls="collapseOrganizaciones">
+                    XV. PARTICIPACION EN ORGANIZACIONES
+                </button>
+            </h2>
+            <div id="collapseOrganizaciones" class="accordion-collapse collapse" aria-labelledby="headingOrganizaciones" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <?php $participaOrganizacion = (int)($alumOrganizacion->participas_organizacion ?? 0) === 1; ?>
+
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 15</span>
+                        <div>
+                            <div class="fw-semibold">Organizaciones y participacion.</div>
+                            <div class="text-muted small">Indica si participas y en cuales te encuentras involucrado.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <?= InputHelper::iconSelect2Field(
+                                $form,
+                                $alumOrganizacion,
+                                'participas_organizacion',
+                                'fa-users',
+                                BooleanHelper::options(),
+                                [
+                                    'placeholder' => 'Participas en alguna organizacion?',
+                                    'id' => 'alumorganizacion-participas_organizacion',
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div id="organizaciones-container" class="mt-3 <?= $participaOrganizacion ? '' : 'd-none' ?>">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                            <div>
+                                <h5 class="mb-1">Organizaciones en las que participas</h5>
+                                <p class="text-muted small mb-0">Selecciona todas las opciones que apliquen.</p>
+                            </div>
+                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Selecciona al menos una</span>
+                        </div>
+
+                        <?php if (empty($catalogoOrganizacionesGrouped)): ?>
+                            <div class="alert alert-warning mb-0">No hay organizaciones registradas en el catalogo.</div>
+                        <?php else: ?>
+                            <?php foreach ($catalogoOrganizacionesGrouped as $tipoNombre => $organizaciones): ?>
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <h6 class="mb-0"><?= Html::encode($tipoNombre) ?></h6>
+                                        <span class="text-muted small"><?= count($organizaciones) ?> opciones</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <?php foreach ($organizaciones as $org): ?>
+                                            <?php
+                                            $id = (int)($org['id'] ?? 0);
+                                            $nombreOrg = trim((string)($org['nombre'] ?? ''));
+                                            $checked = in_array($id, $organizacionesSeleccionadas, true);
+                                            $esNombreOtro = mb_strtolower($nombreOrg, 'UTF-8') === 'otro';
+                                            $esOtro = ($catalogoOrganizacionOtroId !== null && $id === (int)$catalogoOrganizacionOtroId) || $esNombreOtro;
+                                            ?>
+                                            <div class="col-lg-6 col-md-12">
+                                                <div class="organizacion-item border rounded p-3 h-100">
+                                                    <div class="form-check">
+                                                        <input
+                                                            type="checkbox"
+                                                            class="form-check-input organizacion-checkbox"
+                                                            id="organizacion-<?= $id ?>"
+                                                            name="Organizaciones[<?= $id ?>][catalogo_organizaciones_id]"
+                                                            value="<?= $id ?>"
+                                                            data-es-otro="<?= $esOtro ? '1' : '0' ?>"
+                                                            <?= $checked ? 'checked' : '' ?>>
+                                                        <label class="form-check-label fw-semibold" for="organizacion-<?= $id ?>"><?= Html::encode($nombreOrg) ?></label>
+                                                    </div>
+                                                    <?php if ($esOtro): ?>
+                                                        <div class="mt-2 organizacion-otro-container <?= $checked ? '' : 'd-none' ?>">
+                                                            <label class="form-label small text-muted" for="organizacion-otro-<?= $id ?>">Especifica la organizacion</label>
+                                                            <input
+                                                                type="text"
+                                                                class="form-control organizacion-otro-input"
+                                                                id="organizacion-otro-<?= $id ?>"
+                                                                name="Organizaciones[<?= $id ?>][otra_organizacion_especificar]"
+                                                                value="<?= Html::encode($organizacionesOtroMap[$id] ?? '') ?>"
+                                                                <?= $checked ? '' : 'disabled' ?>>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div> <!-- /accordion -->
 
     <!-- BOTONES -->
@@ -2291,6 +2399,7 @@ $this->registerJsVar('VIVIENDA_SERVICIO_OTRO_ID', $catalogoServicioOtroId);
 $this->registerJsVar('PROBLEMA_OTRO_ID', $otroCatalogoProblemaId);
 $this->registerJsVar('ENFERMEDAD_CRONICA_OTRO_ID', $otroCatalogoEnfermCronicaId);
 $this->registerJsVar('LUGAR_COMER_OTRO_ID', $catalogoLugarComerOtroId);
+$this->registerJsVar('ORGANIZACION_OTRO_ID', $catalogoOrganizacionOtroId);
 $alumnoId = (int)($alumno->id ?? 0);
 $this->registerJsFile(
     '@web/js/expediente/expediente-dependencia.js',
@@ -2326,6 +2435,10 @@ $this->registerJsFile(
 );
 $this->registerJsFile(
     '@web/js/expediente/expediente-recreacion.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
+$this->registerJsFile(
+    '@web/js/expediente/expediente-organizacion.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(

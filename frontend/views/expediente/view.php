@@ -136,4 +136,41 @@ $this->params['breadcrumbs'][] = $this->title;
         'options' => ['class' => 'table table-bordered table-striped'],
     ]) ?>
 
+    <hr>
+
+    <!-- ===================== -->
+    <!-- ORGANIZACIONES -->
+    <!-- ===================== -->
+    <h4><i class="fas fa-users text-info"></i> Organizaciones</h4>
+    <?php
+    $participaOrganizacion = (int)($alumOrganizacion->participas_organizacion ?? 0) === 1;
+    $organizacionNombres = [];
+    $organizacionesOtroMap = $organizacionesOtroMap ?? [];
+    foreach (($catalogoOrganizacionesGrouped ?? []) as $grupo) {
+        foreach ($grupo as $org) {
+            $orgId = (int)($org['id'] ?? 0);
+            $organizacionNombres[$orgId] = $org['nombre'] ?? '';
+        }
+    }
+    ?>
+
+    <p><strong>Participas en organizaciones:</strong> <?= $participaOrganizacion ? 'Si' : 'No' ?></p>
+    <?php if ($participaOrganizacion): ?>
+        <?php if (!empty($organizacionesSeleccionadas)): ?>
+            <ul>
+                <?php foreach ($organizacionesSeleccionadas as $orgId): ?>
+                    <?php
+                    $nombre = $organizacionNombres[(int)$orgId] ?? ('Organizacion ' . (int)$orgId);
+                    $otro = $organizacionesOtroMap[(int)$orgId] ?? null;
+                    ?>
+                    <li>
+                        <?= Html::encode($nombre) ?><?= $otro ? ': ' . Html::encode($otro) : '' ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p class="text-muted">Sin organizaciones registradas.</p>
+        <?php endif; ?>
+    <?php endif; ?>
+
 </div>

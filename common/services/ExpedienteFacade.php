@@ -19,6 +19,7 @@ use common\models\AlumTratamientos;
 use common\models\AlumRecreacionTiempo;
 use common\models\AlumConsumoAlimentos;
 use common\models\AlumLugaresComer;
+use common\models\AlumOrganizacion;
 use common\models\Alergias;
 use common\models\CatalogoBienesPersonales;
 use common\models\CatalogoBienesVivienda;
@@ -33,6 +34,7 @@ use common\models\CatalogoTratamientos;
 use common\models\CatalogoUsoAnteojos;
 use common\models\CatalogoLugaresAccesoPrincipal;
 use common\models\CatalogoUsosInternet;
+use common\models\CatalogoOrganizaciones;
 use common\models\CatalogoCigarrosDia;
 use common\models\CatalogoTransportes;
 use common\models\CatalogoLugaresComer;
@@ -58,6 +60,7 @@ use common\models\ProblemasSalud;
 use common\models\AlumDeportes;
 use common\models\AlumEjercicio;
 use common\models\Deportes;
+use common\models\Organizaciones;
 use common\models\EjercicioFisico;
 use common\models\UsosInternet;
 use common\services\support\OperationResult;
@@ -78,6 +81,7 @@ class ExpedienteFacade
             $this->getAlimentacionDefaults($alumno->id),
             $this->getActividadFisicaDefaults(),
             $this->getRecreacionDefaults(),
+            $this->getOrganizacionDefaults(),
             $this->getSaludDefaults(),
             $this->getTratamientosDefaults(),
             $this->getCatalogosData()
@@ -106,6 +110,7 @@ class ExpedienteFacade
         $deportesData = $this->buildDeportesData($models['alumDeportes'] ?? null);
         $ejercicioData = $this->buildEjercicioFisicoData($models['alumEjercicio'] ?? null);
         $recreacionData = $this->buildRecreacionData($models['alumRecreacionTiempo'] ?? null);
+        $organizacionesData = $this->buildOrganizacionesData($models['alumOrganizacion'] ?? null);
 
         return array_merge(
             $models,
@@ -124,6 +129,7 @@ class ExpedienteFacade
             $deportesData,
             $ejercicioData,
             $recreacionData,
+            $organizacionesData,
             ['alumAsisteMedico' => $models['alumAsisteMedico']],
             ['alumAsisteDentista' => $models['alumAsisteDentista']],
             ['edadesHijos' => $edadesHijos],
@@ -507,6 +513,33 @@ class ExpedienteFacade
         ];
     }
 
+    private function buildOrganizacionesData(?AlumOrganizacion $alumOrganizacion = null): array
+    {
+        if ($alumOrganizacion === null || $alumOrganizacion->isNewRecord) {
+            return $this->getOrganizacionDefaults();
+        }
+
+        $organizaciones = Organizaciones::find()
+            ->where(['alum_organizacion_id' => $alumOrganizacion->id])
+            ->all();
+
+        $seleccionadas = [];
+        $otros = [];
+
+        foreach ($organizaciones as $organizacion) {
+            $catalogoId = (int)$organizacion->catalogo_organizaciones_id;
+            $seleccionadas[] = $catalogoId;
+            if ($organizacion->otra_organizacion_especificar !== null && $organizacion->otra_organizacion_especificar !== '') {
+                $otros[$catalogoId] = $organizacion->otra_organizacion_especificar;
+            }
+        }
+
+        return [
+            'organizacionesSeleccionadas' => array_values(array_unique($seleccionadas)),
+            'organizacionesOtroMap' => $otros,
+        ];
+    }
+
     private function getViviendaDefaults(): array
     {
         return [
@@ -537,6 +570,14 @@ class ExpedienteFacade
     {
         return [
             'usosInternetSeleccionados' => [],
+        ];
+    }
+
+    private function getOrganizacionDefaults(): array
+    {
+        return [
+            'organizacionesSeleccionadas' => [],
+            'organizacionesOtroMap' => [],
         ];
     }
 
@@ -599,6 +640,8 @@ class ExpedienteFacade
             'otroCatalogoProblemaId' => CatalogoProblemasSalud::getOtroId(),
             'catalogoLugaresAccesoMap' => CatalogoLugaresAccesoPrincipal::dropdownOptions(),
             'catalogoUsosInternetMap' => CatalogoUsosInternet::dropdownOptions(),
+            'catalogoOrganizacionesGrouped' => CatalogoOrganizaciones::groupedOptionsByTipo(),
+            'catalogoOrganizacionOtroId' => CatalogoOrganizaciones::getOtroId(),
         ];
     }
 }

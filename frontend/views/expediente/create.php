@@ -96,6 +96,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'catalogoLugaresAccesoMap' => $catalogoLugaresAccesoMap ?? [],
         'catalogoUsosInternetMap' => $catalogoUsosInternetMap ?? [],
         'usosInternetSeleccionados' => $usosInternetSeleccionados ?? [],
+        'alumOrganizacion' => $alumOrganizacion ?? null,
+        'catalogoOrganizacionesGrouped' => $catalogoOrganizacionesGrouped ?? [],
+        'catalogoOrganizacionOtroId' => $catalogoOrganizacionOtroId ?? null,
+        'organizacionesSeleccionadas' => $organizacionesSeleccionadas ?? [],
+        'organizacionesOtroMap' => $organizacionesOtroMap ?? [],
     ]) ?>
 
 </div>
