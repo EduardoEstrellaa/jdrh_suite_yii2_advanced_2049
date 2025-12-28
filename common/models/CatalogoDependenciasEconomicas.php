@@ -69,6 +69,28 @@ class CatalogoDependenciasEconomicas extends \yii\db\ActiveRecord
     }
 
     /**
+     * Opciones para dependientes econ¢micos (excluye institucional/gubernamental).
+     */
+    public static function dropdownDependientesOptions(): array
+    {
+        // Mostrar solo las categor¡as 1, 2 y 3; se incluye "Otro" aunque pertenezca a otra categor¡a.
+        $categoriasPermitidas = [1, 2, 3];
+
+        $records = static::find()
+            ->select(['id', 'nombre'])
+            ->where([
+                'or',
+                ['in', 'categorias_dependencias_id', $categoriasPermitidas],
+                ['nombre' => 'Otro'],
+            ])
+            ->orderBy(['id' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($records, 'id', 'nombre');
+    }
+
+    /**
      * Obtiene el ID del registro "Otro" (si existe).
      */
     public static function getOtroId(): ?int

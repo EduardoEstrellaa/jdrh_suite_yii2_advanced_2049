@@ -560,7 +560,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
-                <!-- ===================== -->
+        <!-- ===================== -->
         <!-- SECCION 3: DATOS FAMILIARES -->
         <!-- ===================== -->
         <div class="accordion-item">
@@ -727,7 +727,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         </div>
                     </div>
 
-                                        <div class="row g-3">
+                    <div class="row g-3">
                         <div class="col-lg-8">
                             <div class="card shadow-sm border-0 h-100">
                                 <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
@@ -808,7 +808,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                             </div>
                         </div>
                     </div>
-<?php
+                    <?php
                     $this->registerJsFile('@web/js/expediente/expediente-becas.js', [
                         'depends' => [\yii\web\JqueryAsset::class],
                     ]);
@@ -818,7 +818,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
-        
+
         <!-- ===================== -->
         <!-- SECCIÓN 5: INFORMACIÓN DE HIJOS -->
         <!-- ===================== -->
@@ -852,17 +852,17 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold mb-2" for="aluminfohijos-tiene_hijos">Tiene hijos?</label>
                                             <div class="w-100">
-                                            <?= InputHelper::iconSelect2Field(
-                                                $form,
-                                                $alumInfoHijos,
-                                                'tiene_hijos',
-                                                'fa-baby',
-                                                BooleanHelper::options(),
-                                                [
-                                                    'placeholder' => 'Selecciona una opcion',
-                                                    'options' => ['id' => 'aluminfohijos-tiene_hijos']
-                                                ]
-                                            )->label(false) ?>
+                                                <?= InputHelper::iconSelect2Field(
+                                                    $form,
+                                                    $alumInfoHijos,
+                                                    'tiene_hijos',
+                                                    'fa-baby',
+                                                    BooleanHelper::options(),
+                                                    [
+                                                        'placeholder' => 'Selecciona una opcion',
+                                                        'options' => ['id' => 'aluminfohijos-tiene_hijos']
+                                                    ]
+                                                )->label(false) ?>
                                             </div>
                                         </div>
 
@@ -937,7 +937,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <?php endforeach ?>
+                                            <?php endforeach ?>
                                         </div>
                                     </div>
                                     <div class="row mt-3">
@@ -997,8 +997,10 @@ $this->registerCssFile('@web/css/expediente-form.css');
                     <i class="fas fa-piggy-bank me-2 text-primary"></i> VI. SITUACIÓN SOCIOECONÓMICA
                 </button>
             </h2>
+
             <div id="collapseSituacionSocioeconomica" class="accordion-collapse collapse" aria-labelledby="headingSituacionSocioeconomica" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
+
                     <div class="section-intro mb-3 d-flex align-items-center gap-2">
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 6</span>
                         <div>
@@ -1006,160 +1008,288 @@ $this->registerCssFile('@web/css/expediente-form.css');
                             <div class="text-muted small">Indica de quién dependes, si tienes dependientes y detalles de tu trabajo.</div>
                         </div>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumDependeEconomicamente,
-                                'catalogo_dependencias_economicas_id',
-                                'fa-hand-holding-usd',
-                                CatalogoDependenciasEconomicas::dropdownOptions(),
-                                [
-                                    'placeholder' => 'Selecciona de quien dependes',
-                                    'id' => 'alumdependeeconomicamente-catalogo_dependencias_economicas_id',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6 <?= ($alumDependeEconomicamente->catalogo_dependencias_economicas_id ?? null) === $otroCatalogoDependenciaId ? '' : 'd-none' ?>" id="otro-dependencia-container">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumDependeEconomicamente,
-                                'otro_especificar',
-                                'fa-edit',
-                                [
-                                    'inputOptions' => [
-                                        'placeholder' => 'Especifica otra dependencia economica...',
-                                        'id' => 'alumdependeeconomicamente-otro_especificar'
-                                    ]
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
 
-                    <div class="row g-3 mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumDependenEconomica,
-                                'tiene_dependientes',
-                                'fa-user-friends',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Tiene dependientes?',
-                                    'id' => 'alumdependeneconomica-tiene_dependientes',
-                                ],
-                                ['allowClear' => true]
-                            ) ?>
-                        </div>
-                    </div>
+                    <?php
+                    $mostrarDependientes = (int)($alumDependenEconomica->tiene_dependientes ?? 0) === 1;
+                    $mostrarTrabajo = (int)($alumTrabajo->tiene_trabajo ?? 0) === 1;
+                    $esOtroDep = ($alumDependeEconomicamente->catalogo_dependencias_economicas_id ?? null) === $otroCatalogoDependenciaId;
 
-                    <?php $mostrarDependientes = (int)($alumDependenEconomica->tiene_dependientes ?? 0) === 1; ?>
-                    <div class="mt-3 <?= $mostrarDependientes ? '' : 'd-none' ?>" id="dependientes-section">
-                        <div class="row g-2">
-                            <?php foreach ($catalogoDependenciasOptions as $id => $nombre): ?>
-                                <?php $checked = in_array((int)$id, $dependientesSeleccionados, true); ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input dependiente-checkbox"
-                                            name="Dependientes[ids][]"
-                                            value="<?= (int)$id ?>"
-                                            id="dependiente-<?= (int)$id ?>"
-                                            data-otro-id="<?= (int)$otroCatalogoDependenciaId ?>"
-                                            <?= $checked ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="dependiente-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                    $mostrarOtroDependiente = ($otroCatalogoDependenciaId !== null && in_array((int)$otroCatalogoDependenciaId, $dependientesSeleccionados, true));
+                    ?>
+
+                    <!-- Fila 1: Dependencia + Tips -->
+                    <div class="row g-3 align-items-stretch">
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-hand-holding-usd me-2"></i> Dependencia económica</span>
+                                    <span class="badge bg-primary text-white">Requerido</span>
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Selecciona de quién depende tu economía. Si eliges “Otro”, especifica.</p>
+
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumDependeEconomicamente,
+                                                'catalogo_dependencias_economicas_id',
+                                                'fa-hand-holding-usd',
+                                                CatalogoDependenciasEconomicas::dropdownOptions(),
+                                                [
+                                                    'placeholder' => 'Selecciona de quién dependes...',
+                                                    'id' => 'alumdependeeconomicamente-catalogo_dependencias_economicas_id',
+
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('¿De quién dependes económicamente?', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+
+                                        <div class="col-md-6 <?= $esOtroDep ? '' : 'd-none' ?>" id="otro-dependencia-container">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumDependeEconomicamente,
+                                                'otro_especificar',
+                                                'fa-pen',
+                                                [
+                                                    'inputOptions' => [
+                                                        'placeholder' => 'Especifica “Otro”...',
+                                                        'id' => 'alumdependeeconomicamente-otro_especificar',
+                                                    ],
+                                                ]
+                                            )->label('Especifica', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-shield-alt me-1"></i>
+                                            Esta información se usa para apoyos y seguimiento tutorial.
+                                        </small>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
                         </div>
-                        <div class="mt-2 <?= $otroCatalogoDependenciaId !== null && in_array((int)$otroCatalogoDependenciaId, $dependientesSeleccionados, true) ? '' : 'd-none' ?>" id="otro-dependiente-container">
-                            <input type="text" name="Dependientes[otro_especificar]" id="dependientes-otro" class="form-control" placeholder="<?= Yii::t('app', 'Especificar otro...') ?>" value="<?= Html::encode($dependientesOtro ?? '') ?>">
+
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold">
+                                    <i class="fas fa-info-circle me-2"></i> Tips rápidos
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Si no aplica “Otro”, no lo llenes.
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Selecciona con sinceridad: ayuda a detectar necesidades.
+                                        </li>
+                                        <li class="d-flex align-items-start">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Revisa ortografía: se usa en reportes.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumTrabajo,
-                                'tiene_trabajo',
-                                'fa-briefcase',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Tiene trabajo?',
-                                    'id' => 'alumtrabajo-tiene_trabajo',
-                                ],
-                                ['allowClear' => true]
-                            ) ?>
-                        </div>
-                    </div>
+                    <!-- Fila 2: Dependientes + Trabajo -->
+                    <div class="row g-3 mt-1 align-items-stretch">
 
-                    <?php $mostrarTrabajo = (int)($alumTrabajo->tiene_trabajo ?? 0) === 1; ?>
-                    <div class="row g-3 mt-2 <?= $mostrarTrabajo ? '' : 'd-none' ?>" id="trabajo-section">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumTrabajo,
-                                'nombre_empresa',
-                                'fa-building',
-                                [
-                                    'inputOptions' => [
-                                        'placeholder' => 'Nombre de la empresa...',
-                                        'id' => 'alumtrabajo-nombre_empresa',
-                                    ],
-                                ]
-                            ) ?>
+                        <!-- Dependientes -->
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-users me-2"></i> Dependientes económicos</span>
+                                    <span class="badge bg-success text-white">Opcional</span>
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Indica si tú mantienes económicamente a alguien y selecciona quiénes.</p>
+
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumDependenEconomica,
+                                                'tiene_dependientes',
+                                                'fa-user-friends',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'options' => [
+                                                        'placeholder' => '¿Tienes dependientes?',
+                                                        'id' => 'alumdependeneconomica-tiene_dependientes',
+                                                    ],
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('¿Tienes dependientes?', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3 <?= $mostrarDependientes ? '' : 'd-none' ?>" id="dependientes-section">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                                            <div>
+                                                <h6 class="mb-0">Selecciona dependientes</h6>
+                                                <div class="text-muted small">Marca todas las opciones que apliquen.</div>
+                                            </div>
+                                            <span class="badge bg-success-subtle text-success fw-semibold px-3 py-2">Checklist</span>
+                                        </div>
+
+                                        <div class="row g-2">
+                                            <?php foreach ($catalogoDependenciasOptions as $id => $nombre): ?>
+                                                <?php $checked = in_array((int)$id, $dependientesSeleccionados, true); ?>
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="border rounded p-3 h-100">
+                                                        <div class="form-check mb-0">
+                                                            <input
+                                                                type="checkbox"
+                                                                class="form-check-input dependiente-checkbox"
+                                                                name="Dependientes[ids][]"
+                                                                value="<?= (int)$id ?>"
+                                                                id="dependiente-<?= (int)$id ?>"
+                                                                data-otro-id="<?= (int)$otroCatalogoDependenciaId ?>"
+                                                                <?= $checked ? 'checked' : '' ?>>
+                                                            <label class="form-check-label fw-semibold" for="dependiente-<?= (int)$id ?>">
+                                                                <?= Html::encode($nombre) ?>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+
+                                        <div class="mt-3 <?= $mostrarOtroDependiente ? '' : 'd-none' ?>" id="otro-dependiente-container">
+                                            <label class="form-label fw-semibold" for="dependientes-otro">Especifica “Otro”</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                                                <input
+                                                    type="text"
+                                                    name="Dependientes[otro_especificar]"
+                                                    id="dependientes-otro"
+                                                    class="form-control"
+                                                    placeholder="Especificar otro..."
+                                                    value="<?= Html::encode($dependientesOtro ?? '') ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumTrabajo,
-                                'puesto_ocupacion',
-                                'fa-user-tie',
-                                [
-                                    'inputOptions' => [
-                                        'placeholder' => 'Puesto u ocupación...',
-                                        'id' => 'alumtrabajo-puesto_ocupacion',
-                                    ],
-                                ]
-                            ) ?>
+
+                        <!-- Trabajo -->
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-briefcase me-2"></i> Trabajo</span>
+                                    <span class="badge bg-warning text-dark">Opcional</span>
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Indica si trabajas actualmente. Si respondes “Sí”, completa los datos.</p>
+
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumTrabajo,
+                                                'tiene_trabajo',
+                                                'fa-briefcase',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'options' => [
+                                                        'placeholder' => '¿Tienes trabajo?',
+                                                        'id' => 'alumtrabajo-tiene_trabajo',
+                                                    ],
+                                                ],
+                                                ['allowClear' => true]
+                                            )->label('¿Tienes trabajo?', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mt-1 <?= $mostrarTrabajo ? '' : 'd-none' ?>" id="trabajo-section">
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumTrabajo,
+                                                'nombre_empresa',
+                                                'fa-building',
+                                                [
+                                                    'inputOptions' => [
+                                                        'placeholder' => 'Nombre de la empresa...',
+                                                        'id' => 'alumtrabajo-nombre_empresa',
+                                                    ],
+                                                ]
+                                            )->label('Empresa', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumTrabajo,
+                                                'puesto_ocupacion',
+                                                'fa-user-tie',
+                                                [
+                                                    'inputOptions' => [
+                                                        'placeholder' => 'Puesto u ocupación...',
+                                                        'id' => 'alumtrabajo-puesto_ocupacion',
+                                                    ],
+                                                ]
+                                            )->label('Puesto / Ocupación', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumTrabajo,
+                                                'horario_entrada',
+                                                'fa-clock',
+                                                [
+                                                    'inputOptions' => [
+                                                        'type' => 'time',
+                                                        'placeholder' => 'Hora de entrada',
+                                                        'id' => 'alumtrabajo-horario_entrada',
+                                                    ],
+                                                ]
+                                            )->label('Hora de entrada', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumTrabajo,
+                                                'horario_salida',
+                                                'fa-clock',
+                                                [
+                                                    'inputOptions' => [
+                                                        'type' => 'time',
+                                                        'placeholder' => 'Hora de salida',
+                                                        'id' => 'alumtrabajo-horario_salida',
+                                                    ],
+                                                ]
+                                            )->label('Hora de salida', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <small class="text-muted">
+                                                <i class="fas fa-lightbulb me-1"></i>
+                                                Si tu horario es variable, coloca un aproximado.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumTrabajo,
-                                'horario_entrada',
-                                'fa-clock',
-                                [
-                                    'inputOptions' => [
-                                        'type' => 'time',
-                                        'placeholder' => 'Hora de entrada',
-                                        'id' => 'alumtrabajo-horario_entrada',
-                                    ],
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumTrabajo,
-                                'horario_salida',
-                                'fa-clock',
-                                [
-                                    'inputOptions' => [
-                                        'type' => 'time',
-                                        'placeholder' => 'Hora de salida',
-                                        'id' => 'alumtrabajo-horario_salida',
-                                    ],
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
+
+                    </div><!-- /row -->
 
                 </div>
             </div>
         </div>
+
 
 
 

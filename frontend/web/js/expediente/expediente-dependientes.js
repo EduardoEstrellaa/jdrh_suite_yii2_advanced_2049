@@ -9,6 +9,26 @@
         otroInput: '#dependientes-otro',
     };
 
+    function ensureErrorMessage($section) {
+        let $msg = $section.find('.dependientes-error-msg');
+        if (!$msg.length) {
+            $msg = $('<div class="dependientes-error-msg text-danger small fw-semibold d-none mt-2">Selecciona al menos una opción.</div>');
+            // Colocar mensaje al inicio de la sección para que sea visible
+            $section.prepend($msg);
+        }
+        return $msg;
+    }
+
+    function markCardsError($checkboxes, $section, hasError) {
+        const $msg = ensureErrorMessage($section);
+        $section.toggleClass('border border-danger rounded-3 shadow-sm', hasError);
+        $msg.toggleClass('d-none', !hasError);
+    }
+
+    function clearCardsError($checkboxes, $section) {
+        markCardsError($checkboxes, $section, false);
+    }
+
     function sanitizeOtroInput() {
         const $otroInput = $(selectors.otroInput);
         if (!$otroInput.length) return;
@@ -49,6 +69,7 @@
                 .removeClass('is-invalid')
                 .get(0)?.setCustomValidity('');
             toggleDependientes.lastValue = 0;
+            clearCardsError($checkboxes, $section);
             return;
         }
 
@@ -63,12 +84,14 @@
             $otroInput.attr('pattern', '.*\\S.*');
         } else {
             $otroInput.removeAttr('pattern')
+                .val('')
                 .removeClass('is-invalid')
                 .get(0)?.setCustomValidity('');
         }
 
         // Si no hay checks, forzar uno requerido para validación HTML5
-        $checkboxes.prop('required', selected.length === 0);
+        const hasError = selected.length === 0;
+        $checkboxes.prop('required', hasError);
         toggleDependientes.lastValue = 1;
     }
     toggleDependientes.lastValue = null;
@@ -81,6 +104,36 @@
         const $otroInput = $(selectors.otroInput);
         const $toggle = $(selectors.tieneDependientes);
         const otroId = window.DEPENDENCIA_OTRO_ID ?? null;
+        const $section = $(selectors.dependientesSection);
+        const $checkboxes = $(selectors.dependienteCheckbox);
+
+        function validateDependientes(event) {
+            if (parseInt($toggle.val(), 10) !== 1) {
+                clearCardsError($checkboxes, $section);
+                return true;
+            }
+
+            const selected = $checkboxes.filter(':checked').length;
+            const hasError = selected === 0;
+            markCardsError($checkboxes, $section, hasError);
+
+            if (hasError) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                const firstCard = $checkboxes.first().get(0);
+                firstCard?.focus({ preventScroll: false });
+                const $collapse = $section.closest('.accordion-collapse');
+                if ($collapse.length) {
+                    $collapse.addClass('show');
+                    $collapse.prev('.accordion-header').find('.accordion-button').removeClass('collapsed');
+                }
+                return false;
+            }
+
+            return true;
+        }
 
         function validateOtro(event, options = {}) {
             const sanitize = options.sanitize === true;
@@ -134,7 +187,7 @@
         }
 
         $form.on('submit', function (e) {
-            if (!validateOtro(e, { sanitize: true })) {
+            if (!validateDependientes(e) || !validateOtro(e, { sanitize: true })) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 return false;
@@ -143,7 +196,7 @@
         });
 
         $form.on('beforeSubmit', function (e) {
-            if (!validateOtro(e, { sanitize: true })) {
+            if (!validateDependientes(e) || !validateOtro(e, { sanitize: true })) {
                 e.preventDefault();
                 return false;
             }
@@ -151,6 +204,7 @@
         });
 
         $(selectors.dependienteCheckbox).on('change', function () {
+            clearCardsError($checkboxes, $section);
             validateOtro(null, { sanitize: false });
         });
         $(selectors.otroInput).on('input', function () {
@@ -172,16 +226,21 @@
         formEl.addEventListener('invalid', function (ev) {
             ev.preventDefault();
             const target = ev.target;
-            const $collapse = $(target).closest('.accordion-collapse');
-            if ($collapse.length) {
-                $collapse.addClass('show');
-                $collapse.prev('.accordion-header').find('.accordion-button').removeClass('collapsed');
-            }
-            toggleDependientes();
-            setTimeout(function () {
-                target.focus();
-                if (target.scrollIntoView) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const $collapse = $(target).closest('.accordion-collapse');
+        if ($collapse.length) {
+            $collapse.addClass('show');
+            $collapse.prev('.accordion-header').find('.accordion-button').removeClass('collapsed');
+        }
+        if ($(target).is(selectors.dependienteCheckbox)) {
+            const $section = $(selectors.dependientesSection);
+            const $checkboxes = $(selectors.dependienteCheckbox);
+            markCardsError($checkboxes, $section, true);
+        }
+        toggleDependientes();
+        setTimeout(function () {
+            target.focus();
+            if (target.scrollIntoView) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 0);
         }, true);

@@ -608,7 +608,7 @@ class ExpedienteFacade
     private function getCatalogosData(): array
     {
         return [
-            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownOptions(),
+            'catalogoDependenciasOptions' => CatalogoDependenciasEconomicas::dropdownDependientesOptions(),
             'otroCatalogoDependenciaId' => CatalogoDependenciasEconomicas::getOtroId(),
             'tiposViviendasMap' => TiposViviendas::dropdownOptions(),
             'tipoViviendaOtroId' => TiposViviendas::getOtroId(),
