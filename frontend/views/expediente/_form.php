@@ -417,9 +417,9 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                                 'fa-language',
                                                 BooleanHelper::options(),
                                                 [
-                                                    'placeholder' => '¿Habla maya?'
+                                                    'placeholder' => 'Habla maya?'
                                                 ]
-                                            )->label('¿Habla maya?') ?>
+                                            )->label('Habla maya?') ?>
                                         </div>
                                     </div>
                                 </div>
@@ -560,7 +560,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                 </div>
             </div>
         </div>
-        <!-- ===================== -->
+                <!-- ===================== -->
         <!-- SECCION 3: DATOS FAMILIARES -->
         <!-- ===================== -->
         <div class="accordion-item">
@@ -575,97 +575,131 @@ $this->registerCssFile('@web/css/expediente-form.css');
                     <div class="section-intro mb-3 d-flex align-items-center gap-2">
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 3</span>
                         <div>
-                            <div class="fw-semibold">Cuéntanos sobre tu familia.</div>
+                            <div class="fw-semibold">Cuentanos sobre tu familia.</div>
                             <div class="text-muted small">Nombres, apellidos y ocupaciones para padre y madre.</div>
                         </div>
                     </div>
 
-                    <h5 class="mb-3 mt-2">
-                        <i class="fas fa-user-friends text-primary"></i>
-                        <span class="text-secondary">Datos del Padre</span>
-                    </h5>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_nombre', 'fa-male', [
-                                'inputOptions' => ['placeholder' => 'Nombre del padre...']
-                            ]) ?>
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-male me-2"></i> Datos del padre</span>
+                                    <span class="badge bg-success text-white">Revisa</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Nombre completo y ocupacion actual de tu padre.</p>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_nombre', 'fa-male', [
+                                                'inputOptions' => ['placeholder' => 'Nombre del padre...']
+                                            ])->label('Nombre(s) del padre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_paterno', 'fa-signature', [
+                                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
+                                            ])->label('Apellido paterno del padre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_materno', 'fa-signature', [
+                                                'inputOptions' => ['placeholder' => 'Apellido materno...']
+                                            ])->label('Apellido materno del padre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_ocupacion', 'fa-briefcase', [
+                                                'inputOptions' => ['placeholder' => 'Ocupación del padre...']
+                                            ])->label('Ocupación del padre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumDatosFamiliares,
+                                                'padre_mayahablante',
+                                                'fa-language',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'placeholder' => '¿Habla maya?'
+                                                ]
+                                            )->label('¿Habla maya? (padre)') ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_paterno', 'fa-signature', [
-                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_apellido_materno', 'fa-signature', [
-                                'inputOptions' => ['placeholder' => 'Apellido materno...']
-                            ]) ?>
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-female me-2"></i> Datos de la madre</span>
+                                    <span class="badge bg-info text-white">Revisa</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Completa los datos de tu madre con la misma estructura.</p>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_nombre', 'fa-female', [
+                                                'inputOptions' => ['placeholder' => 'Nombre de la madre...']
+                                            ])->label('Nombre(s) de la madre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_paterno', 'fa-signature', [
+                                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
+                                            ])->label('Apellido paterno de la madre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_materno', 'fa-signature', [
+                                                'inputOptions' => ['placeholder' => 'Apellido materno...']
+                                            ])->label('Apellido materno de la madre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_ocupacion', 'fa-briefcase', [
+                                                'inputOptions' => ['placeholder' => 'Ocupación de la madre...']
+                                            ])->label('Ocupación de la madre') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumDatosFamiliares,
+                                                'madre_mayahablante',
+                                                'fa-language',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'placeholder' => '¿Habla maya?'
+                                                ]
+                                            )->label('¿Habla maya? (madre)') ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'padre_ocupacion', 'fa-briefcase', [
-                                'inputOptions' => ['placeholder' => 'Ocupación del padre...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumDatosFamiliares,
-                                'padre_mayahablante',
-                                'fa-language',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Habla maya?'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <h5 class="mb-3">
-                        <i class="fas fa-user-friends text-info"></i>
-                        <span class="text-secondary">Datos de la Madre</span>
-                    </h5>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_nombre', 'fa-female', [
-                                'inputOptions' => ['placeholder' => 'Nombre de la madre...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_paterno', 'fa-signature', [
-                                'inputOptions' => ['placeholder' => 'Apellido paterno...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_apellido_materno', 'fa-signature', [
-                                'inputOptions' => ['placeholder' => 'Apellido materno...']
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconTextField($form, $alumDatosFamiliares, 'madre_ocupacion', 'fa-briefcase', [
-                                'inputOptions' => ['placeholder' => 'Ocupación de la madre...']
-                            ]) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumDatosFamiliares,
-                                'madre_mayahablante',
-                                'fa-language',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Habla maya?'
-                                ]
-                            ) ?>
-
+                    <div class="row g-3 mt-2">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold">
+                                    <i class="fas fa-lightbulb me-2"></i> Guia rapida
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <span class="badge bg-primary text-white">Tip</span>
+                                        <span class="text-muted small">Usa la misma informacion que en documentos oficiales.</span>
+                                    </div>
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            Manten el orden: nombres y apellidos completos.
+                                        </li>
+                                        <li class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            Ocupacion: describe la actividad actual (ej. docente, comerciante).
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            Marca si hablan maya para ajustar apoyos culturales.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
