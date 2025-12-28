@@ -727,52 +727,88 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumBecas,
-                                'tiene_beca',
-                                'fa-graduation-cap',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Tiene beca?',
-                                    'options' => [
-                                        'id' => 'alumbecas-tiene_beca'
-                                    ]
-                                ]
-                            ) ?>
+                                        <div class="row g-3">
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-graduation-cap me-2"></i> Estado de tu beca</span>
+                                    <span class="badge bg-warning text-dark">Requerido</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Cuentanos si cuentas con beca y que tipo es. Si seleccionas "Otro", especifica.</p>
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumBecas,
+                                                'tiene_beca',
+                                                'fa-graduation-cap',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'placeholder' => 'Tienes beca?',
+                                                    'options' => [
+                                                        'id' => 'alumbecas-tiene_beca'
+                                                    ]
+                                                ]
+                                            )->label('Tienes beca?') ?>
+                                        </div>
+
+                                        <div class="col-md-6" id="tipo-beca-container" style="display: none;">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumBecas,
+                                                'tipos_becas_id',
+                                                'fa-award',
+                                                TiposBecas::getTiposBecasMap(),
+                                                [
+                                                    'options' => [
+                                                        'placeholder' => 'Selecciona el tipo',
+                                                        'id' => 'alumbecas-tipos_becas_id'
+                                                    ]
+                                                ]
+                                            )->label('Tipo de beca') ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mt-1" id="otro-especificar-container" style="display: none;">
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconTextField($form, $alumBecas, 'otro_especificar', 'fa-edit', [
+                                                'inputOptions' => [
+                                                    'placeholder' => 'Describe el tipo de beca...',
+                                                    'id' => 'alumbecas-otro_especificar'
+                                                ]
+                                            ])->label('Especifica si elegiste "Otro"') ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-md-6" id="tipo-beca-container" style="display: none;">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumBecas,
-                                'tipos_becas_id',
-                                'fa-award',
-                                TiposBecas::getTiposBecasMap(),
-                                [
-                                    'options' => [
-                                        'placeholder' => 'Tipo de beca...',
-                                        'id' => 'alumbecas-tipos_becas_id'
-                                    ]
-                                ]
-                            ) ?>
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold">
+                                    <i class="fas fa-info-circle me-2"></i> Tips rapidos
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Si no tienes beca, solo elige "No" y continua.
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Al elegir "Otro", describe el nombre completo de la beca.
+                                        </li>
+                                        <li class="d-flex align-items-start">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Revisa la ortografia: se usa para reportes oficiales.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="row mt-3" id="otro-especificar-container" style="display: none;">
-                        <div class="col-md-12">
-                            <?= InputHelper::iconTextField($form, $alumBecas, 'otro_especificar', 'fa-edit', [
-                                'inputOptions' => [
-                                    'placeholder' => 'Especificar otro tipo de beca...',
-                                    'id' => 'alumbecas-otro_especificar'
-                                ]
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <?php
+<?php
                     $this->registerJsFile('@web/js/expediente/expediente-becas.js', [
                         'depends' => [\yii\web\JqueryAsset::class],
                     ]);
