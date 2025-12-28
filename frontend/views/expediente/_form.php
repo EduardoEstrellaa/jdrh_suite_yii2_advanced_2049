@@ -820,7 +820,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
         
         <!-- ===================== -->
-        <!-- SECCIàN 5: INFORMACIàN DE HIJOS -->
+        <!-- SECCIÓN 5: INFORMACIÓN DE HIJOS -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHijos">
