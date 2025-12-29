@@ -14,33 +14,107 @@
         ? String(window.VIVIENDA_SERVICIO_OTRO_ID)
         : null;
 
+    function markInputState($input, state) {
+        // state: 'valid' | 'invalid' | 'none'
+        $input
+            .toggleClass('is-invalid', state === 'invalid')
+            .toggleClass('is-valid', state === 'valid');
+    }
+
     function toggleVivesConPadres() {
         const value = $('#alumvivienda-vives_casa_padres').val();
         const $container = $('#vivienda-otro-vives-container');
+        const $input = $('#alumvivienda-otro_especificar');
         if (value === '0') {
             $container.removeClass('d-none');
+            $input.prop('required', true);
             return;
         }
         $container.addClass('d-none');
-        $('#alumvivienda-otro_especificar').val('');
+        $input.val('').prop('required', false);
+        markInputState($input, 'none');
     }
 
     function toggleTipoVivienda() {
         const $container = $('#vivienda-otro-tipo-container');
+        const $input = $('#alumvivienda-otro_tipo_especificar');
         if (!otroTipoId) {
             $container.addClass('d-none');
-            $('#alumvivienda-otro_tipo_especificar').val('');
+            $input.val('');
+            markInputState($input, 'none');
             return;
         }
 
         const selected = $('#alumvivienda-tipos_viviendas_id').val();
         if (selected === otroTipoId) {
             $container.removeClass('d-none');
+            $input.prop('required', true);
             return;
         }
 
         $container.addClass('d-none');
-        $('#alumvivienda-otro_tipo_especificar').val('');
+        $input.val('');
+        markInputState($input, 'none');
+    }
+
+    function validateOtroVives(event) {
+        const $input = $('#alumvivienda-otro_especificar');
+        const required = $('#alumvivienda-vives_casa_padres').val() === '0';
+        if (!required) {
+            $input.prop('required', false);
+            markInputState($input, 'none');
+            $input.get(0)?.setCustomValidity('');
+            return true;
+        }
+
+        const value = ($input.val() || '').trim();
+        $input.prop('required', true);
+        if (value.length === 0) {
+            markInputState($input, 'invalid');
+            $input.val(value);
+            $input.get(0)?.setCustomValidity('Por favor especifica con quién vives.');
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $input.get(0)?.reportValidity();
+            }
+            return false;
+        }
+
+        $input.val(value);
+        $input.get(0)?.setCustomValidity('');
+        markInputState($input, 'valid');
+        return true;
+    }
+
+    function validateOtroTipo(event) {
+        const $input = $('#alumvivienda-otro_tipo_especificar');
+        const required = otroTipoId && $('#alumvivienda-tipos_viviendas_id').val() === otroTipoId;
+        if (!required) {
+            $input.prop('required', false);
+            markInputState($input, 'none');
+            $input.get(0)?.setCustomValidity('');
+            return true;
+        }
+
+        const value = ($input.val() || '').trim();
+        $input.prop('required', true);
+        if (value.length === 0) {
+            markInputState($input, 'invalid');
+            $input.val(value);
+            $input.get(0)?.setCustomValidity('Por favor especifica el tipo de vivienda.');
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $input.get(0)?.reportValidity();
+            }
+            return false;
+        }
+
+        $input.val(value);
+        $input.get(0)?.setCustomValidity('');
+        markInputState($input, 'valid');
+        return true;
     }
 
     function toggleBienesOtro() {
@@ -49,6 +123,7 @@
         if (!otroBienId) {
             $container.addClass('d-none');
             $input.val('').prop('required', false);
+            markInputState($input, 'none');
             return;
         }
 
@@ -59,7 +134,8 @@
         $container.toggleClass('d-none', !hasOtro);
         $input.prop('required', hasOtro);
         if (!hasOtro) {
-            $input.val('').removeClass('is-invalid');
+            $input.val('');
+            markInputState($input, 'none');
             if ($input[0]) {
                 $input[0].setCustomValidity('');
             }
@@ -80,7 +156,7 @@
             if ($input[0]) {
                 $input[0].setCustomValidity('');
             }
-            $input.removeClass('is-invalid');
+            markInputState($input, 'none');
             return true;
         }
 
@@ -90,7 +166,7 @@
                 $input[0].setCustomValidity('Por favor especifica el bien.');
                 $input[0].reportValidity();
             }
-            $input.addClass('is-invalid');
+            markInputState($input, 'invalid');
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -101,7 +177,7 @@
         if ($input[0]) {
             $input[0].setCustomValidity('');
         }
-        $input.removeClass('is-invalid');
+        markInputState($input, 'valid');
         return true;
     }
 
@@ -111,6 +187,7 @@
         if (!otroServicioId) {
             $container.addClass('d-none');
             $input.val('').prop('required', false);
+            markInputState($input, 'none');
             return;
         }
 
@@ -121,7 +198,8 @@
         $container.toggleClass('d-none', !hasOtro);
         $input.prop('required', hasOtro);
         if (!hasOtro) {
-            $input.val('').removeClass('is-invalid');
+            $input.val('');
+            markInputState($input, 'none');
             if ($input[0]) {
                 $input[0].setCustomValidity('');
             }
@@ -142,7 +220,7 @@
             if ($input[0]) {
                 $input[0].setCustomValidity('');
             }
-            $input.removeClass('is-invalid');
+            markInputState($input, 'none');
             return true;
         }
 
@@ -152,7 +230,7 @@
                 $input[0].setCustomValidity('Por favor especifica el servicio.');
                 $input[0].reportValidity();
             }
-            $input.addClass('is-invalid');
+            markInputState($input, 'invalid');
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -163,13 +241,25 @@
         if ($input[0]) {
             $input[0].setCustomValidity('');
         }
-        $input.removeClass('is-invalid');
+        markInputState($input, 'valid');
         return true;
     }
 
     function init() {
-        $('#alumvivienda-vives_casa_padres').on('change', toggleVivesConPadres);
-        $('#alumvivienda-tipos_viviendas_id').on('change', toggleTipoVivienda);
+        $('#alumvivienda-vives_casa_padres').on('change', function () {
+            toggleVivesConPadres();
+            validateOtroVives();
+        });
+        $('#alumvivienda-otro_especificar').on('input blur', function () {
+            validateOtroVives();
+        });
+        $('#alumvivienda-tipos_viviendas_id').on('change', function () {
+            toggleTipoVivienda();
+            validateOtroTipo();
+        });
+        $('#alumvivienda-otro_tipo_especificar').on('input blur', function () {
+            validateOtroTipo();
+        });
         $('.vivienda-bien-checkbox').on('change', toggleBienesOtro);
         $('.vivienda-bien-checkbox').on('change', function () {
             validateBienesOtro();
@@ -188,7 +278,7 @@
         const $form = $('.expediente-form form');
         if ($form.length) {
             $form.on('submit', function (e) {
-                if (!validateBienesOtro(e) || !validateServiciosOtro(e)) {
+                if (!validateOtroVives(e) || !validateOtroTipo(e) || !validateBienesOtro(e) || !validateServiciosOtro(e)) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     return false;
@@ -196,7 +286,7 @@
                 return true;
             });
             $form.on('beforeSubmit', function (e) {
-                if (!validateBienesOtro(e) || !validateServiciosOtro(e)) {
+                if (!validateOtroVives(e) || !validateOtroTipo(e) || !validateBienesOtro(e) || !validateServiciosOtro(e)) {
                     e.preventDefault();
                     return false;
                 }

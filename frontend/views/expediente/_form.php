@@ -1130,7 +1130,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                         </div>
                                     </div>
 
-                                    <div class="mt-3 <?= $mostrarDependientes ? '' : 'd-none' ?>" id="dependientes-section">
+                                    <div class="mt-3 <?= $mostrarDependientes ? '' : 'd-none' ?> card shadow-sm bg-light-subtle p-3" id="dependientes-section">
                                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
                                             <div>
                                                 <h6 class="mb-0">Selecciona dependientes</h6>
@@ -1139,7 +1139,12 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                             <span class="badge bg-success-subtle text-success fw-semibold px-3 py-2">Checklist</span>
                                         </div>
 
-                                        <div class="row g-2">
+                                        <div class="dependientes-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <div class="fw-semibold small mb-0">Selecciona al menos una opción.</div>
+                                        </div>
+
+                                        <div class="row g-3">
                                             <?php foreach ($catalogoDependenciasOptions as $id => $nombre): ?>
                                                 <?php $checked = in_array((int)$id, $dependientesSeleccionados, true); ?>
                                                 <div class="col-sm-6 col-md-6">
@@ -1311,139 +1316,195 @@ $this->registerCssFile('@web/css/expediente-form.css');
                             <div class="text-muted small">Cómo vives, tipo de vivienda y equipamiento disponible.</div>
                         </div>
                     </div>
-                    <h4 class="mb-3">
-                        <i class="fas fa-house-user text-success"></i>
-                        <span class="text-secondary">Vivienda</span>
-                    </h4>
-
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumVivienda,
-                                'vives_casa_padres',
-                                'fa-people-roof',
-                                BooleanHelper::options(),
-                                [
-                                    'options' => [
-                                        'placeholder' => 'Vives con tus padres?',
-                                        'id' => 'alumvivienda-vives_casa_padres',
-                                    ],
-                                ]
-                            ) ?>
+                        <div class="col-lg-7">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-house-user me-2"></i> Vivienda</span>
+                                    <span class="badge bg-success text-white">Requerido</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Indica con quién vives y el tipo de vivienda. Si seleccionas “Otro”, especifica.</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumVivienda,
+                                                'vives_casa_padres',
+                                                'fa-people-roof',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'options' => [
+                                                        'placeholder' => '¿Vives con tus padres?',
+                                                        'id' => 'alumvivienda-vives_casa_padres',
+                                                    ],
+                                                ]
+                                            )->label('¿Vives con tus padres?', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                        <div class="col-md-6 <?= ((int)($alumVivienda->vives_casa_padres ?? 1) === 0) ? '' : 'd-none' ?>" id="vivienda-otro-vives-container">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumVivienda,
+                                                'otro_especificar',
+                                                'fa-user-friends',
+                                                [
+                                                    'inputOptions' => [
+                                                        'placeholder' => 'Especifica con quién vives...',
+                                                        'id' => 'alumvivienda-otro_especificar',
+                                                    ],
+                                                ]
+                                            )->label('Especifica', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumVivienda,
+                                                'tipos_viviendas_id',
+                                                'fa-building',
+                                                $tiposViviendasMap,
+                                                [
+                                                    'options' => [
+                                                        'placeholder' => 'Tipo de vivienda...',
+                                                        'id' => 'alumvivienda-tipos_viviendas_id',
+                                                    ],
+                                                ]
+                                            )->label('Tipo de vivienda', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                        <div class="col-md-6 <?= ($tipoViviendaOtroId !== null && (int)($alumVivienda->tipos_viviendas_id ?? 0) === $tipoViviendaOtroId) ? '' : 'd-none' ?>" id="vivienda-otro-tipo-container">
+                                            <?= InputHelper::iconTextField(
+                                                $form,
+                                                $alumVivienda,
+                                                'otro_tipo_especificar',
+                                                'fa-edit',
+                                                [
+                                                    'inputOptions' => [
+                                                        'placeholder' => 'Especifica otro tipo...',
+                                                        'id' => 'alumvivienda-otro_tipo_especificar',
+                                                    ],
+                                                ]
+                                            )->label('Especifica “Otro”', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6 <?= ((int)($alumVivienda->vives_casa_padres ?? 1) === 0) ? '' : 'd-none' ?>" id="vivienda-otro-vives-container">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumVivienda,
-                                'otro_especificar',
-                                'fa-user-friends',
-                                [
-                                    'inputOptions' => [
-                                        'placeholder' => 'Especifica con quien vives...',
-                                        'id' => 'alumvivienda-otro_especificar',
-                                    ],
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mt-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumVivienda,
-                                'tipos_viviendas_id',
-                                'fa-building',
-                                $tiposViviendasMap,
-                                [
-                                    'options' => [
-                                        'placeholder' => 'Selecciona el tipo de vivienda...',
-                                        'id' => 'alumvivienda-tipos_viviendas_id',
-                                    ],
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6 <?= ($tipoViviendaOtroId !== null && (int)($alumVivienda->tipos_viviendas_id ?? 0) === $tipoViviendaOtroId) ? '' : 'd-none' ?>" id="vivienda-otro-tipo-container">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumVivienda,
-                                'otro_tipo_especificar',
-                                'fa-edit',
-                                [
-                                    'inputOptions' => [
-                                        'placeholder' => 'Especifica otro tipo de vivienda...',
-                                        'id' => 'alumvivienda-otro_tipo_especificar',
-                                    ],
-                                ]
-                            ) ?>
+                        <div class="col-lg-5">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold">
+                                    <i class="fas fa-info-circle me-2"></i> Tips rápidos
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Usa “Otro” solo si no encuentras la opción en la lista.
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Verifica ortografía: se usa en reportes y seguimientos.
+                                        </li>
+                                        <li class="d-flex align-items-start">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            Puedes actualizar esta información cuando cambie tu situación.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <?php
                     $mostrarOtroBien = $catalogoBienOtroId !== null && in_array((int)$catalogoBienOtroId, $bienesSeleccionados, true);
-                    ?>
-                    <div class="mt-4">
-                        <h5 class="mb-2">
-                            <i class="fas fa-couch text-info"></i>
-                            <span class="text-secondary">Bienes con los que cuenta tu vivienda</span>
-                        </h5>
-                        <div class="row g-2">
-                            <?php foreach ($catalogoBienesOptions as $id => $nombre): ?>
-                                <?php $checked = in_array((int)$id, $bienesSeleccionados, true); ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input vivienda-bien-checkbox"
-                                            name="ViviendaBienes[ids][]"
-                                            value="<?= (int)$id ?>"
-                                            id="vivienda-bien-<?= (int)$id ?>"
-                                            data-otro-id="<?= (int)$catalogoBienOtroId ?>"
-                                            <?= $checked ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="vivienda-bien-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <div class="mt-2 <?= $mostrarOtroBien ? '' : 'd-none' ?>" id="vivienda-bienes-otro-container">
-                            <input type="text" name="ViviendaBienes[otro_especificar]" id="vivienda-bienes-otro" class="form-control" placeholder="Especifica otro bien..." value="<?= Html::encode($bienesOtro ?? '') ?>">
-                        </div>
-                    </div>
-                    <?php
                     $mostrarOtroServicio = $catalogoServicioOtroId !== null && in_array((int)$catalogoServicioOtroId, $serviciosSeleccionados, true);
                     ?>
-                    <div class="mt-4">
-                        <h5 class="mb-2">
-                            <i class="fas fa-plug text-warning"></i>
-                            <span class="text-secondary">Servicios con los que cuenta tu vivienda</span>
-                        </h5>
-                        <div class="row g-2">
-                            <?php foreach ($catalogoServiciosViviendaOptions as $id => $nombre): ?>
-                                <?php $checked = in_array((int)$id, $serviciosSeleccionados, true); ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input vivienda-servicio-checkbox"
-                                            name="ViviendaServicios[ids][]"
-                                            value="<?= (int)$id ?>"
-                                            id="vivienda-servicio-<?= (int)$id ?>"
-                                            data-otro-id="<?= (int)$catalogoServicioOtroId ?>"
-                                            <?= $checked ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="vivienda-servicio-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                    <div class="row g-3 mt-3">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-couch me-2"></i> Bienes de la vivienda</span>
+                                    <span class="badge bg-primary text-white">Opcional</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Selecciona los bienes con los que cuentas. Marca “Otro” si necesitas especificar.</p>
+                                    <?php
+                                    $bienesOptionsOrdered = $catalogoBienesOptions;
+                                    if ($catalogoBienOtroId !== null && isset($bienesOptionsOrdered[$catalogoBienOtroId])) {
+                                        $otroNombre = $bienesOptionsOrdered[$catalogoBienOtroId];
+                                        unset($bienesOptionsOrdered[$catalogoBienOtroId]);
+                                        $bienesOptionsOrdered[$catalogoBienOtroId] = $otroNombre;
+                                    }
+                                    ?>
+                                    <div class="row g-2">
+                                        <?php foreach ($bienesOptionsOrdered as $id => $nombre): ?>
+                                            <?php $checked = in_array((int)$id, $bienesSeleccionados, true); ?>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-check">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="form-check-input vivienda-bien-checkbox"
+                                                        name="ViviendaBienes[ids][]"
+                                                        value="<?= (int)$id ?>"
+                                                        id="vivienda-bien-<?= (int)$id ?>"
+                                                        data-otro-id="<?= (int)$catalogoBienOtroId ?>"
+                                                        <?= $checked ? 'checked' : '' ?>>
+                                                    <label class="form-check-label fw-semibold" for="vivienda-bien-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="mt-3 <?= $mostrarOtroBien ? '' : 'd-none' ?>" id="vivienda-bienes-otro-container">
+                                        <label class="form-label fw-semibold" for="vivienda-bienes-otro">Especifica “Otro”</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                                            <input type="text" name="ViviendaBienes[otro_especificar]" id="vivienda-bienes-otro" class="form-control" placeholder="Especifica otro bien..." value="<?= Html::encode($bienesOtro ?? '') ?>">
+                                            <div class="invalid-feedback">Especifica el bien.</div>
+                                        </div>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
                         </div>
-                        <div class="mt-2 <?= $mostrarOtroServicio ? '' : 'd-none' ?>" id="vivienda-servicios-otro-container">
-                            <input
-                                type="text"
-                                name="ViviendaServicios[otro_especificar]"
-                                id="vivienda-servicios-otro"
-                                class="form-control"
-                                placeholder="Especifica otro servicio..."
-                                value="<?= Html::encode($serviciosOtro ?? '') ?>">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-plug me-2"></i> Servicios de la vivienda</span>
+                                    <span class="badge bg-warning text-dark">Opcional</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Marca los servicios disponibles. Si eliges “Otro”, escribe cuál.</p>
+                                    <div class="row g-2">
+                                        <?php foreach ($catalogoServiciosViviendaOptions as $id => $nombre): ?>
+                                            <?php $checked = in_array((int)$id, $serviciosSeleccionados, true); ?>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-check">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="form-check-input vivienda-servicio-checkbox"
+                                                        name="ViviendaServicios[ids][]"
+                                                        value="<?= (int)$id ?>"
+                                                        id="vivienda-servicio-<?= (int)$id ?>"
+                                                        data-otro-id="<?= (int)$catalogoServicioOtroId ?>"
+                                                        <?= $checked ? 'checked' : '' ?>>
+                                                    <label class="form-check-label fw-semibold" for="vivienda-servicio-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="mt-3 <?= $mostrarOtroServicio ? '' : 'd-none' ?>" id="vivienda-servicios-otro-container">
+                                        <label class="form-label fw-semibold" for="vivienda-servicios-otro">Especifica “Otro”</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                                            <input
+                                                type="text"
+                                                name="ViviendaServicios[otro_especificar]"
+                                                id="vivienda-servicios-otro"
+                                                class="form-control"
+                                                placeholder="Especifica otro servicio..."
+                                                value="<?= Html::encode($serviciosOtro ?? '') ?>">
+                                            <div class="invalid-feedback">Especifica el servicio.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1467,22 +1528,31 @@ $this->registerCssFile('@web/css/expediente-form.css');
                             <div class="text-muted small">Selecciona con qué bienes personales cuentas.</div>
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <?php foreach ($catalogoBienesPersonalesOptions as $id => $nombre): ?>
-                            <?php $checked = in_array((int)$id, $bienesPersonalesSeleccionados, true); ?>
-                            <div class="col-sm-6 col-md-4">
-                                <div class="form-check">
-                                    <input
-                                        type="checkbox"
-                                        class="form-check-input bienes-personales-checkbox"
-                                        name="BienesPersonales[ids][]"
-                                        value="<?= (int)$id ?>"
-                                        id="bien-personal-<?= (int)$id ?>"
-                                        <?= $checked ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="bien-personal-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
-                                </div>
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-primary-subtle text-primary fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-user-check me-2"></i> Bienes personales</span>
+                            <span class="badge bg-primary text-white">Opcional</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">Marca los bienes personales con los que cuentas. Puedes seleccionar varias opciones.</p>
+                            <div class="row g-2">
+                                <?php foreach ($catalogoBienesPersonalesOptions as $id => $nombre): ?>
+                                    <?php $checked = in_array((int)$id, $bienesPersonalesSeleccionados, true); ?>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input bienes-personales-checkbox"
+                                                name="BienesPersonales[ids][]"
+                                                value="<?= (int)$id ?>"
+                                                id="bien-personal-<?= (int)$id ?>"
+                                                <?= $checked ? 'checked' : '' ?>>
+                                            <label class="form-check-label fw-semibold" for="bien-personal-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1496,36 +1566,47 @@ $this->registerCssFile('@web/css/expediente-form.css');
                     <i class="fas fa-bus me-2 text-warning"></i> IX. TRANSPORTE Y ACCESO
                 </button>
             </h2>
-            <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
-                <div class="accordion-body row g-3">
-                    <div class="section-intro mb-2 d-flex align-items-center gap-2">
+                        <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
+                <div class="accordion-body">
+                    <div class="section-intro mb-3 d-flex align-items-center gap-2">
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 9</span>
                         <div>
                             <div class="fw-semibold">Transporte y tiempos.</div>
-                            <div class="text-muted small">Cómo llegas a la escuela y cuánto tardas.</div>
+                            <div class="text-muted small">C¢mo llegas a la escuela y cu nto tardas.</div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <?= InputHelper::iconSelect2Field(
-                            $form,
-                            $alumTransportes,
-                            'catalogo_transportes_id',
-                            'fa-bus',
-                            $catalogoTransportesMap,
-                            ['placeholder' => 'Medio de transporte...']
-                        ) ?>
-                        <small class="text-muted">Selecciona cómo llegas a la escuela y cuánto tardas.</small>
-
-                    </div>
-                    <div class="col-md-6">
-                        <?= InputHelper::iconSelect2Field(
-                            $form,
-                            $alumTransportes,
-                            'tiempo_recorrido_transporte_id',
-                            'fa-stopwatch',
-                            $tiemposRecorridoMap,
-                            ['placeholder' => 'Tiempo de recorrido...']
-                        ) ?>
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-bus me-2"></i> Transporte y acceso</span>
+                            <span class="badge bg-warning text-dark">Opcional</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">Selecciona el medio de transporte principal y el tiempo aproximado de recorrido.</p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumTransportes,
+                                        'catalogo_transportes_id',
+                                        'fa-bus',
+                                        $catalogoTransportesMap,
+                                        ['placeholder' => 'Medio de transporte...']
+                                    )->label('Medio de transporte', ['class' => 'form-label fw-semibold']) ?>
+                                    <small class="text-muted">Selecciona c¢mo llegas a la escuela.</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumTransportes,
+                                        'tiempo_recorrido_transporte_id',
+                                        'fa-stopwatch',
+                                        $tiemposRecorridoMap,
+                                        ['placeholder' => 'Tiempo de recorrido...']
+                                    )->label('Tiempo de recorrido', ['class' => 'form-label fw-semibold']) ?>
+                                    <small class="text-muted">Indica el tiempo promedio en llegar.</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2700,3 +2781,5 @@ $this->registerJsFile(
 );
 
 ?>
+
+

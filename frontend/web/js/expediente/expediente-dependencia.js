@@ -7,6 +7,12 @@
         const $otroInput = $('#alumdependeeconomicamente-otro_especificar');
         const otroId = resolveOtroId($select);
 
+        const markInputState = ($input, state) => {
+            $input
+                .toggleClass('is-invalid', state === 'invalid')
+                .toggleClass('is-valid', state === 'valid');
+        };
+
         const toggleOtro = () => {
             const val = parseInt($select.val(), 10);
             const show = otroId !== null && !Number.isNaN(val) && val === otroId;
@@ -16,8 +22,9 @@
                     .val('')
                     .prop('required', false)
                     .removeAttr('pattern')
-                    .removeClass('is-invalid')
+                    .removeClass('is-invalid is-valid')
                     .get(0)?.setCustomValidity('');
+                markInputState($otroInput, 'none');
             } else {
                 // Obligar a capturar texto no vac¡o cuando se elige "Otro"
                 $otroInput
@@ -36,7 +43,7 @@
             const requiresOtro = !Number.isNaN(val) && val === otroId;
             if (!requiresOtro) {
                 $otroInput.get(0)?.setCustomValidity('');
-                $otroInput.removeClass('is-invalid');
+                markInputState($otroInput, 'none');
                 return true;
             }
 
@@ -51,7 +58,7 @@
                     event.preventDefault();
                     event.stopPropagation();
                 }
-                $otroInput.addClass('is-invalid');
+                markInputState($otroInput, 'invalid');
                 $otroInput.get(0)?.setCustomValidity('Debes especificar el texto para "Otro".');
                 $otroInput.get(0)?.reportValidity();
                 const $collapse = $otroInput.closest('.accordion-collapse');
@@ -62,7 +69,7 @@
                 return false;
             }
 
-            $otroInput.removeClass('is-invalid');
+            markInputState($otroInput, 'valid');
             $otroInput.get(0)?.setCustomValidity('');
             return true;
         }

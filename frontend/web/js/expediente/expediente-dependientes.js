@@ -1,4 +1,4 @@
-(function ($) {
+﻿(function ($) {
     'use strict';
 
     const selectors = {
@@ -9,11 +9,18 @@
         otroInput: '#dependientes-otro',
     };
 
+    function clearCardsError($checkboxes, $section) {
+        markCardsError($checkboxes, $section, false);
+        $checkboxes.each(function () {
+            $(this).removeClass('is-invalid is-valid');
+        });
+    }
+
+    // Estilizado mejorado para el estado de error.
     function ensureErrorMessage($section) {
         let $msg = $section.find('.dependientes-error-msg');
         if (!$msg.length) {
-            $msg = $('<div class="dependientes-error-msg text-danger small fw-semibold d-none mt-2">Selecciona al menos una opción.</div>');
-            // Colocar mensaje al inicio de la sección para que sea visible
+            $msg = $('<div class="dependientes-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3"><i class="fas fa-exclamation-triangle"></i><div class="fw-semibold small mb-0">Selecciona al menos una opciÃ³n.</div></div>');
             $section.prepend($msg);
         }
         return $msg;
@@ -21,12 +28,9 @@
 
     function markCardsError($checkboxes, $section, hasError) {
         const $msg = ensureErrorMessage($section);
-        $section.toggleClass('border border-danger rounded-3 shadow-sm', hasError);
+        $section.toggleClass('border border-danger border-2 bg-danger-subtle bg-opacity-10', hasError);
+        $checkboxes.toggleClass('is-invalid', hasError);
         $msg.toggleClass('d-none', !hasError);
-    }
-
-    function clearCardsError($checkboxes, $section) {
-        markCardsError($checkboxes, $section, false);
     }
 
     function sanitizeOtroInput() {
@@ -66,7 +70,7 @@
                 .val('')
                 .prop('required', false)
                 .removeAttr('pattern')
-                .removeClass('is-invalid')
+                .removeClass('is-invalid is-valid')
                 .get(0)?.setCustomValidity('');
             toggleDependientes.lastValue = 0;
             clearCardsError($checkboxes, $section);
@@ -85,11 +89,11 @@
         } else {
             $otroInput.removeAttr('pattern')
                 .val('')
-                .removeClass('is-invalid')
+                .removeClass('is-invalid is-valid')
                 .get(0)?.setCustomValidity('');
         }
 
-        // Si no hay checks, forzar uno requerido para validación HTML5
+        // Si no hay checks, forzar uno requerido para validaciÃ³n HTML5
         const hasError = selected.length === 0;
         $checkboxes.prop('required', hasError);
         toggleDependientes.lastValue = 1;
@@ -110,6 +114,7 @@
         function validateDependientes(event) {
             if (parseInt($toggle.val(), 10) !== 1) {
                 clearCardsError($checkboxes, $section);
+                $checkboxes.removeClass('is-invalid is-valid');
                 return true;
             }
 
@@ -132,6 +137,10 @@
                 return false;
             }
 
+            $checkboxes.removeClass('is-invalid').addClass('is-valid');
+            $checkboxes.filter(':checked').each(function () {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            });
             return true;
         }
 
@@ -155,7 +164,7 @@
             const requiresOtro = otroId !== null && selected.includes(otroId);
             if (!requiresOtro) {
                 $otroInput.get(0)?.setCustomValidity('');
-                $otroInput.removeClass('is-invalid');
+                $otroInput.removeClass('is-invalid is-valid');
                 return true;
             }
 
@@ -170,7 +179,7 @@
                     event.preventDefault();
                     event.stopPropagation();
                 }
-                $otroInput.addClass('is-invalid');
+                $otroInput.removeClass('is-valid').addClass('is-invalid');
                 $otroInput.get(0)?.setCustomValidity('Debes especificar el texto para "Otro".');
                 $otroInput.get(0)?.reportValidity();
                 const $collapse = $otroInput.closest('.accordion-collapse');
@@ -181,7 +190,7 @@
                 return false;
             }
 
-            $otroInput.removeClass('is-invalid');
+            $otroInput.removeClass('is-invalid').addClass('is-valid');
             $otroInput.get(0)?.setCustomValidity('');
             return true;
         }
@@ -252,3 +261,5 @@
         openAccordionOnInvalid();
     });
 })(jQuery);
+
+
