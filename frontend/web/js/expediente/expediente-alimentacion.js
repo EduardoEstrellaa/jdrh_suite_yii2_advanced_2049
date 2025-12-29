@@ -5,6 +5,7 @@
   const consumoListSelector = '#lista-consumo-alimentos';
   const consumoItemSelector = '.consumo-alimento-item';
   const consumoFrecuenciaSelectSelector = '.consumo-frecuencia-select';
+  const lugarComerErrorSelector = '#lugar-comer-error';
   const select2Defaults = {
     theme: 'bootstrap-5',
     width: '100%',
@@ -52,6 +53,16 @@
     let valid = true;
 
     const $otroCheckbox = findOtroCheckbox();
+    const $errorLugar = $(lugarComerErrorSelector);
+    const algunLugar = $(lugarComerCheckboxSelector).is(':checked');
+
+    if (!algunLugar) {
+      valid = false;
+      $errorLugar.removeClass('d-none');
+    } else {
+      $errorLugar.addClass('d-none');
+    }
+
     const $otroInput = $(lugarComerOtroInputSelector);
     if ($otroCheckbox.length) {
       const otroChecked = $otroCheckbox.is(':checked');
@@ -82,6 +93,10 @@
     if (!valid && event) {
       event.preventDefault();
       event.stopPropagation();
+      const $firstCheckbox = $(lugarComerCheckboxSelector).first();
+      if ($firstCheckbox.length) {
+        $firstCheckbox.focus();
+      }
     }
 
     return valid;

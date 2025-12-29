@@ -40,6 +40,10 @@
     min-width: 160px;
 }
 
+.consumo-tile-header {
+    width: 100%;
+}
+
 .consumo-marker {
     width: 12px;
     height: 12px;
@@ -55,6 +59,16 @@
 
 .consumo-tile-select .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
     color: #6c757d;
+}
+
+.consumo-chip {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #e7f1ff;
+    color: #0d6efd;
+    border: 1px solid #cfe2ff;
+    white-space: nowrap;
 }
 
 @media (max-width: 768px) {

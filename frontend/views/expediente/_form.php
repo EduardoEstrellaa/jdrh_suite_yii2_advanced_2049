@@ -2239,58 +2239,95 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <h5 class="mb-2">Lugares donde sueles comer</h5>
-                        <p class="text-muted small mb-3">Selecciona todos los lugares aplicables.</p>
-                        <?php
-                        $catalogoLugaresComerOrdenados = [];
-                        $catalogoLugaresComerOtros = [];
-                        foreach ($catalogoLugaresComerMap as $idTmp => $nombreTmp) {
-                            $nombreLimpioTmp = trim((string)$nombreTmp);
-                            $esOtroTmp = ($catalogoLugarComerOtroId !== null && (int)$idTmp === (int)$catalogoLugarComerOtroId)
-                                || mb_strtolower($nombreLimpioTmp, 'UTF-8') === 'otro';
-                            if ($esOtroTmp) {
-                                $catalogoLugaresComerOtros[$idTmp] = $nombreLimpioTmp;
-                            } else {
-                                $catalogoLugaresComerOrdenados[$idTmp] = $nombreLimpioTmp;
-                            }
-                        }
-                        $catalogoLugaresComerOrdenados += $catalogoLugaresComerOtros;
-                        ?>
-                        <div class="row g-2">
-                            <?php foreach ($catalogoLugaresComerOrdenados as $id => $nombreLimpio): ?>
-                                <?php
-                                $id = (int)$id;
-                                $checked = in_array($id, $lugaresComerSeleccionados, true);
-                                $esNombreOtro = mb_strtolower($nombreLimpio, 'UTF-8') === 'otro';
-                                $esOtro = ($catalogoLugarComerOtroId !== null && $id === (int)$catalogoLugarComerOtroId) || $esNombreOtro;
-                                ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input lugar-comer-checkbox"
-                                            name="AlumLugaresComer[<?= $id ?>][catalogo_lugares_comer_id]"
-                                            value="<?= $id ?>"
-                                            id="lugar-comer-<?= $id ?>"
-                                            data-es-otro="<?= $esOtro ? '1' : '0' ?>"
-                                            <?= $checked ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="lugar-comer-<?= $id ?>"><?= Html::encode($nombreLimpio) ?></label>
-                                    </div>
-                                    <?php if ($esOtro): ?>
-                                        <div class="mt-2 lugar-comer-otro-container <?= $checked ? '' : 'd-none' ?>">
-                                            <label class="form-label small text-muted" for="lugar-comer-otro"><?= Yii::t('app', 'Especifica otro lugar') ?></label>
-                                            <input
-                                                type="text"
-                                                class="form-control lugar-comer-otro-input"
-                                                name="AlumLugaresComer[<?= $id ?>][otro_especificar]"
-                                                id="lugar-comer-otro"
-                                                value="<?= Html::encode($lugaresComerOtroMap[$id] ?? $lugarComerOtro) ?>"
-                                                <?= $checked ? '' : 'disabled' ?>>
-                                        </div>
-                                    <?php endif; ?>
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-light fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-seedling me-2 text-success"></i> Tips rapidos</span>
+                                    <span class="badge bg-success-subtle text-success">Alimentacion</span>
                                 </div>
-                            <?php endforeach; ?>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Manten consistencia con tus respuestas previas y activa solo lo que aplique.</p>
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-toggle-on text-success me-2 mt-1"></i>
+                                            Marca los lugares donde realmente comes; puedes elegir varios.
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-info-circle text-primary me-2 mt-1"></i>
+                                            Si seleccionas "Otro", describe el lugar para mantener claridad.
+                                        </li>
+                                        <li class="d-flex align-items-start">
+                                            <i class="fas fa-clock text-warning me-2 mt-1"></i>
+                                            Ajusta las frecuencias pensando en tu semana habitual.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-map-marker-alt me-2"></i> Lugares donde sueles comer</span>
+                                    <span class="badge bg-success text-white">Selecciona</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Selecciona todos los lugares aplicables; los detalles de "Otro" se habilitan al marcarlo.</p>
+                                    <div class="alert alert-danger py-2 px-3 small d-none" id="lugar-comer-error">
+                                        Selecciona al menos un lugar donde sueles comer.
+                                    </div>
+                                    <?php
+                                    $catalogoLugaresComerOrdenados = [];
+                                    $catalogoLugaresComerOtros = [];
+                                    foreach ($catalogoLugaresComerMap as $idTmp => $nombreTmp) {
+                                        $nombreLimpioTmp = trim((string)$nombreTmp);
+                                        $esOtroTmp = ($catalogoLugarComerOtroId !== null && (int)$idTmp === (int)$catalogoLugarComerOtroId)
+                                            || mb_strtolower($nombreLimpioTmp, 'UTF-8') === 'otro';
+                                        if ($esOtroTmp) {
+                                            $catalogoLugaresComerOtros[$idTmp] = $nombreLimpioTmp;
+                                        } else {
+                                            $catalogoLugaresComerOrdenados[$idTmp] = $nombreLimpioTmp;
+                                        }
+                                    }
+                                    $catalogoLugaresComerOrdenados += $catalogoLugaresComerOtros;
+                                    ?>
+                                    <div class="row g-3">
+                                        <?php foreach ($catalogoLugaresComerOrdenados as $id => $nombreLimpio): ?>
+                                            <?php
+                                            $id = (int)$id;
+                                            $checked = in_array($id, $lugaresComerSeleccionados, true);
+                                            $esNombreOtro = mb_strtolower($nombreLimpio, 'UTF-8') === 'otro';
+                                            $esOtro = ($catalogoLugarComerOtroId !== null && $id === (int)$catalogoLugarComerOtroId) || $esNombreOtro;
+                                            ?>
+                                            <div class="col-sm-6">
+                                                <div class="form-check lugar-comer-item mb-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="form-check-input lugar-comer-checkbox"
+                                                        name="AlumLugaresComer[<?= $id ?>][catalogo_lugares_comer_id]"
+                                                        value="<?= $id ?>"
+                                                        id="lugar-comer-<?= $id ?>"
+                                                        data-es-otro="<?= $esOtro ? '1' : '0' ?>"
+                                                        <?= $checked ? 'checked' : '' ?>>
+                                                    <label class="form-check-label fw-semibold" for="lugar-comer-<?= $id ?>"><?= Html::encode($nombreLimpio) ?></label>
+                                                </div>
+                                                <?php if ($esOtro): ?>
+                                                    <div class="mt-2 lugar-comer-otro-container <?= $checked ? '' : 'd-none' ?>">
+                                                        <label class="form-label small text-muted" for="lugar-comer-otro-<?= $id ?>"><?= Yii::t('app', 'Especifica otro lugar') ?></label>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control lugar-comer-otro-input"
+                                                            name="AlumLugaresComer[<?= $id ?>][otro_especificar]"
+                                                            id="lugar-comer-otro-<?= $id ?>"
+                                                            value="<?= Html::encode($lugaresComerOtroMap[$id] ?? $lugarComerOtro) ?>"
+                                                            <?= $checked ? '' : 'disabled' ?>>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -2300,14 +2337,30 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         $consumoMap[(int)$cons->catalogo_alimentos_id] = $cons;
                     }
                     ?>
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                            <h5 class="mb-0">Consumo de alimentos</h5>
-                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Frecuencia semanal</span>
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-apple-alt me-2"></i> Consumo semanal de alimentos</span>
+                            <span class="badge bg-info text-white">Frecuencia</span>
                         </div>
-                        <p class="text-muted small mb-3">Ajusta la frecuencia de cada alimento de manera rápida.</p>
-                        <div id="lista-consumo-alimentos" class="consumo-tiles">
-                            <?php foreach ($catalogoAlimentosMap as $id => $nombre): ?>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                                <div>
+                                    <h5 class="mb-0">Elige la frecuencia por semana</h5>
+                                    <div class="text-muted small">Usa tu semana promedio como referencia.</div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Paso 11</span>
+                                    <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Selecciona una opcion por alimento</span>
+                                </div>
+                            </div>
+                            <div class="alert alert-light border d-flex align-items-start gap-2 py-2 px-3 mb-3">
+                                <i class="fas fa-lightbulb text-warning mt-1"></i>
+                                <div class="small mb-0 text-muted">
+                                    Mueve cada lista desplegable segun tu consumo habitual.
+                                </div>
+                            </div>
+                            <div id="lista-consumo-alimentos" class="consumo-tiles">
+                                <?php foreach ($catalogoAlimentosMap as $id => $nombre): ?>
                                 <?php
                                 $id = (int)$id;
                                 $consumo = $consumoMap[$id] ?? new AlumConsumoAlimentos([
@@ -2315,12 +2368,14 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                     'catalogo_alimentos_id' => $id,
                                 ]);
                                 ?>
-                                <div class="consumo-alimento-item consumo-tile d-flex align-items-center gap-3 flex-wrap">
-                                    <div class="d-flex align-items-center gap-2 consumo-tile-title">
-                                        <span class="consumo-marker" aria-hidden="true"></span>
-                                        <span class="fw-semibold"><?= Html::encode($nombre) ?></span>
+                                <div class="consumo-alimento-item consumo-tile card border-0 shadow-sm d-flex align-items-start gap-3 flex-wrap">
+                                    <div class="consumo-tile-header d-flex justify-content-between align-items-center w-100">
+                                        <div class="d-flex align-items-center gap-2 consumo-tile-title">
+                                            <span class="consumo-marker" aria-hidden="true"></span>
+                                            <span class="fw-semibold"><?= Html::encode($nombre) ?></span>
+                                        </div>
                                     </div>
-                                    <div class="consumo-tile-select flex-grow-1">
+                                    <div class="consumo-tile-select flex-grow-1 w-100">
                                         <?= InputHelper::iconSelect2Field(
                                             $form,
                                             $consumo,
@@ -2328,17 +2383,18 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                             'fa-clock',
                                             $frecuenciasVecesMap,
                                             [
-                                                'placeholder' => 'Frecuencia',
+                                                'placeholder' => 'Frecuencia semanal',
                                                 'class' => 'form-control consumo-frecuencia-select',
                                                 'id' => "consumo-frecuencia-{$id}",
                                             ],
                                             ['allowClear' => true]
-                                        ) ?>
+                                        )->label('Frecuencia semanal (veces)', ['class' => 'form-label fw-semibold small mb-1']) ?>
                                         <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][catalogo_alimentos_id]" value="<?= $id ?>">
                                         <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][alumnos_id]" value="<?= $alumnoId ?>">
                                     </div>
                                 </div>
                             <?php endforeach; ?>
+                        </div>
                         </div>
                     </div>
                 </div>
