@@ -184,7 +184,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
     </div>
 
     <!-- ===================== -->
-    <!-- 🎯 ACORDEÓN GENERAL -->
+    <!-- ?? ACORDEÓN GENERAL -->
     <!-- ===================== -->
     <div class="accordion" id="expedienteAccordion">
 
@@ -1566,7 +1566,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                     <i class="fas fa-bus me-2 text-warning"></i> IX. TRANSPORTE Y ACCESO
                 </button>
             </h2>
-                        <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
+            <div id="collapseTransporteAcceso" class="accordion-collapse collapse" aria-labelledby="headingTransporteAcceso" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
                     <div class="section-intro mb-3 d-flex align-items-center gap-2">
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 9</span>
@@ -1630,248 +1630,71 @@ $this->registerCssFile('@web/css/expediente-form.css');
                             <div class="text-muted small">Problemas de salud, servicios, tratamientos y uso de anteojos.</div>
                         </div>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumEstadoSalud,
-                                'tuvo_problema_salud',
-                                'fa-heartbeat',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Ha tenido problemas de salud?',
-                                    'id' => 'alumestadosalud-tuvo_problema_salud',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumServiciosSalud,
-                                'tiene_servicios_salud',
-                                'fa-briefcase-medical',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Cuenta con servicios de salud?',
-                                    'id' => 'alumserviciossalud-tiene_servicios_salud',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumEnfermedadesCronicas,
-                                'padece_enfermedades_cronicas',
-                                'fa-notes-medical',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Padeces enfermedades crónicas?',
-                                    'id' => 'alumenfermedadescronicas-padece_enfermedades_cronicas',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumAlergia,
-                                'padeces_alergias',
-                                'fa-allergies',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Padeces alergias?',
-                                    'id' => 'alumalergia-padeces_alergias',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumAsisteMedico,
-                                'frecuencia_tiempo_id',
-                                'fa-stethoscope',
-                                $frecuenciasTiempoMap,
-                                [
-                                    'placeholder' => '¿Cada cuánto va al médico?',
-                                    'id' => 'alumasistemedico-frecuencia_tiempo_id',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumAsisteDentista,
-                                'frecuencia_tiempo_id',
-                                'fa-tooth',
-                                $frecuenciasTiempoMap,
-                                [
-                                    'placeholder' => '¿Cada cuánto va al dentista?',
-                                    'id' => 'alumasistedentista-frecuencia_tiempo_id',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumUsoAnteojos,
-                                'utilizas_anteojos',
-                                'fa-glasses',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Utilizas anteojos?',
-                                    'id' => 'alumusoanteojos-utilizas_anteojos',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumTratamientos,
-                                'esta_en_tratamiento',
-                                'fa-pills',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => '¿Estás en tratamiento actualmente?',
-                                    'id' => 'alumtratamientos-esta_en_tratamiento',
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
 
-                    <?php
-                    $enfermedadesCronicasSeleccionadas = $enfermedadesCronicasSeleccionadas ?? [];
-                    ?>
-
-                    <div id="salud-enfermedades-cronicas-container" class="<?= ((int)($alumEnfermedadesCronicas->padece_enfermedades_cronicas ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <div class="mt-3 mb-3">
-                            <h5 class="mb-1">Enfermedades crónicas</h5>
-                            <p class="text-muted small mb-0">Activa las enfermedades crónicas que padeces y detalla si aplica.</p>
-                        </div>
-
-                        <div id="lista-enfermedades-cronicas" class="row g-3">
-                            <?php foreach ($catalogoEnfermCronicasMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $enfermedad = $enfermedadesCronicasSeleccionadas[$id] ?? new EnfermedadesCronicas(['catalogo_enferm_cronicas_id' => $id]);
-                                $seleccionada = isset($enfermedadesCronicasSeleccionadas[$id]);
-                                $esOtro = $otroCatalogoEnfermCronicaId !== null && $id === (int)$otroCatalogoEnfermCronicaId;
-                                ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100 enfermedad-cronica-item" data-enfermedad-id="<?= $id ?>">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input enfermedad-cronica-checkbox"
-                                                    type="checkbox"
-                                                    id="enfermedad-cronica-<?= $id ?>"
-                                                    name="EnfermedadesCronicas[<?= $id ?>][selected]"
-                                                    value="1"
-                                                    <?= $seleccionada ? 'checked' : '' ?>>
-                                                <label class="form-check-label fw-semibold" for="enfermedad-cronica-<?= $id ?>">
-                                                    <?= Html::encode($nombre) ?>
-                                                </label>
-                                                <input type="hidden" name="EnfermedadesCronicas[<?= $id ?>][catalogo_enferm_cronicas_id]" value="<?= $id ?>">
-                                            </div>
-                                        </div>
-
-                                        <?php if ($esOtro): ?>
-                                            <div class="enfermedad-cronica-detalle mt-3 <?= $seleccionada ? '' : 'd-none' ?>">
-                                                <label class="form-label fw-semibold" for="enfermedad-cronica-otro-<?= $id ?>">Especifica</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control enfermedad-cronica-otro"
-                                                    name="EnfermedadesCronicas[<?= $id ?>][otro_especificar]"
-                                                    id="enfermedad-cronica-otro-<?= $id ?>"
-                                                    placeholder="Describe la enfermedad"
-                                                    value="<?= Html::encode($enfermedad->otro_especificar) ?>"
-                                                    <?= $seleccionada ? '' : 'disabled' ?>>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-light fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-heart text-danger me-2"></i> Resumen y tips</span>
+                                    <span class="badge bg-danger-subtle text-danger">Salud</span>
                                 </div>
-                            <?php endforeach; ?>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Activa solo lo que aplique; veras los campos debajo de cada opcion.</p>
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-toggle-on text-success me-2 mt-1"></i>
+                                            Los bloques se muestran debajo de cada pregunta al elegir "Si".
+                                        </li>
+                                        <li class="d-flex align-items-start mb-2">
+                                            <i class="fas fa-clipboard-check text-primary me-2 mt-1"></i>
+                                            Usa gravedad y fechas para priorizar seguimiento.
+                                        </li>
+                                        <li class="d-flex align-items-start">
+                                            <i class="fas fa-comment-dots text-warning me-2 mt-1"></i>
+                                            Si eliges "Otro", describe brevemente para dejar contexto.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <?php
-                    $alergiasSeleccionadas = [];
-                    foreach ($alergias as $alergia) {
-                        $alergiasSeleccionadas[(int)$alergia->catalogo_alergias_id] = $alergia;
-                    }
-                    ?>
-
-                    <div id="salud-alergias-container" class="<?= ((int)($alumAlergia->padeces_alergias ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <div class="mt-3 mb-3">
-                            <h5 class="mb-1">Alergias</h5>
-                            <p class="text-muted small mb-0">Activa las alergias que padeces y registra gravedad y reacciones.</p>
-                        </div>
-
-                        <div id="lista-alergias" class="row g-3">
-                            <?php foreach ($catalogoAlergiasMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $alergia = $alergiasSeleccionadas[$id] ?? new Alergias(['catalogo_alergias_id' => $id]);
-                                $seleccionado = isset($alergiasSeleccionadas[$id]);
-                                $reaccionesSeleccionadas = $reaccionesAlergiasSeleccionadas[$id] ?? [];
-                                ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100 alergia-item" data-alergia-id="<?= $id ?>">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input alergia-checkbox"
-                                                    type="checkbox"
-                                                    id="alergia-<?= $id ?>"
-                                                    name="Alergias[<?= $id ?>][selected]"
-                                                    value="1"
-                                                    <?= $seleccionado ? 'checked' : '' ?>>
-                                                <label class="form-check-label fw-semibold" for="alergia-<?= $id ?>">
-                                                    <?= Html::encode($nombre) ?>
-                                                </label>
-                                                <input type="hidden" name="Alergias[<?= $id ?>][catalogo_alergias_id]" value="<?= $id ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="alergia-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-header bg-danger-subtle text-danger fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-heartbeat me-2"></i> Chequeos basicos</span>
+                                    <span class="badge bg-danger text-white">Requerido</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Completa estas preguntas base; sus detalles apareceran debajo.</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
                                             <?= InputHelper::iconSelect2Field(
                                                 $form,
-                                                $alergia,
-                                                "[{$id}]tipo_gravedad_id",
-                                                'fa-exclamation-triangle',
-                                                $tipoGravedadMap,
+                                                $alumAsisteMedico,
+                                                'frecuencia_tiempo_id',
+                                                'fa-stethoscope',
+                                                $frecuenciasTiempoMap,
                                                 [
-                                                    'placeholder' => 'Gravedad...',
-                                                    'class' => 'form-control alergia-gravedad',
-                                                    'id' => "alergia-gravedad-{$id}",
-                                                    'disabled' => !$seleccionado,
-                                                ],
-                                                ['allowClear' => true]
-                                            )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
-
-                                            <div class="mt-2">
-                                                <p class="text-muted small mb-2">Marca las reacciones que presentas.</p>
-                                                <div class="row g-2">
-                                                    <?php foreach ($catalogoReaccionesAlergicasMap as $reaccionId => $reaccionNombre): ?>
-                                                        <?php $checked = in_array((int)$reaccionId, $reaccionesSeleccionadas, true); ?>
-                                                        <div class="col-sm-6">
-                                                            <div class="form-check">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    class="form-check-input alergia-reaccion-checkbox"
-                                                                    name="Alergias[<?= $id ?>][reacciones][]"
-                                                                    value="<?= (int)$reaccionId ?>"
-                                                                    id="alergia-<?= $id ?>-reaccion-<?= (int)$reaccionId ?>"
-                                                                    <?= $checked ? 'checked' : '' ?>
-                                                                    <?= $seleccionado ? '' : 'disabled' ?>>
-                                                                <label class="form-check-label" for="alergia-<?= $id ?>-reaccion-<?= (int)$reaccionId ?>"><?= Html::encode($reaccionNombre) ?></label>
-                                                            </div>
-                                                        </div>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </div>
+                                                    'placeholder' => 'Periodicidad de consultas medicas',
+                                                    'id' => 'alumasistemedico-frecuencia_tiempo_id',
+                                                ]
+                                            )->label('Con que frecuencia acudes al medico?', ['class' => 'form-label fw-semibold']) ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumAsisteDentista,
+                                                'frecuencia_tiempo_id',
+                                                'fa-tooth',
+                                                $frecuenciasTiempoMap,
+                                                [
+                                                    'placeholder' => 'Periodicidad de consultas dentales',
+                                                    'id' => 'alumasistedentista-frecuencia_tiempo_id',
+                                                ]
+                                            )->label('Con que frecuencia acudes al dentista?', ['class' => 'form-label fw-semibold']) ?>
                                         </div>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
 
@@ -1881,229 +1704,518 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         $problemasSaludSeleccionados[(int)$ps->catalogo_problemas_salud_id] = $ps;
                     }
                     ?>
-
-                    <div id="salud-problemas-container" class="<?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <div class="mt-3 mb-3">
-                            <h5 class="mb-1">Problemas de salud</h5>
-                            <p class="text-muted small mb-0">Selecciona los problemas de salud que has tenido y su gravedad.</p>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-secondary-subtle text-secondary fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-notes-medical me-2"></i> Problemas de salud</span>
+                            <span class="badge bg-secondary text-dark">Detalle</span>
                         </div>
-
-                        <div id="lista-problemas" class="row g-3">
-                            <?php foreach ($catalogoProblemasSaludMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $problema = $problemasSaludSeleccionados[$id] ?? new ProblemasSalud(['catalogo_problemas_salud_id' => $id]);
-                                $seleccionado = isset($problemasSaludSeleccionados[$id]);
-                                $esOtro = $otroCatalogoProblemaId !== null && $id === (int)$otroCatalogoProblemaId;
-                                $otroClasses = 'form-field mb-0 problema-otro ' . ($seleccionado && $esOtro ? '' : 'd-none');
-                                ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100 problema-item" data-problema-id="<?= $id ?>">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input problema-checkbox"
-                                                    type="checkbox"
-                                                    id="problema-<?= $id ?>"
-                                                    name="ProblemasSalud[<?= $id ?>][selected]"
-                                                    value="1"
-                                                    <?= $seleccionado ? 'checked' : '' ?>>
-                                                <label class="form-check-label fw-semibold" for="problema-<?= $id ?>">
-                                                    <?= Html::encode($nombre) ?>
-                                                </label>
-                                                <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="problema-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
-                                            <?= InputHelper::iconSelect2Field(
-                                                $form,
-                                                $problema,
-                                                "[{$id}]tipo_gravedad_id",
-                                                'fa-exclamation-triangle',
-                                                $tipoGravedadMap,
-                                                [
-                                                    'placeholder' => 'Gravedad...',
-                                                    'class' => 'form-control problema-gravedad',
-                                                    'id' => "problema-gravedad-{$id}",
-                                                    'disabled' => !$seleccionado,
-                                                ],
-                                                ['allowClear' => true]
-                                            )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
-
-                                            <?php if ($esOtro): ?>
-                                                <?= InputHelper::iconTextField(
-                                                    $form,
-                                                    $problema,
-                                                    "[{$id}]otro_especificar",
-                                                    'fa-keyboard',
-                                                    [
-                                                        'options' => ['class' => trim($otroClasses)],
-                                                        'inputOptions' => [
-                                                            'placeholder' => 'Especifica el problema',
-                                                            'class' => 'form-control problema-otro-input',
-                                                            'id' => "problema-otro-{$id}",
-                                                            'disabled' => !$seleccionado,
-                                                        ],
-                                                        'labelOptions' => ['class' => 'form-label fw-semibold'],
-                                                    ]
-                                                ) ?>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumEstadoSalud,
+                                        'tuvo_problema_salud',
+                                        'fa-heartbeat',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Antecedentes de problemas de salud',
+                                            'id' => 'alumestadosalud-tuvo_problema_salud',
+                                        ]
+                                    )->label('Has tenido problemas de salud importantes?', ['class' => 'form-label fw-semibold']) ?>
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <div id="salud-tratamientos-container" class="<?= ((int)($alumTratamientos->esta_en_tratamiento ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <div class="mt-3 mb-3">
-                            <h5 class="mb-1">Tratamientos</h5>
-                            <p class="text-muted small mb-0">Selecciona los tratamientos que sigues y especifica frecuencia y fechas.</p>
-                        </div>
-
-                        <div id="lista-tratamientos" class="row g-3">
-                            <?php foreach ($catalogoTratamientosMap as $id => $nombre): ?>
+                            </div>
+                            <div id="salud-problemas-container" class="mt-3 card shadow-sm bg-light-subtle p-3 <?= ((int)($alumEstadoSalud->tuvo_problema_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                                <p class="text-muted small mb-3">Selecciona los problemas de salud que has tenido y su gravedad.</p>
+                                <div class="problemas-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="fw-semibold small mb-0">Selecciona al menos una opcion.</div>
+                                </div>
                                 <?php
-                                $id = (int)$id;
-                                $tratamiento = $tratamientosMap[$id] ?? new Tratamientos(['catalogo_tratamientos_id' => $id]);
-                                $seleccionado = isset($tratamientosMap[$id]);
+                                $problemasOrdenados = $catalogoProblemasSaludMap;
+                                if ($otroCatalogoProblemaId !== null) {
+                                    $otroKey = (int)$otroCatalogoProblemaId;
+                                    if (array_key_exists($otroKey, $problemasOrdenados)) {
+                                        $valorOtro = $problemasOrdenados[$otroKey];
+                                        unset($problemasOrdenados[$otroKey]);
+                                        $problemasOrdenados[$otroKey] = $valorOtro;
+                                    }
+                                }
                                 ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100 tratamiento-item" data-tratamiento-id="<?= $id ?>">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input tratamiento-checkbox"
-                                                    type="checkbox"
-                                                    id="tratamiento-<?= $id ?>"
-                                                    name="Tratamientos[<?= $id ?>][selected]"
-                                                    value="1"
-                                                    <?= $seleccionado ? 'checked' : '' ?>>
-                                                <label class="form-check-label fw-semibold" for="tratamiento-<?= $id ?>">
-                                                    <?= Html::encode($nombre) ?>
-                                                </label>
-                                                <input type="hidden" name="Tratamientos[<?= $id ?>][catalogo_tratamientos_id]" value="<?= $id ?>">
-                                            </div>
-                                        </div>
+                                <div id="lista-problemas" class="row g-3">
+                                    <?php foreach ($problemasOrdenados as $id => $nombre): ?>
+                                        <?php
+                                        $id = (int)$id;
+                                        $problema = $problemasSaludSeleccionados[$id] ?? new ProblemasSalud(['catalogo_problemas_salud_id' => $id]);
+                                        $seleccionado = isset($problemasSaludSeleccionados[$id]);
+                                        $esOtro = $otroCatalogoProblemaId !== null && $id === (int)$otroCatalogoProblemaId;
+                                        $otroClasses = 'form-field mb-0 problema-otro ' . ($seleccionado && $esOtro ? '' : 'd-none');
+                                        ?>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="border rounded p-3 h-100 problema-item" data-problema-id="<?= $id ?>">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="form-check form-switch">
+                                                        <input
+                                                            class="form-check-input problema-checkbox"
+                                                            type="checkbox"
+                                                            id="problema-<?= $id ?>"
+                                                            name="ProblemasSalud[<?= $id ?>][selected]"
+                                                            value="1"
+                                                            <?= $seleccionado ? 'checked' : '' ?>>
+                                                        <label class="form-check-label fw-semibold" for="problema-<?= $id ?>">
+                                                            <?= Html::encode($nombre) ?>
+                                                        </label>
+                                                        <input type="hidden" name="ProblemasSalud[<?= $id ?>][catalogo_problemas_salud_id]" value="<?= $id ?>">
+                                                    </div>
+                                                </div>
 
-                                        <div class="tratamiento-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
-                                            <?= InputHelper::iconSelect2Field(
-                                                $form,
-                                                $tratamiento,
-                                                "[{$id}]frecuencia_tiempo_id",
-                                                'fa-sync-alt',
-                                                $frecuenciasTiempoMap,
-                                                [
-                                                    'placeholder' => 'Frecuencia...',
-                                                    'class' => 'form-control tratamiento-frecuencia',
-                                                    'id' => "tratamiento-frecuencia-{$id}",
-                                                    'disabled' => !$seleccionado,
-                                                ],
-                                                ['allowClear' => true]
-                                            )->label('Frecuencia', ['class' => 'form-label fw-semibold']) ?>
-
-                                            <div class="form-field mb-3">
-                                                <label class="form-label fw-semibold" for="tratamiento-rango-<?= $id ?>">Rango de fechas</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                                    <?= DateRangePicker::widget([
-                                                        'model' => $tratamiento,
-                                                        'attribute' => "[{$id}]fecha_inicio",
-                                                        'startAttribute' => "[{$id}]fecha_inicio",
-                                                        'endAttribute' => "[{$id}]fecha_fin",
-                                                        'convertFormat' => true,
-                                                        'value' => ($tratamiento->fecha_inicio && $tratamiento->fecha_fin)
-                                                            ? Html::encode($tratamiento->fecha_inicio . ' - ' . $tratamiento->fecha_fin)
-                                                            : '',
-                                                        'options' => [
-                                                            'id' => "tratamiento-rango-{$id}",
-                                                            'class' => 'form-control tratamiento-rango',
-                                                            'placeholder' => 'Selecciona rango...',
-                                                            'readonly' => true,
+                                                <div class="problema-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                                    <?= InputHelper::iconSelect2Field(
+                                                        $form,
+                                                        $problema,
+                                                        "[{$id}]tipo_gravedad_id",
+                                                        'fa-exclamation-triangle',
+                                                        $tipoGravedadMap,
+                                                        [
+                                                            'placeholder' => 'Gravedad...',
+                                                            'class' => 'form-control problema-gravedad',
+                                                            'id' => "problema-gravedad-{$id}",
                                                             'disabled' => !$seleccionado,
                                                         ],
-                                                        'startInputOptions' => [
-                                                            'class' => 'd-none tratamiento-fecha tratamiento-fecha-inicio',
-                                                            'id' => "tratamiento-inicio-{$id}",
-                                                        ],
-                                                        'endInputOptions' => [
-                                                            'class' => 'd-none tratamiento-fecha tratamiento-fecha-fin',
-                                                            'id' => "tratamiento-fin-{$id}",
-                                                        ],
-                                                        'pluginOptions' => [
-                                                            'locale' => [
-                                                                'format' => 'Y-MM-DD',
-                                                                'separator' => ' - ',
-                                                            ],
-                                                            'autoUpdateInput' => false,
-                                                            'opens' => 'center',
-                                                        ],
-                                                        'pluginEvents' => [
-                                                            'apply.daterangepicker' => "function(ev, picker) {
-                                                                const val = picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD');
-                                                                $(this).val(val);
-                                                                $('#tratamiento-inicio-{$id}').val(picker.startDate.format('YYYY-MM-DD')).trigger('change');
-                                                                $('#tratamiento-fin-{$id}').val(picker.endDate.format('YYYY-MM-DD')).trigger('change');
-                                                            }",
-                                                            'cancel.daterangepicker' => "function(ev, picker) {
-                                                                $(this).val('');
-                                                                $('#tratamiento-inicio-{$id}').val('').trigger('change');
-                                                                $('#tratamiento-fin-{$id}').val('').trigger('change');
-                                                            }",
-                                                        ],
-                                                    ]) ?>
+                                                        ['allowClear' => true]
+                                                    )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
+
+                                                    <?php if ($esOtro): ?>
+                                                        <?= InputHelper::iconTextField(
+                                                            $form,
+                                                            $problema,
+                                                            "[{$id}]otro_especificar",
+                                                            'fa-keyboard',
+                                                            [
+                                                                'options' => ['class' => trim($otroClasses)],
+                                                                'inputOptions' => [
+                                                                    'placeholder' => 'Especifica el problema',
+                                                                    'class' => 'form-control problema-otro-input',
+                                                                    'id' => "problema-otro-{$id}",
+                                                                    'disabled' => !$seleccionado,
+                                                                ],
+                                                                'labelOptions' => ['class' => 'form-label fw-semibold'],
+                                                            ]
+                                                        ) ?>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    <?php endforeach; ?>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    $enfermedadesCronicasSeleccionadas = $enfermedadesCronicasSeleccionadas ?? [];
+                    ?>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-danger-subtle text-danger fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-notes-medical me-2"></i> Enfermedades crónicas</span>
+                            <span class="badge bg-danger text-white">Detalle</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumEnfermedadesCronicas,
+                                        'padece_enfermedades_cronicas',
+                                        'fa-notes-medical',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Diagnosticos vigentes de enfermedades cronicas',
+                                            'id' => 'alumenfermedadescronicas-padece_enfermedades_cronicas',
+                                        ]
+                                    )->label('Tienes alguna enfermedad cronica diagnosticada actualmente?', ['class' => 'form-label fw-semibold']) ?>
+                                </div>
+                            </div>
+                            <div id="salud-enfermedades-cronicas-container" class="mt-3 card shadow-sm bg-light-subtle p-3 <?= ((int)($alumEnfermedadesCronicas->padece_enfermedades_cronicas ?? 0) === 1) ? '' : 'd-none' ?>">
+                                <p class="text-muted small mb-3">Activa las enfermedades cronicas que padeces y detalla si aplica.</p>
+                                <div class="enfermedades-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="fw-semibold small mb-0">Selecciona al menos una opcion.</div>
+                                </div>
+                                <div id="lista-enfermedades-cronicas" class="row g-3">
+                                    <?php foreach ($catalogoEnfermCronicasMap as $id => $nombre): ?>
+                                        <?php
+                                        $id = (int)$id;
+                                        $enfermedad = $enfermedadesCronicasSeleccionadas[$id] ?? new EnfermedadesCronicas(['catalogo_enferm_cronicas_id' => $id]);
+                                        $seleccionada = isset($enfermedadesCronicasSeleccionadas[$id]);
+                                        $esOtro = $otroCatalogoEnfermCronicaId !== null && $id === (int)$otroCatalogoEnfermCronicaId;
+                                        ?>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="border rounded p-3 h-100 enfermedad-cronica-item" data-enfermedad-id="<?= $id ?>">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="form-check form-switch">
+                                                        <input
+                                                            class="form-check-input enfermedad-cronica-checkbox"
+                                                            type="checkbox"
+                                                            id="enfermedad-cronica-<?= $id ?>"
+                                                            name="EnfermedadesCronicas[<?= $id ?>][selected]"
+                                                            value="1"
+                                                            <?= $seleccionada ? 'checked' : '' ?>>
+                                                        <label class="form-check-label fw-semibold" for="enfermedad-cronica-<?= $id ?>">
+                                                            <?= Html::encode($nombre) ?>
+                                                        </label>
+                                                        <input type="hidden" name="EnfermedadesCronicas[<?= $id ?>][catalogo_enferm_cronicas_id]" value="<?= $id ?>">
+                                                    </div>
+                                                </div>
+
+                                                <?php if ($esOtro): ?>
+                                                    <div class="enfermedad-cronica-detalle mt-3 <?= $seleccionada ? '' : 'd-none' ?>">
+                                                        <label class="form-label fw-semibold" for="enfermedad-cronica-otro-<?= $id ?>">Especifica</label>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control enfermedad-cronica-otro"
+                                                            name="EnfermedadesCronicas[<?= $id ?>][otro_especificar]"
+                                                            id="enfermedad-cronica-otro-<?= $id ?>"
+                                                            placeholder="Describe la enfermedad"
+                                                            value="<?= Html::encode($enfermedad->otro_especificar) ?>"
+                                                            <?= $seleccionada ? '' : 'disabled' ?>>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="salud-anteojos-container" class="<?= ((int)($alumUsoAnteojos->utilizas_anteojos ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <h5 class="mt-3 mb-3">Tipo de uso de anteojos</h5>
-                        <div class="row g-2">
-                            <?php foreach ($catalogoUsoAnteojosMap as $id => $nombre): ?>
-                                <?php $checked = in_array((int)$id, $usoAnteojosSeleccionados, true); ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-check">
-                                        <input
-                                            type="radio"
-                                            class="form-check-input uso-anteojos-checkbox"
-                                            name="UsoAnteojos[ids][]"
-                                            value="<?= (int)$id ?>"
-                                            id="uso-anteojos-<?= (int)$id ?>"
-                                            <?= $checked ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="uso-anteojos-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
-                                    </div>
+                    <?php
+                    $alergiasSeleccionadas = [];
+                    foreach ($alergias as $alergia) {
+                        $alergiasSeleccionadas[(int)$alergia->catalogo_alergias_id] = $alergia;
+                    }
+                    ?>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-allergies me-2"></i> Alergias</span>
+                            <span class="badge bg-warning text-dark">Detalle</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumAlergia,
+                                        'padeces_alergias',
+                                        'fa-allergies',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Diagnosticos de alergias',
+                                            'id' => 'alumalergia-padeces_alergias',
+                                        ]
+                                    )->label('Te han diagnosticado alergias?', ['class' => 'form-label fw-semibold']) ?>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
+                            <div id="salud-alergias-container" class="mt-3 card shadow-sm bg-light-subtle p-3 <?= ((int)($alumAlergia->padeces_alergias ?? 0) === 1) ? '' : 'd-none' ?>">
+                                <p class="text-muted small mb-3">Activa las alergias que padeces y registra su gravedad y reacciones.</p>
+                                <div class="alergias-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="fw-semibold small mb-0">Selecciona al menos una opcion.</div>
+                                </div>
+                                <div id="lista-alergias" class="row g-3">
+                                    <?php foreach ($catalogoAlergiasMap as $id => $nombre): ?>
+                                        <?php
+                                        $id = (int)$id;
+                                        $alergia = $alergiasSeleccionadas[$id] ?? new Alergias(['catalogo_alergias_id' => $id]);
+                                        $seleccionado = isset($alergiasSeleccionadas[$id]);
+                                        $reaccionesSeleccionadas = $reaccionesAlergiasSeleccionadas[$id] ?? [];
+                                        ?>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="border rounded p-3 h-100 alergia-item" data-alergia-id="<?= $id ?>">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="form-check form-switch">
+                                                        <input
+                                                            class="form-check-input alergia-checkbox"
+                                                            type="checkbox"
+                                                            id="alergia-<?= $id ?>"
+                                                            name="Alergias[<?= $id ?>][selected]"
+                                                            value="1"
+                                                            <?= $seleccionado ? 'checked' : '' ?>>
+                                                        <label class="form-check-label fw-semibold" for="alergia-<?= $id ?>">
+                                                            <?= Html::encode($nombre) ?>
+                                                        </label>
+                                                        <input type="hidden" name="Alergias[<?= $id ?>][catalogo_alergias_id]" value="<?= $id ?>">
+                                                    </div>
+                                                </div>
+
+                                                <div class="alergia-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                                    <?= InputHelper::iconSelect2Field(
+                                                        $form,
+                                                        $alergia,
+                                                        "[{$id}]tipo_gravedad_id",
+                                                        'fa-exclamation-triangle',
+                                                        $tipoGravedadMap,
+                                                        [
+                                                            'placeholder' => 'Gravedad...',
+                                                            'class' => 'form-control alergia-gravedad',
+                                                            'id' => "alergia-gravedad-{$id}",
+                                                            'disabled' => !$seleccionado,
+                                                        ],
+                                                        ['allowClear' => true]
+                                                    )->label('Gravedad', ['class' => 'form-label fw-semibold']) ?>
+
+                                                    <div class="mt-2">
+                                                        <p class="text-muted small mb-2">Marca las reacciones que presentas.</p>
+                                                        <div class="row g-2">
+                                                            <?php foreach ($catalogoReaccionesAlergicasMap as $reaccionId => $reaccionNombre): ?>
+                                                                <?php $checked = in_array((int)$reaccionId, $reaccionesSeleccionadas, true); ?>
+                                                                <div class="col-sm-6">
+                                                                    <div class="form-check">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            class="form-check-input alergia-reaccion-checkbox"
+                                                                            name="Alergias[<?= $id ?>][reacciones][]"
+                                                                            value="<?= (int)$reaccionId ?>"
+                                                                            id="alergia-<?= $id ?>-reaccion-<?= (int)$reaccionId ?>"
+                                                                            <?= $checked ? 'checked' : '' ?>
+                                                                            <?= $seleccionado ? '' : 'disabled' ?>>
+                                                                        <label class="form-check-label" for="alergia-<?= $id ?>-reaccion-<?= (int)$reaccionId ?>"><?= Html::encode($reaccionNombre) ?></label>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-pills me-2"></i> Tratamientos</span>
+                            <span class="badge bg-info text-dark">Detalle</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumTratamientos,
+                                        'esta_en_tratamiento',
+                                        'fa-pills',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Tratamientos o terapias activos',
+                                            'id' => 'alumtratamientos-esta_en_tratamiento',
+                                        ]
+                                    )->label('Estas en algun tratamiento o terapia actualmente?', ['class' => 'form-label fw-semibold']) ?>
+                                </div>
+                            </div>
+                            <div id="salud-tratamientos-container" class="mt-3 card shadow-sm bg-light-subtle p-3 <?= ((int)($alumTratamientos->esta_en_tratamiento ?? 0) === 1) ? '' : 'd-none' ?>">
+                                <p class="text-muted small mb-3">Selecciona los tratamientos que sigues y especifica frecuencia y fechas.</p>
+                                <div class="tratamientos-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="fw-semibold small mb-0">Selecciona al menos un tratamiento.</div>
+                                </div>
+                                <div id="lista-tratamientos" class="row g-3">
+                                    <?php foreach ($catalogoTratamientosMap as $id => $nombre): ?>
+                                        <?php
+                                        $id = (int)$id;
+                                        $tratamiento = $tratamientosMap[$id] ?? new Tratamientos(['catalogo_tratamientos_id' => $id]);
+                                        $seleccionado = isset($tratamientosMap[$id]);
+                                        ?>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="border rounded p-3 h-100 tratamiento-item" data-tratamiento-id="<?= $id ?>">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="form-check form-switch">
+                                                        <input
+                                                            class="form-check-input tratamiento-checkbox"
+                                                            type="checkbox"
+                                                            id="tratamiento-<?= $id ?>"
+                                                            name="Tratamientos[<?= $id ?>][selected]"
+                                                            value="1"
+                                                            <?= $seleccionado ? 'checked' : '' ?>>
+                                                        <label class="form-check-label fw-semibold" for="tratamiento-<?= $id ?>">
+                                                            <?= Html::encode($nombre) ?>
+                                                        </label>
+                                                        <input type="hidden" name="Tratamientos[<?= $id ?>][catalogo_tratamientos_id]" value="<?= $id ?>">
+                                                    </div>
+                                                </div>
+
+                                                <div class="tratamiento-detalle mt-3 <?= $seleccionado ? '' : 'd-none' ?>">
+                                                    <?= InputHelper::iconSelect2Field(
+                                                        $form,
+                                                        $tratamiento,
+                                                        "[{$id}]frecuencia_tiempo_id",
+                                                        'fa-sync-alt',
+                                                        $frecuenciasTiempoMap,
+                                                        [
+                                                            'placeholder' => 'Frecuencia...',
+                                                            'class' => 'form-control tratamiento-frecuencia',
+                                                            'id' => "tratamiento-frecuencia-{$id}",
+                                                            'disabled' => !$seleccionado,
+                                                        ],
+                                                        ['allowClear' => true]
+                                                    )->label('Frecuencia', ['class' => 'form-label fw-semibold']) ?>
+
+                                                    <div class="form-field mb-3">
+                                                        <label class="form-label fw-semibold" for="tratamiento-rango-<?= $id ?>">Rango de fechas</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                                            <?= DateRangePicker::widget([
+                                                                'model' => $tratamiento,
+                                                                'attribute' => "[{$id}]fecha_inicio",
+                                                                'startAttribute' => "[{$id}]fecha_inicio",
+                                                                'endAttribute' => "[{$id}]fecha_fin",
+                                                                'convertFormat' => true,
+                                                                'value' => ($tratamiento->fecha_inicio && $tratamiento->fecha_fin)
+                                                                    ? Html::encode($tratamiento->fecha_inicio . ' - ' . $tratamiento->fecha_fin)
+                                                                    : '',
+                                                                'options' => [
+                                                                    'id' => "tratamiento-rango-{$id}",
+                                                                    'class' => 'form-control tratamiento-rango',
+                                                                    'placeholder' => 'Selecciona rango...',
+                                                                    'readonly' => true,
+                                                                    'disabled' => !$seleccionado,
+                                                                ],
+                                                                'startInputOptions' => [
+                                                                    'class' => 'd-none tratamiento-fecha tratamiento-fecha-inicio',
+                                                                    'id' => "tratamiento-inicio-{$id}",
+                                                                ],
+                                                                'endInputOptions' => [
+                                                                    'class' => 'd-none tratamiento-fecha tratamiento-fecha-fin',
+                                                                    'id' => "tratamiento-fin-{$id}",
+                                                                ],
+                                                                'pluginOptions' => [
+                                                                    'locale' => [
+                                                                        'format' => 'Y-MM-DD',
+                                                                        'separator' => ' - ',
+                                                                    ],
+                                                                    'autoUpdateInput' => false,
+                                                                    'opens' => 'center',
+                                                                ],
+                                                                'pluginEvents' => [
+                                                                    'apply.daterangepicker' => "function(ev, picker) {
+                                                                        const val = picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD');
+                                                                        $(this).val(val);
+                                                                        $('#tratamiento-inicio-{$id}').val(picker.startDate.format('YYYY-MM-DD')).trigger('change');
+                                                                        $('#tratamiento-fin-{$id}').val(picker.endDate.format('YYYY-MM-DD')).trigger('change');
+                                                                    }",
+                                                                    'cancel.daterangepicker' => "function(ev, picker) {
+                                                                        $(this).val('');
+                                                                        $('#tratamiento-inicio-{$id}').val('').trigger('change');
+                                                                        $('#tratamiento-fin-{$id}').val('').trigger('change');
+                                                                    }",
+                                                                ],
+                                                            ]) ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="salud-servicios-container" class="<?= ((int)($alumServiciosSalud->tiene_servicios_salud ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <h5 class="mt-3 mb-3">Servicios de salud</h5>
-                        <div class="row g-2">
-                            <?php foreach ($catalogoServiciosSaludMap as $id => $nombre): ?>
-                                <?php $checked = in_array((int)$id, $serviciosSaludSeleccionados, true); ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input servicio-salud-checkbox"
-                                            name="ServiciosSalud[ids][]"
-                                            value="<?= (int)$id ?>"
-                                            id="servicio-salud-<?= (int)$id ?>"
-                                            <?= $checked ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="servicio-salud-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
-                                    </div>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-briefcase-medical me-2"></i> Servicios de salud</span>
+                            <span class="badge bg-success text-dark">Selecciona</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumServiciosSalud,
+                                        'tiene_servicios_salud',
+                                        'fa-briefcase-medical',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Cobertura o afiliacion a servicios de salud',
+                                            'id' => 'alumserviciossalud-tiene_servicios_salud',
+                                        ]
+                                    )->label('Cuentas con algun servicio o cobertura de salud?', ['class' => 'form-label fw-semibold']) ?>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
+                            <div id="salud-servicios-container" class="mt-3 card shadow-sm bg-light-subtle p-3 <?= ((int)($alumServiciosSalud->tiene_servicios_salud ?? 0) === 1) ? '' : 'd-none' ?>">
+                                <p class="text-muted small mb-3">Marca los servicios de salud con los que cuentas.</p>
+                                <div class="servicios-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="fw-semibold small mb-0">Selecciona al menos una opcion.</div>
+                                </div>
+                                <div class="row g-2">
+                                    <?php foreach ($catalogoServiciosSaludMap as $id => $nombre): ?>
+                                        <?php $checked = in_array((int)$id, $serviciosSaludSeleccionados, true); ?>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="form-check">
+                                                <input
+                                                    type="checkbox"
+                                                    class="form-check-input servicio-salud-checkbox"
+                                                    name="ServiciosSalud[ids][]"
+                                                    value="<?= (int)$id ?>"
+                                                    id="servicio-salud-<?= (int)$id ?>"
+                                                    <?= $checked ? 'checked' : '' ?>>
+                                                <label class="form-check-label" for="servicio-salud-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-primary-subtle text-primary fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-glasses me-2"></i> Uso de anteojos</span>
+                            <span class="badge bg-primary text-white">Detalle</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumUsoAnteojos,
+                                        'utilizas_anteojos',
+                                        'fa-glasses',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Uso de lentes o anteojos',
+                                            'id' => 'alumusoanteojos-utilizas_anteojos',
+                                        ]
+                                    )->label('Utilizas anteojos o lentes de contacto?', ['class' => 'form-label fw-semibold']) ?>
+                                </div>
+                            </div>
+                            <div id="salud-anteojos-container" class="mt-3 card shadow-sm bg-light-subtle p-3 <?= ((int)($alumUsoAnteojos->utilizas_anteojos ?? 0) === 1) ? '' : 'd-none' ?>">
+                                <p class="text-muted small mb-3">Selecciona el tipo de uso de anteojos.</p>
+                                <div class="anteojos-error-msg alert alert-danger d-flex align-items-center gap-2 py-2 px-3 d-none rounded-3 mb-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="fw-semibold small mb-0">Selecciona al menos una opcion.</div>
+                                </div>
+                                <div class="row g-2">
+                                    <?php foreach ($catalogoUsoAnteojosMap as $id => $nombre): ?>
+                                        <?php $checked = in_array((int)$id, $usoAnteojosSeleccionados, true); ?>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="form-check">
+                                                <input
+                                                    type="radio"
+                                                    class="form-check-input uso-anteojos-checkbox"
+                                                    name="UsoAnteojos[ids][]"
+                                                    value="<?= (int)$id ?>"
+                                                    id="uso-anteojos-<?= (int)$id ?>"
+                                                    <?= $checked ? 'checked' : '' ?>>
+                                                <label class="form-check-label" for="uso-anteojos-<?= (int)$id ?>"><?= Html::encode($nombre) ?></label>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2717,7 +2829,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
 
 <?php
 // ===========================
-// 🔗 Registrar JS externo
+// ?? Registrar JS externo
 // ===========================
 $municipiosUrl = Url::to(['expediente/municipios'], true);
 $script = <<<JS
@@ -2781,5 +2893,3 @@ $this->registerJsFile(
 );
 
 ?>
-
-
