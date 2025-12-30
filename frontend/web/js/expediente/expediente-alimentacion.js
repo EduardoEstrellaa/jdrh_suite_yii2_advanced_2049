@@ -32,6 +32,25 @@
     return $(lugarComerCheckboxSelector).filter((_, el) => ($(el).next('label').text() || '').trim().toLowerCase() === 'otro');
   };
 
+  const scrollToField = ($el) => {
+    if (!$el || !$el.length) return;
+
+    const $collapse = $el.closest('.accordion-collapse');
+    if ($collapse.length && typeof bootstrap !== 'undefined') {
+      const instance = bootstrap.Collapse.getOrCreateInstance($collapse[0], { toggle: false });
+      instance.show();
+    }
+
+    const $target = $el.is(':visible') ? $el : $el.closest(':visible');
+    if ($target.length) {
+      const offset = $target.offset();
+      const top = (offset ? offset.top : 0) - 100;
+      $('html, body').animate({ scrollTop: top }, 250, () => {
+        $el.trigger('focus');
+      });
+    }
+  };
+
   const toggleLugarComerOtro = () => {
     const $otroCheckbox = findOtroCheckbox();
     const selectedOtros = $otroCheckbox.is(':checked');
@@ -51,6 +70,7 @@
 
   const validateAlimentacion = (event) => {
     let valid = true;
+    let $firstInvalid = null;
 
     const $otroCheckbox = findOtroCheckbox();
     const $errorLugar = $(lugarComerErrorSelector);
@@ -59,6 +79,7 @@
     if (!algunLugar) {
       valid = false;
       $errorLugar.removeClass('d-none');
+      $firstInvalid = $firstInvalid || $(lugarComerCheckboxSelector).first();
     } else {
       $errorLugar.addClass('d-none');
     }
@@ -72,6 +93,7 @@
         if ($otroInput[0]) $otroInput[0].setCustomValidity('');
         if (!val) {
           valid = false;
+          $firstInvalid = $firstInvalid || $otroInput;
           if ($otroInput[0]) {
             $otroInput.addClass('is-invalid');
             $otroInput[0].setCustomValidity('Especifica el lugar donde comes.');
@@ -93,10 +115,7 @@
     if (!valid && event) {
       event.preventDefault();
       event.stopPropagation();
-      const $firstCheckbox = $(lugarComerCheckboxSelector).first();
-      if ($firstCheckbox.length) {
-        $firstCheckbox.focus();
-      }
+      scrollToField($firstInvalid || $errorLugar);
     }
 
     return valid;

@@ -2309,15 +2309,15 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                                         id="lugar-comer-<?= $id ?>"
                                                         data-es-otro="<?= $esOtro ? '1' : '0' ?>"
                                                         <?= $checked ? 'checked' : '' ?>>
-                                                    <label class="form-check-label fw-semibold" for="lugar-comer-<?= $id ?>"><?= Html::encode($nombreLimpio) ?></label>
+                                                    <label class="form-check-label" for="lugar-comer-<?= $id ?>"><?= Html::encode($nombreLimpio) ?></label>
                                                 </div>
                                                 <?php if ($esOtro): ?>
-                                                    <div class="mt-2 lugar-comer-otro-container <?= $checked ? '' : 'd-none' ?>">
-                                                        <label class="form-label small text-muted" for="lugar-comer-otro-<?= $id ?>"><?= Yii::t('app', 'Especifica otro lugar') ?></label>
+                                                    <div class="mt-1 lugar-comer-otro-container <?= $checked ? '' : 'd-none' ?>">
+                                                        <label class="form-label small text-muted" for="lugar-comer-otro-<?= $id ?>">Especifica el lugar</label>
                                                         <input
                                                             type="text"
                                                             class="form-control lugar-comer-otro-input"
-                                                            name="AlumLugaresComer[<?= $id ?>][otro_especificar]"
+                                                            name="AlumLugaresComer[<?= $id ?>][lugar_otro]"
                                                             id="lugar-comer-otro-<?= $id ?>"
                                                             value="<?= Html::encode($lugaresComerOtroMap[$id] ?? $lugarComerOtro) ?>"
                                                             <?= $checked ? '' : 'disabled' ?>>
@@ -2338,63 +2338,53 @@ $this->registerCssFile('@web/css/expediente-form.css');
                     }
                     ?>
                     <div class="card shadow-sm border-0">
-                        <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-apple-alt me-2"></i> Consumo semanal de alimentos</span>
-                            <span class="badge bg-info text-white">Frecuencia</span>
+                        <div class="card-header bg-light fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-apple-alt me-2 text-danger"></i> Frecuencia de consumo de alimentos</span>
+                            <span class="badge bg-danger text-white">Frecuencia</span>
                         </div>
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                                <div>
-                                    <h5 class="mb-0">Elige la frecuencia por semana</h5>
-                                    <div class="text-muted small">Usa tu semana promedio como referencia.</div>
-                                </div>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Paso 11</span>
-                                    <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Selecciona una opcion por alimento</span>
-                                </div>
-                            </div>
-                            <div class="alert alert-light border d-flex align-items-start gap-2 py-2 px-3 mb-3">
-                                <i class="fas fa-lightbulb text-warning mt-1"></i>
-                                <div class="small mb-0 text-muted">
-                                    Mueve cada lista desplegable segun tu consumo habitual.
-                                </div>
-                            </div>
-                            <div id="lista-consumo-alimentos" class="consumo-tiles">
-                                <?php foreach ($catalogoAlimentosMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $consumo = $consumoMap[$id] ?? new AlumConsumoAlimentos([
-                                    'alumnos_id' => $alumnoId,
-                                    'catalogo_alimentos_id' => $id,
-                                ]);
-                                ?>
-                                <div class="consumo-alimento-item consumo-tile card border-0 shadow-sm d-flex align-items-start gap-3 flex-wrap">
-                                    <div class="consumo-tile-header d-flex justify-content-between align-items-center w-100">
-                                        <div class="d-flex align-items-center gap-2 consumo-tile-title">
-                                            <span class="consumo-marker" aria-hidden="true"></span>
-                                            <span class="fw-semibold"><?= Html::encode($nombre) ?></span>
+                            <p class="text-muted small mb-3">Indica cuantas veces por semana consumes cada grupo de alimentos.</p>
+                            <div class="row g-3">
+                                <?php foreach ($catalogoAlimentosMap as $id => $nombreAlimento): ?>
+                                    <?php
+                                    $id = (int)$id;
+                                    $consumo = $consumoMap[$id] ?? new AlumConsumoAlimentos([
+                                        'catalogo_alimentos_id' => $id,
+                                        'alumnos_id' => $alumnoId,
+                                    ]);
+                                    $frecuenciaSeleccionada = $consumo->frecuencia_veces_id ?? null;
+                                    ?>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="consumo-tile h-100">
+                                            <div class="d-flex align-items-center justify-content-between consumo-tile-header">
+                                                <div class="d-flex align-items-center gap-2 consumo-tile-title">
+                                                    <span class="consumo-marker"></span>
+                                                    <strong><?= Html::encode($nombreAlimento) ?></strong>
+                                                </div>
+                                                <?php if ($frecuenciaSeleccionada): ?>
+                                                    <span class="consumo-chip">Seleccionado</span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="mt-3 consumo-tile-select">
+                                                <?= InputHelper::iconSelect2Field(
+                                                    $form,
+                                                    $consumo,
+                                                    "[{$id}]frecuencia_veces_id",
+                                                    "fa-calendar-week",
+                                                    $frecuenciasVecesMap,
+                                                    [
+                                                        "placeholder" => "Frecuencia semanal (veces)",
+                                                        "id" => "consumo-frecuencia-{$id}",
+                                                    ],
+                                                    ["allowClear" => true]
+                                                )->label('Frecuencia semanal (veces)', ['class' => 'form-label fw-semibold small mb-1']) ?>
+                                                <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][catalogo_alimentos_id]" value="<?= $id ?>">
+                                                <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][alumnos_id]" value="<?= $alumnoId ?>">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="consumo-tile-select flex-grow-1 w-100">
-                                        <?= InputHelper::iconSelect2Field(
-                                            $form,
-                                            $consumo,
-                                            "[{$id}]frecuencia_veces_id",
-                                            'fa-clock',
-                                            $frecuenciasVecesMap,
-                                            [
-                                                'placeholder' => 'Frecuencia semanal',
-                                                'class' => 'form-control consumo-frecuencia-select',
-                                                'id' => "consumo-frecuencia-{$id}",
-                                            ],
-                                            ['allowClear' => true]
-                                        )->label('Frecuencia semanal (veces)', ['class' => 'form-label fw-semibold small mb-1']) ?>
-                                        <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][catalogo_alimentos_id]" value="<?= $id ?>">
-                                        <input type="hidden" name="AlumConsumoAlimentos[<?= $id ?>][alumnos_id]" value="<?= $alumnoId ?>">
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2402,12 +2392,12 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 12: ACTIVIDAD FÍSICA Y DEPORTE -->
+        <!-- SECCIÓN 12: ACTIVIDAD FISICA Y DEPORTE -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingActividadFisica">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseActividadFisica" aria-expanded="false" aria-controls="collapseActividadFisica">
-                    <i class="fas fa-dumbbell me-2 text-primary"></i> XII. ACTIVIDAD FÍSICA Y DEPORTE
+                    <i class="fas fa-dumbbell me-2 text-primary"></i> XII. ACTIVIDAD FISICA Y DEPORTE
                 </button>
             </h2>
             <div id="collapseActividadFisica" class="accordion-collapse collapse" aria-labelledby="headingActividadFisica" data-bs-parent="#expedienteAccordion">
@@ -2416,131 +2406,161 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 12</span>
                         <div>
                             <div class="fw-semibold">Actividad fisica y deporte.</div>
-                            <div class="text-muted small">Selecciona tus rutinas actuales y su frecuencia.</div>
+                            <div class="text-muted small">Responde cada pregunta y, si aplican, selecciona tus opciones.</div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumDeportes,
-                                "practicas_algun_deporte",
-                                "fa-basketball-ball",
-                                BooleanHelper::options(),
-                                [
-                                    "placeholder" => "Practicas algun deporte?",
-                                    "id" => "alumdeportes-practicas_algun_deporte",
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumEjercicio,
-                                "haces_ejercicio_fisico",
-                                "fa-dumbbell",
-                                BooleanHelper::options(),
-                                [
-                                    "placeholder" => "Realizas ejercicio fisico?",
-                                    "id" => "alumejercicio-haces_ejercicio_fisico",
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div id="actividad-deportes-container" class="<?= ((int)($alumDeportes->practicas_algun_deporte ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <div class="mt-3 mb-3">
-                            <h5 class="mb-1">Deportes que practicas</h5>
-                            <p class="text-muted small mb-0">Activa los deportes que realizas actualmente.</p>
-                        </div>
-
-                        <div class="row g-3">
-                            <?php foreach ($catalogoDeportesMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $checked = in_array($id, $deportesSeleccionados, true);
-                                ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100">
-                                        <div class="form-check form-switch">
-                                            <input
-                                                class="form-check-input deporte-checkbox"
-                                                type="checkbox"
-                                                id="deporte-<?= $id ?>"
-                                                name="Deportes[<?= $id ?>][selected]"
-                                                value="1"
-                                                <?= $checked ? "checked" : "" ?>>
-                                            <label class="form-check-label fw-semibold" for="deporte-<?= $id ?>">
-                                                <?= Html::encode($nombre) ?>
-                                            </label>
-                                            <input type="hidden" name="Deportes[<?= $id ?>][catalogo_deportes_id]" value="<?= $id ?>">
-                                        </div>
-                                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div id="actividad-deportes-container" class="card shadow-sm border-0 actividad-card h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-running me-2"></i> Deportes que practicas</span>
+                                    <span class="badge bg-success text-white">Selecciona</span>
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <div id="actividad-ejercicio-container" class="<?= ((int)($alumEjercicio->haces_ejercicio_fisico ?? 0) === 1) ? '' : 'd-none' ?>">
-                        <div class="mt-4 mb-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                            <div>
-                                <h5 class="mb-1">Ejercicio fisico</h5>
-                                <p class="text-muted small mb-0">Activa las actividades que realizas y define su frecuencia semanal.</p>
-                            </div>
-                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Rutina semanal</span>
-                        </div>
-
-                        <div id="lista-ejercicio-fisico" class="row g-3">
-                            <?php foreach ($catalogoActividadesEjercicioMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $ejercicio = $ejercicioFisicosMap[$id] ?? new EjercicioFisico([
-                                    "catalogo_actividad_ejercicio_id" => $id,
-                                    "alum_ejercicio_id" => $alumEjercicio->id ?? null,
-                                ]);
-                                $seleccionado = isset($ejercicioFisicosMap[$id]);
-                                ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100 ejercicio-item" data-ejercicio-id="<?= $id ?>">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="form-check form-switch">
-                                                <input
-                                                    class="form-check-input ejercicio-checkbox"
-                                                    type="checkbox"
-                                                    id="ejercicio-<?= $id ?>"
-                                                    name="EjercicioFisico[<?= $id ?>][selected]"
-                                                    value="1"
-                                                    <?= $seleccionado ? "checked" : "" ?>>
-                                                <label class="form-check-label fw-semibold" for="ejercicio-<?= $id ?>">
-                                                    <?= Html::encode($nombre) ?>
-                                                </label>
-                                                <input type="hidden" name="EjercicioFisico[<?= $id ?>][catalogo_actividad_ejercicio_id]" value="<?= $id ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="ejercicio-detalle mt-3 <?= $seleccionado ? "" : "d-none" ?>">
+                                <div class="card-body">
+                                    <div class="row g-3 mb-2">
+                                        <div class="col-md-12">
                                             <?= InputHelper::iconSelect2Field(
                                                 $form,
-                                                $ejercicio,
-                                                "[{$id}]frecuencia_veces_semana_id",
-                                                "fa-calendar-week",
-                                                $frecuenciasVecesSemanaMap,
+                                                $alumDeportes,
+                                                "practicas_algun_deporte",
+                                                "fa-basketball-ball",
+                                                BooleanHelper::options(),
                                                 [
-                                                    "placeholder" => "Frecuencia por semana",
-                                                    "class" => "form-control ejercicio-frecuencia",
-                                                    "id" => "ejercicio-frecuencia-{$id}",
-                                                    "disabled" => !$seleccionado,
-                                                ],
-                                                ["allowClear" => true]
-                                            )->label("Frecuencia", ["class" => "form-label fw-semibold"])
-                                            ?>
+                                                    "placeholder" => "Practicas algun deporte?",
+                                                    "id" => "alumdeportes-practicas_algun_deporte",
+                                                ]
+                                            ) ?>
+                                        </div>
+                                    </div>
+                                    <div id="actividad-deportes-opciones" class="<?= ((int)($alumDeportes->practicas_algun_deporte ?? 0) === 1) ? '' : 'd-none' ?>">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                            <div>
+                                                <h5 class="mb-1">Activa los deportes que realizas</h5>
+                                                <p class="text-muted small mb-0">Selecciona todos los deportes aplicables; los detalles de "Otro" se habilitan al marcarlo.</p>
+                                            </div>
+                                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Al menos uno</span>
+                                        </div>
+                                        <div class="alert alert-danger py-2 px-3 small d-none" id="deporte-error">
+                                            Selecciona al menos un deporte que practiques.
+                                        </div>
+                                        <div class="row g-2 mt-2">
+                                            <?php foreach ($catalogoDeportesMap as $id => $nombre): ?>
+                                                <?php
+                                                $id = (int)$id;
+                                                $checked = in_array($id, $deportesSeleccionados, true);
+                                                ?>
+                                                <div class="col-sm-6 col-md-6 col-12">
+                                                    <div class="form-check deporte-check">
+                                                        <input
+                                                            class="form-check-input deporte-checkbox"
+                                                            type="checkbox"
+                                                            id="deporte-<?= $id ?>"
+                                                            name="Deportes[<?= $id ?>][selected]"
+                                                            value="1"
+                                                            <?= $checked ? "checked" : "" ?>>
+                                                        <label class="form-check-label fw-semibold" for="deporte-<?= $id ?>">
+                                                            <?= Html::encode($nombre) ?>
+                                                        </label>
+                                                        <input type="hidden" name="Deportes[<?= $id ?>][catalogo_deportes_id]" value="<?= $id ?>">
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
                                         </div>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div id="actividad-ejercicio-container" class="card shadow-sm border-0 actividad-card h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-dumbbell me-2"></i> Ejercicio fisico</span>
+                                    <span class="badge bg-info text-white">Rutina</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3 mb-2">
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumEjercicio,
+                                                "haces_ejercicio_fisico",
+                                                "fa-dumbbell",
+                                                BooleanHelper::options(),
+                                                [
+                                                    "placeholder" => "Realizas ejercicio fisico?",
+                                                    "id" => "alumejercicio-haces_ejercicio_fisico",
+                                                ]
+                                            ) ?>
+                                        </div>
+                                    </div>
+                                    <div id="actividad-ejercicio-opciones" class="<?= ((int)($alumEjercicio->haces_ejercicio_fisico ?? 0) === 1) ? '' : 'd-none' ?>">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                            <div>
+                                                <h5 class="mb-1">Selecciona tus actividades y frecuencia</h5>
+                                                <p class="text-muted small mb-0">Marca tus actividades actuales e indica cuantas veces por semana.</p>
+                                            </div>
+                                            <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Frecuencia requerida</span>
+                                        </div>
+                                        <div class="alert alert-danger py-2 px-3 small d-none" id="ejercicio-error">
+                                            Selecciona al menos una actividad física y su frecuencia semanal.
+                                        </div>
+
+                                        <div id="lista-ejercicio-fisico" class="row g-3">
+                                            <?php foreach ($catalogoActividadesEjercicioMap as $id => $nombre): ?>
+                                                <?php
+                                                $id = (int)$id;
+                                                $ejercicio = $ejercicioFisicosMap[$id] ?? new EjercicioFisico([
+                                                    "catalogo_actividad_ejercicio_id" => $id,
+                                                    "alum_ejercicio_id" => $alumEjercicio->id ?? null,
+                                                ]);
+                                                $seleccionado = isset($ejercicioFisicosMap[$id]);
+                                                ?>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="actividad-tile h-100 ejercicio-item" data-ejercicio-id="<?= $id ?>">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="form-check form-switch">
+                                                                <input
+                                                                    class="form-check-input ejercicio-checkbox"
+                                                                    type="checkbox"
+                                                                    id="ejercicio-<?= $id ?>"
+                                                                    name="EjercicioFisico[<?= $id ?>][selected]"
+                                                                    value="1"
+                                                                    <?= $seleccionado ? "checked" : "" ?>>
+                                                                <label class="form-check-label fw-semibold" for="ejercicio-<?= $id ?>">
+                                                                    <?= Html::encode($nombre) ?>
+                                                                </label>
+                                                                <input type="hidden" name="EjercicioFisico[<?= $id ?>][catalogo_actividad_ejercicio_id]" value="<?= $id ?>">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="ejercicio-detalle mt-3 <?= $seleccionado ? "" : "d-none" ?>">
+                                                            <?= InputHelper::iconSelect2Field(
+                                                                $form,
+                                                                $ejercicio,
+                                                                "[{$id}]frecuencia_veces_semana_id",
+                                                                "fa-calendar-week",
+                                                                $frecuenciasVecesSemanaMap,
+                                                                [
+                                                                    "placeholder" => "Frecuencia por semana",
+                                                                    "class" => "form-control ejercicio-frecuencia",
+                                                                    "id" => "ejercicio-frecuencia-{$id}",
+                                                                    "disabled" => !$seleccionado,
+                                                                ],
+                                                                ["allowClear" => true]
+                                                            )->label("Frecuencia semanal", ["class" => "form-label fw-semibold small mb-1"])
+                                                            ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -2772,7 +2792,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIàN 15: ORGANIZACIONES -->
+        <!-- SECCIÓN 15: ORGANIZACIONES -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOrganizaciones">

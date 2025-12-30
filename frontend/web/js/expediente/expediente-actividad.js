@@ -1,10 +1,12 @@
 ;(function ($) {
   const selectorDeportes = '#alumdeportes-practicas_algun_deporte';
   const selectorEjercicio = '#alumejercicio-haces_ejercicio_fisico';
-  const deportesContainer = '#actividad-deportes-container';
-  const ejercicioContainer = '#actividad-ejercicio-container';
+  const deportesContainer = '#actividad-deportes-opciones';
+  const ejercicioContainer = '#actividad-ejercicio-opciones';
   const deporteCheckbox = '.deporte-checkbox';
   const ejercicioCheckbox = '.ejercicio-checkbox';
+  const deporteError = '#deporte-error';
+  const ejercicioError = '#ejercicio-error';
   const ejercicioItem = '.ejercicio-item';
   const ejercicioDetalle = '.ejercicio-detalle';
   const ejercicioFrecuencia = '.ejercicio-frecuencia';
@@ -29,6 +31,7 @@
     $(deportesContainer).toggleClass('d-none', !show);
     const $checkboxes = $(deporteCheckbox);
     const first = $checkboxes.first()[0];
+    $(deporteError).addClass('d-none');
 
     if (!show) {
       $checkboxes.prop('checked', false);
@@ -41,6 +44,7 @@
   const toggleEjercicio = () => {
     const show = parseInt($(selectorEjercicio).val(), 10) === 1;
     $(ejercicioContainer).toggleClass('d-none', !show);
+    $(ejercicioError).addClass('d-none');
     const $checkboxes = $(ejercicioCheckbox);
     const $frecuencias = $(ejercicioFrecuencia);
     const first = $checkboxes.first()[0];
@@ -81,10 +85,12 @@
       if (first) {
         first.setCustomValidity('');
       }
+      $(deporteError).addClass('d-none');
       return true;
     }
 
     const hasSelection = $(deporteCheckbox + ':checked').length > 0;
+    $(deporteError).toggleClass('d-none', hasSelection);
     if (!hasSelection) {
       if (first) {
         first.setCustomValidity('Selecciona al menos un deporte.');
@@ -109,6 +115,7 @@
     const show = parseInt($(selectorEjercicio).val(), 10) === 1;
     const $checkboxes = $(ejercicioCheckbox);
     const first = $checkboxes.first()[0];
+    $(ejercicioError).addClass('d-none');
 
     if (!show) {
       if (first) {
@@ -123,6 +130,7 @@
 
     const seleccionados = $(ejercicioCheckbox + ':checked');
     if (!seleccionados.length) {
+      $(ejercicioError).removeClass('d-none');
       if (first) {
         first.setCustomValidity('Selecciona al menos una actividad fisica.');
         if (event) {
@@ -139,6 +147,7 @@
     if (first) {
       first.setCustomValidity('');
     }
+    $(ejercicioError).addClass('d-none');
 
     let valid = true;
     seleccionados.each(function () {
