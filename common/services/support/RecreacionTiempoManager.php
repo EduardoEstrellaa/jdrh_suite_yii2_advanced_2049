@@ -18,9 +18,8 @@ class RecreacionTiempoManager
         }
 
         $sabeUsar = (int)$alumRecreacionTiempo->sabes_usar_internet === 1;
-        $tieneAcceso = (int)$alumRecreacionTiempo->tienes_acceso_internet === 1;
 
-        if (!$sabeUsar || !$tieneAcceso) {
+        if (!$sabeUsar) {
             UsosInternet::deleteAll(['alum_recreacion_tiempo_id' => $alumRecreacionTiempo->id]);
             return;
         }

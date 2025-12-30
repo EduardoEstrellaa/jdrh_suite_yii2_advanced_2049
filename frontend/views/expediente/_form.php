@@ -2590,93 +2590,157 @@ $this->registerCssFile('@web/css/expediente-form.css');
                     $mostrarAdicciones = (int)($alumHabitosConsumo->tienes_adicciones ?? 0) === 1;
                     ?>
 
+                    <div class="habitos-hero card border-0 mb-3">
+                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="habitos-hero-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-shield-heart text-warning"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Cuida y registra tus habitos</h5>
+                                    <p class="text-muted small mb-0">Responde solo lo que aplique; si no consumes, deja la opcion en "No" y continua.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="habito-chip bg-warning-subtle text-warning"><i class="fas fa-smoking me-1"></i> Tabaco</span>
+                                <span class="habito-chip bg-info-subtle text-info"><i class="fas fa-wine-glass me-1"></i> Alcohol</span>
+                                <span class="habito-chip bg-success-subtle text-success"><i class="fas fa-capsules me-1"></i> Adicciones</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumHabitosConsumo,
-                                'fumas',
-                                'fa-smoking',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => 'Fumas?',
-                                    'id' => 'alumhabitoconsumo-fumas',
-                                ]
-                            ) ?>
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0 habitos-card h-100">
+                                <div class="card-header bg-light fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-wine-bottle me-2 text-warning"></i> Consumo de tabaco y alcohol</span>
+                                    <span class="badge bg-warning-subtle text-warning">Completa si aplica</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="habito-tile h-100">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <div class="fw-semibold">Tabaco</div>
+                                                        <div class="text-muted small">Indica si fumas actualmente.</div>
+                                                    </div>
+                                                    <span class="habito-chip soft">Opcional</span>
+                                                </div>
+                                                <?= InputHelper::iconSelect2Field(
+                                                    $form,
+                                                    $alumHabitosConsumo,
+                                                    'fumas',
+                                                    'fa-smoking',
+                                                    BooleanHelper::options(),
+                                                    [
+                                                        'placeholder' => 'Fumas?',
+                                                        'id' => 'alumhabitoconsumo-fumas',
+                                                    ]
+                                                ) ?>
+                                                <div class="habito-detail mt-3 <?= $mostrarCigarros ? '' : 'd-none' ?>" id="habitos-cigarrillos">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="fas fa-fire me-2 text-warning"></i>
+                                                        <span class="fw-semibold small">Si fumas, cuantos cigarros por dia?</span>
+                                                    </div>
+                                                    <?= InputHelper::iconSelect2Field(
+                                                        $form,
+                                                        $alumHabitosConsumo,
+                                                        'catalogo_cigarros_dia_id',
+                                                        'fa-smoking',
+                                                        $catalogoCigarrosDiaMap,
+                                                        [
+                                                            'placeholder' => 'Cigarros por dia',
+                                                            'id' => 'alumhabitoconsumo-catalogo_cigarros_dia_id',
+                                                        ],
+                                                        ['allowClear' => true]
+                                                    )->label(false) ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="habito-tile h-100">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <div class="fw-semibold">Alcohol</div>
+                                                        <div class="text-muted small">Solo registra consumo habitual.</div>
+                                                    </div>
+                                                    <span class="habito-chip soft">Opcional</span>
+                                                </div>
+                                                <?= InputHelper::iconSelect2Field(
+                                                    $form,
+                                                    $alumHabitosConsumo,
+                                                    'tomas_alcohol',
+                                                    'fa-wine-glass',
+                                                    BooleanHelper::options(),
+                                                    [
+                                                        'placeholder' => 'Consumes alcohol?',
+                                                        'id' => 'alumhabitoconsumo-tomas_alcohol',
+                                                    ]
+                                                ) ?>
+                                                <div class="habito-detail mt-3 <?= $mostrarAlcohol ? '' : 'd-none' ?>" id="habitos-alcohol">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="fas fa-calendar-week me-2 text-primary"></i>
+                                                        <span class="fw-semibold small">Frecuencia semanal</span>
+                                                    </div>
+                                                    <?= InputHelper::iconSelect2Field(
+                                                        $form,
+                                                        $alumHabitosConsumo,
+                                                        'frecuencia_veces_semana_id',
+                                                        'fa-calendar-week',
+                                                        $frecuenciasVecesSemanaMap,
+                                                        [
+                                                            'placeholder' => 'Frecuencia semanal',
+                                                            'id' => 'alumhabitoconsumo-frecuencia_veces_semana_id',
+                                                        ],
+                                                        ['allowClear' => true]
+                                                    )->label(false) ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumHabitosConsumo,
-                                'tomas_alcohol',
-                                'fa-wine-glass',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => 'Consumes alcohol?',
-                                    'id' => 'alumhabitoconsumo-tomas_alcohol',
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-6 <?= $mostrarCigarros ? '' : 'd-none' ?>" id="habitos-cigarrillos">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumHabitosConsumo,
-                                'catalogo_cigarros_dia_id',
-                                'fa-smoking',
-                                $catalogoCigarrosDiaMap,
-                                [
-                                    'placeholder' => 'Cigarros por dia',
-                                    'id' => 'alumhabitoconsumo-catalogo_cigarros_dia_id',
-                                ],
-                                ['allowClear' => true]
-                            )->label('Si fumas, cuantos cigarros por dia?', ['class' => 'form-label fw-semibold']) ?>
-                        </div>
-                        <div class="col-md-6 <?= $mostrarAlcohol ? '' : 'd-none' ?>" id="habitos-alcohol">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumHabitosConsumo,
-                                'frecuencia_veces_semana_id',
-                                'fa-calendar-week',
-                                $frecuenciasVecesSemanaMap,
-                                [
-                                    'placeholder' => 'Frecuencia semanal',
-                                    'id' => 'alumhabitoconsumo-frecuencia_veces_semana_id',
-                                ],
-                                ['allowClear' => true]
-                            )->label('Frecuencia de consumo de alcohol', ['class' => 'form-label fw-semibold']) ?>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumHabitosConsumo,
-                                'tienes_adicciones',
-                                'fa-capsules',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => 'Tienes alguna adiccion?',
-                                    'id' => 'alumhabitoconsumo-tienes_adicciones',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6 <?= $mostrarAdicciones ? '' : 'd-none' ?>" id="habitos-adicciones">
-                            <?= InputHelper::iconTextField(
-                                $form,
-                                $alumHabitosConsumo,
-                                'especificiar_adiccion',
-                                'fa-pen',
-                                [
-                                    'inputOptions' => [
-                                        'placeholder' => 'Especifica la adiccion',
-                                        'id' => 'alumhabitoconsumo-especificiar_adiccion',
-                                    ],
-                                ]
-                            ) ?>
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 habitos-card h-100">
+                                <div class="card-header bg-success-subtle text-success fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-capsules me-2"></i> Otras adicciones</span>
+                                    <span class="badge bg-success text-white">Detalle</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small">Solo si aplica, describe la adiccion con claridad.</p>
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumHabitosConsumo,
+                                        'tienes_adicciones',
+                                        'fa-capsules',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Tienes alguna adiccion?',
+                                            'id' => 'alumhabitoconsumo-tienes_adicciones',
+                                        ]
+                                    ) ?>
+                                    <div class="habito-detail mt-3 <?= $mostrarAdicciones ? '' : 'd-none' ?>" id="habitos-adicciones">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="fas fa-pen me-2 text-success"></i>
+                                            <span class="fw-semibold small">Especifica la adiccion</span>
+                                        </div>
+                                        <?= InputHelper::iconTextField(
+                                            $form,
+                                            $alumHabitosConsumo,
+                                            'especificiar_adiccion',
+                                            'fa-pen',
+                                            [
+                                                'inputOptions' => [
+                                                    'placeholder' => 'Especifica la adiccion',
+                                                    'id' => 'alumhabitoconsumo-especificiar_adiccion',
+                                                ],
+                                            ]
+                                        )->label(false) ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2684,107 +2748,151 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 14: RECREACIÓN Y USO DEL TIEMPO LIBRE -->
+        <!-- SECCIàN 14: RECREACIàN Y USO DEL TIEMPO LIBRE -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingRecreacion">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecreacion" aria-expanded="false" aria-controls="collapseRecreacion">
-                    <i class="fas fa-gamepad me-2 text-info"></i> XIV. RECREACIÓN Y USO DEL TIEMPO LIBRE
+                    <i class="fas fa-gamepad me-2 text-info"></i> XIV. RECREACION Y USO DEL TIEMPO LIBRE
                 </button>
             </h2>
             <div id="collapseRecreacion" class="accordion-collapse collapse" aria-labelledby="headingRecreacion" data-bs-parent="#expedienteAccordion">
                 <div class="accordion-body">
                     <?php
                     $mostrarAcceso = (int)($alumRecreacionTiempo->tienes_acceso_internet ?? 0) === 1;
-                    $mostrarUsos = $mostrarAcceso && (int)($alumRecreacionTiempo->sabes_usar_internet ?? 0) === 1;
+                    $mostrarUsos = (int)($alumRecreacionTiempo->sabes_usar_internet ?? 0) === 1;
                     ?>
 
                     <div class="section-intro mb-3 d-flex align-items-center gap-2">
                         <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Paso 14</span>
                         <div>
-                            <div class="fw-semibold">Tu conexión y uso de internet.</div>
-                            <div class="text-muted small">Indica si sabes y puedes usar internet y para qué lo utilizas.</div>
+                            <div class="fw-semibold">Tu conexion y uso de internet.</div>
+                            <div class="text-muted small">Indica si sabes usarlo, tienes acceso y para que lo aprovechas.</div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-3 habitos-hero">
+                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="habitos-hero-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-gamepad text-info"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Conectividad y tiempo libre</h5>
+                                    <p class="text-muted small mb-0">Confirma tu acceso y elige los usos que mejor describen tu dia a dia.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="habito-chip bg-info-subtle text-info"><i class="fas fa-wifi me-1"></i> Acceso</span>
+                                <span class="habito-chip bg-success-subtle text-success"><i class="fas fa-laptop me-1"></i> Uso responsable</span>
+                                <span class="habito-chip bg-primary-subtle text-primary"><i class="fas fa-check me-1"></i> Selecciona los que apliquen</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumRecreacionTiempo,
-                                'sabes_usar_internet',
-                                'fa-laptop',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => ' Sabes usar internet?',
-                                    'id' => 'alumrecreaciontiempo-sabes_usar_internet',
-                                ]
-                            ) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumRecreacionTiempo,
-                                'tienes_acceso_internet',
-                                'fa-wifi',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => ' Tienes acceso a internet?',
-                                    'id' => 'alumrecreaciontiempo-tienes_acceso_internet',
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-6 <?= $mostrarAcceso ? '' : 'd-none' ?>" id="recreacion-lugar-acceso">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumRecreacionTiempo,
-                                'catalogo_lugares_acceso_principal_id',
-                                'fa-map-marker-alt',
-                                $catalogoLugaresAccesoMap,
-                                [
-                                    'placeholder' => 'Lugar principal de acceso',
-                                    'id' => 'alumrecreaciontiempo-catalogo_lugares_acceso_principal_id',
-                                ],
-                                ['allowClear' => true]
-                            )->label('¿Dónde te conectas principalmente?', ['class' => 'form-label fw-semibold']) ?>
-                        </div>
-                    </div>
-
-                    <div id="recreacion-usos" class="mt-4 <?= $mostrarUsos ? '' : 'd-none' ?>">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                            <div>
-                                <h5 class="mb-1">Usos principales de internet</h5>
-                                <p class="text-muted small mb-0">Activa todas las opciones que apliquen.</p>
+                        <div class="col-lg-5">
+                            <div class="card shadow-sm border-0 habitos-card h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-signal me-2"></i> Conectividad</span>
+                                    <span class="badge bg-info text-white">Requerido</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Indica si cuentas con un punto de acceso habitual.</p>
+                                    <div class="mb-3">
+                                        <?= InputHelper::iconSelect2Field(
+                                            $form,
+                                            $alumRecreacionTiempo,
+                                            'tienes_acceso_internet',
+                                            'fa-wifi',
+                                            BooleanHelper::options(),
+                                            [
+                                                'placeholder' => ' Tienes acceso a internet?',
+                                                'id' => 'alumrecreaciontiempo-tienes_acceso_internet',
+                                            ]
+                                        ) ?>
+                                    </div>
+                                    <div class="actividad-subcard mt-2 <?= $mostrarAcceso ? '' : 'd-none' ?>" id="recreacion-lugar-acceso">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <i class="fas fa-map-marker-alt text-info"></i>
+                                            <div>
+                                                <div class="fw-semibold small mb-0">Lugar principal de acceso</div>
+                                                <div class="text-muted small">Selecciona tu punto habitual de conexion.</div>
+                                            </div>
+                                        </div>
+                                        <?= InputHelper::iconSelect2Field(
+                                            $form,
+                                            $alumRecreacionTiempo,
+                                            'catalogo_lugares_acceso_principal_id',
+                                            'fa-map-marker-alt',
+                                            $catalogoLugaresAccesoMap,
+                                            [
+                                                'placeholder' => 'Lugar principal de acceso',
+                                                'id' => 'alumrecreaciontiempo-catalogo_lugares_acceso_principal_id',
+                                            ],
+                                            ['allowClear' => true]
+                                        )->label(false) ?>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Selecciona al menos una</span>
                         </div>
+                        <div class="col-lg-7">
+                            <div class="card shadow-sm border-0 habitos-card h-100">
+                                <div class="card-header bg-warning-subtle text-warning fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-bullseye me-2"></i> Usos principales</span>
+                                    <span class="badge bg-warning text-white">Selecciona</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Activa todas las opciones que apliquen; manten tus elecciones actualizadas.</p>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-12">
+                                            <?= InputHelper::iconSelect2Field(
+                                                $form,
+                                                $alumRecreacionTiempo,
+                                                'sabes_usar_internet',
+                                                'fa-laptop',
+                                                BooleanHelper::options(),
+                                                [
+                                                    'placeholder' => ' Sabes usar internet?',
+                                                    'id' => 'alumrecreaciontiempo-sabes_usar_internet',
+                                                ]
+                                            ) ?>
+                                        </div>
+                                    </div>
+                                    <div id="recreacion-usos" class="<?= $mostrarUsos ? '' : 'd-none' ?>">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                            <div>
+                                                <h5 class="mb-1">Para que usas internet?</h5>
+                                                <p class="text-muted small mb-0">Selecciona al menos una actividad.</p>
+                                            </div>
+                                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Elige todas las que apliquen</span>
+                                        </div>
 
-                        <div class="row g-3">
-                            <?php foreach ($catalogoUsosInternetMap as $id => $nombre): ?>
-                                <?php
-                                $id = (int)$id;
-                                $checked = in_array($id, $usosInternetSeleccionados, true);
-                                ?>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="border rounded p-3 h-100">
-                                        <div class="form-check form-switch">
-                                            <input
-                                                class="form-check-input recreacion-uso-checkbox"
-                                                type="checkbox"
-                                                id="uso-internet-<?= $id ?>"
-                                                name="UsosInternet[ids][]"
-                                                value="<?= $id ?>"
-                                                <?= $checked ? 'checked' : '' ?>>
-                                            <label class="form-check-label fw-semibold" for="uso-internet-<?= $id ?>">
-                                                <?= Html::encode($nombre) ?>
-                                            </label>
+                                        <div class="row g-2">
+                                            <?php foreach ($catalogoUsosInternetMap as $id => $nombre): ?>
+                                                <?php
+                                                $id = (int)$id;
+                                                $checked = in_array($id, $usosInternetSeleccionados, true);
+                                                ?>
+                                                <div class="col-sm-6 col-md-6 col-12">
+                                                    <div class="form-check deporte-check">
+                                                        <input
+                                                            class="form-check-input recreacion-uso-checkbox"
+                                                            type="checkbox"
+                                                            id="uso-internet-<?= $id ?>"
+                                                            name="UsosInternet[ids][]"
+                                                            value="<?= $id ?>"
+                                                            <?= $checked ? 'checked' : '' ?>>
+                                                        <label class="form-check-label fw-semibold" for="uso-internet-<?= $id ?>">
+                                                            <?= Html::encode($nombre) ?>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
                                         </div>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2792,7 +2900,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         </div>
 
         <!-- ===================== -->
-        <!-- SECCIÓN 15: ORGANIZACIONES -->
+        <!-- SECCIàN 15: ORGANIZACIONES -->
         <!-- ===================== -->
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOrganizaciones">
@@ -2812,81 +2920,119 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         </div>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <?= InputHelper::iconSelect2Field(
-                                $form,
-                                $alumOrganizacion,
-                                'participas_organizacion',
-                                'fa-users',
-                                BooleanHelper::options(),
-                                [
-                                    'placeholder' => 'Participas en alguna organizacion?',
-                                    'id' => 'alumorganizacion-participas_organizacion',
-                                ]
-                            ) ?>
+                    <div class="habitos-hero card border-0 mb-3">
+                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="habitos-hero-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-handshake text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Conexiones y colaboraciones</h5>
+                                    <p class="text-muted small mb-0">Confirma si participas y activa las organizaciones donde colaboras.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="habito-chip bg-primary-subtle text-primary"><i class="fas fa-users me-1"></i> Participacion</span>
+                                <span class="habito-chip bg-info-subtle text-info"><i class="fas fa-check me-1"></i> Seleccion multiple</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="organizaciones-container" class="mt-3 <?= $participaOrganizacion ? '' : 'd-none' ?>">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                            <div>
-                                <h5 class="mb-1">Organizaciones en las que participas</h5>
-                                <p class="text-muted small mb-0">Selecciona todas las opciones que apliquen.</p>
+                    <div class="row g-3">
+                        <div class="col-lg-5">
+                            <div class="card shadow-sm border-0 habitos-card h-100">
+                                <div class="card-header bg-primary-subtle text-primary fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-users me-2"></i> Participacion</span>
+                                    <span class="badge bg-primary text-white">Requerido</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Indica si perteneces o colaboras con alguna organizacion.</p>
+                                    <?= InputHelper::iconSelect2Field(
+                                        $form,
+                                        $alumOrganizacion,
+                                        'participas_organizacion',
+                                        'fa-users',
+                                        BooleanHelper::options(),
+                                        [
+                                            'placeholder' => 'Participas en alguna organizacion?',
+                                            'id' => 'alumorganizacion-participas_organizacion',
+                                        ]
+                                    ) ?>
+                                </div>
                             </div>
-                            <span class="badge bg-info-subtle text-info fw-semibold px-3 py-2">Selecciona al menos una</span>
                         </div>
-
-                        <?php if (empty($catalogoOrganizacionesGrouped)): ?>
-                            <div class="alert alert-warning mb-0">No hay organizaciones registradas en el catalogo.</div>
-                        <?php else: ?>
-                            <?php foreach ($catalogoOrganizacionesGrouped as $tipoNombre => $organizaciones): ?>
-                                <div class="mb-3">
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <h6 class="mb-0"><?= Html::encode($tipoNombre) ?></h6>
-                                        <span class="text-muted small"><?= count($organizaciones) ?> opciones</span>
-                                    </div>
-                                    <div class="row g-2">
-                                        <?php foreach ($organizaciones as $org): ?>
-                                            <?php
-                                            $id = (int)($org['id'] ?? 0);
-                                            $nombreOrg = trim((string)($org['nombre'] ?? ''));
-                                            $checked = in_array($id, $organizacionesSeleccionadas, true);
-                                            $esNombreOtro = mb_strtolower($nombreOrg, 'UTF-8') === 'otro';
-                                            $esOtro = ($catalogoOrganizacionOtroId !== null && $id === (int)$catalogoOrganizacionOtroId) || $esNombreOtro;
-                                            ?>
-                                            <div class="col-lg-6 col-md-12">
-                                                <div class="organizacion-item border rounded p-3 h-100">
-                                                    <div class="form-check">
-                                                        <input
-                                                            type="checkbox"
-                                                            class="form-check-input organizacion-checkbox"
-                                                            id="organizacion-<?= $id ?>"
-                                                            name="Organizaciones[<?= $id ?>][catalogo_organizaciones_id]"
-                                                            value="<?= $id ?>"
-                                                            data-es-otro="<?= $esOtro ? '1' : '0' ?>"
-                                                            <?= $checked ? 'checked' : '' ?>>
-                                                        <label class="form-check-label fw-semibold" for="organizacion-<?= $id ?>"><?= Html::encode($nombreOrg) ?></label>
-                                                    </div>
-                                                    <?php if ($esOtro): ?>
-                                                        <div class="mt-2 organizacion-otro-container <?= $checked ? '' : 'd-none' ?>">
-                                                            <label class="form-label small text-muted" for="organizacion-otro-<?= $id ?>">Especifica la organizacion</label>
-                                                            <input
-                                                                type="text"
-                                                                class="form-control organizacion-otro-input"
-                                                                id="organizacion-otro-<?= $id ?>"
-                                                                name="Organizaciones[<?= $id ?>][otra_organizacion_especificar]"
-                                                                value="<?= Html::encode($organizacionesOtroMap[$id] ?? '') ?>"
-                                                                <?= $checked ? '' : 'disabled' ?>>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
+                        <div class="col-lg-7">
+                            <div class="card shadow-sm border-0 habitos-card h-100">
+                                <div class="card-header bg-info-subtle text-info fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-handshake me-2"></i> Organizaciones</span>
+                                    <span class="badge bg-info text-white">Selecciona</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">Activa todas las organizaciones donde participas; si eliges “Otro”, especifica el nombre.</p>
+                                    <div id="organizaciones-container" class="<?= $participaOrganizacion ? '' : 'd-none' ?>">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                            <div>
+                                                <h5 class="mb-1">Tus organizaciones</h5>
+                                                <p class="text-muted small mb-0">Selecciona al menos una opcion.</p>
                                             </div>
-                                        <?php endforeach; ?>
+                                            <span class="badge bg-secondary-subtle text-secondary fw-semibold px-3 py-2">Multiples opciones</span>
+                                        </div>
+
+                                        <?php if (empty($catalogoOrganizacionesGrouped)): ?>
+                                            <div class="alert alert-warning mb-0">No hay organizaciones registradas en el catalogo.</div>
+                                        <?php else: ?>
+                                            <?php foreach ($catalogoOrganizacionesGrouped as $tipoNombre => $organizaciones): ?>
+                                                <div class="actividad-subcard mb-3">
+                                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <i class="fas fa-layer-group text-primary"></i>
+                                                            <h6 class="mb-0"><?= Html::encode($tipoNombre) ?></h6>
+                                                        </div>
+                                                        <span class="text-muted small"><?= count($organizaciones) ?> opciones</span>
+                                                    </div>
+                                                    <div class="row g-2">
+                                                        <?php foreach ($organizaciones as $org): ?>
+                                                            <?php
+                                                            $id = (int)($org['id'] ?? 0);
+                                                            $nombreOrg = trim((string)($org['nombre'] ?? ''));
+                                                            $checked = in_array($id, $organizacionesSeleccionadas, true);
+                                                            $esNombreOtro = mb_strtolower($nombreOrg, 'UTF-8') === 'otro';
+                                                            $esOtro = ($catalogoOrganizacionOtroId !== null && $id === (int)$catalogoOrganizacionOtroId) || $esNombreOtro;
+                                                            ?>
+                                                            <div class="col-sm-6 col-12">
+                                                                <div class="organizacion-item deporte-check h-100">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        class="form-check-input organizacion-checkbox"
+                                                                        id="organizacion-<?= $id ?>"
+                                                                        name="Organizaciones[<?= $id ?>][catalogo_organizaciones_id]"
+                                                                        value="<?= $id ?>"
+                                                                        data-es-otro="<?= $esOtro ? '1' : '0' ?>"
+                                                                        <?= $checked ? 'checked' : '' ?>>
+                                                                    <label class="form-check-label fw-semibold" for="organizacion-<?= $id ?>"><?= Html::encode($nombreOrg) ?></label>
+                                                                </div>
+                                                                <?php if ($esOtro): ?>
+                                                                    <div class="mt-1 organizacion-otro-container <?= $checked ? '' : 'd-none' ?>">
+                                                                        <label class="form-label small text-muted" for="organizacion-otro-<?= $id ?>">Especifica la organizacion</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            class="form-control organizacion-otro-input"
+                                                                            id="organizacion-otro-<?= $id ?>"
+                                                                            name="Organizaciones[<?= $id ?>][otra_organizacion_especificar]"
+                                                                            value="<?= Html::encode($organizacionesOtroMap[$id] ?? '') ?>"
+                                                                            <?= $checked ? '' : 'disabled' ?>>
+                                                                    </div>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
