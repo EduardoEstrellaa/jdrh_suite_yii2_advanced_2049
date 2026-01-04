@@ -73,7 +73,7 @@ class CatalogoDependenciasEconomicas extends \yii\db\ActiveRecord
      */
     public static function dropdownDependientesOptions(): array
     {
-        // Mostrar solo las categor¡as 1, 2 y 3; se incluye "Otro" aunque pertenezca a otra categor¡a.
+        // Mostrar solo las categorias 1, 2 y 3; se incluye "Otro" aunque pertenezca a otra categoria.
         $categoriasPermitidas = [1, 2, 3];
 
         $records = static::find()
@@ -81,13 +81,21 @@ class CatalogoDependenciasEconomicas extends \yii\db\ActiveRecord
             ->where([
                 'or',
                 ['in', 'categorias_dependencias_id', $categoriasPermitidas],
-                ['nombre' => 'Otro'],
+                ['nombre' => 'Otro (especificar)'],
             ])
             ->orderBy(['id' => SORT_ASC])
             ->asArray()
             ->all();
 
-        return ArrayHelper::map($records, 'id', 'nombre');
+        $map = ArrayHelper::map($records, 'id', 'nombre');
+        $otroId = static::getOtroId();
+        if ($otroId !== null && array_key_exists($otroId, $map)) {
+            $otroValor = $map[$otroId];
+            unset($map[$otroId]);
+            $map[$otroId] = $otroValor;
+        }
+
+        return $map;
     }
 
     /**
@@ -97,7 +105,8 @@ class CatalogoDependenciasEconomicas extends \yii\db\ActiveRecord
     {
         $id = static::find()
             ->select('id')
-            ->where(['nombre' => 'Otro'])
+            ->where(['in', 'nombre', ['Otro (especificar)', 'Otro']])
+            ->orderBy(['id' => SORT_ASC])
             ->scalar();
 
         return $id ? (int)$id : null;
