@@ -66,7 +66,7 @@ class CatalogoLugaresComer extends \yii\db\ActiveRecord
     {
         $record = static::find()
             ->select('id')
-            ->where(['like', 'nombre', 'otro', false])
+            ->where(['like', 'nombre', 'Otro (especificar)', false])
             ->orderBy(['id' => SORT_ASC])
             ->one();
 
