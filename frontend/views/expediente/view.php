@@ -20,6 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="mb-4 text-center">
         <?= Html::a('Actualizar', ['update', 'perfil_id' => $perfil->id], ['class' => 'btn btn-primary me-2']) ?>
+
+        <?= Html::a('<i class="fas fa-file-pdf"></i> PDF', ['pdf'], [
+            'class' => 'btn btn-danger me-2',
+            'target' => '_blank',
+            'title' => 'Abrir expediente en PDF'
+        ]) ?>
+
         <?= Html::a('<i class="fas fa-trash-alt"></i> Eliminar', [
             'delete',
             'perfil_id' => $perfil->id
