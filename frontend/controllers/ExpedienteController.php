@@ -12,19 +12,24 @@ use frontend\components\PerfilAlumnoResolver;
 use common\models\Municipios;
 use common\services\ExpedienteFacade;
 use common\services\ExpedienteService;
+use frontend\services\pdf\ExpedientePdfGenerator;
 
 class ExpedienteController extends Controller
 {
+
+    private ExpedientePdfGenerator $pdfGenerator;
+
     /** @var PerfilAlumnoResolver */
     private $perfilAlumnoResolver;
 
     /** @var ExpedienteFacade */
     private $expedienteFacade;
 
-    public function __construct($id, $module, PerfilAlumnoResolver $perfilAlumnoResolver, ExpedienteFacade $expedienteFacade, $config = [])
+    public function __construct($id, $module, PerfilAlumnoResolver $perfilAlumnoResolver, ExpedienteFacade $expedienteFacade, ExpedientePdfGenerator $pdfGenerator, $config = [])
     {
         $this->perfilAlumnoResolver = $perfilAlumnoResolver;
         $this->expedienteFacade = $expedienteFacade;
+        $this->pdfGenerator = $pdfGenerator;
         parent::__construct($id, $module, $config);
     }
 
@@ -48,6 +53,7 @@ class ExpedienteController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'municipios' => ['GET'],
+                    'pdf' => ['GET'],
                 ],
             ],
         ]);
@@ -179,5 +185,17 @@ class ExpedienteController extends Controller
             ->all();
 
         return array_column($municipios, 'nombre', 'id');
+    }
+
+    public function actionPdf()
+    {
+        $resolved = $this->perfilAlumnoResolver->resolve($this);
+        if ($resolved->redirect instanceof Response) {
+            return $resolved->redirect;
+        }
+
+        $this->layout = false;
+
+        return $this->pdfGenerator->renderForAlumno($resolved->alumno->id);
     }
 }
