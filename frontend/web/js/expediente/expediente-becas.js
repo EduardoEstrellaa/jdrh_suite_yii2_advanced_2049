@@ -10,13 +10,15 @@
      */
     function toggleBecaFields() {
         const tieneBeca = $('#alumbecas-tiene_beca').val();
+        const $tipoBeca = $('#alumbecas-tipos_becas_id');
         if (tieneBeca === '1') {
             $('#tipo-beca-container').show();
+            $tipoBeca.prop('required', true);
         } else {
             $('#tipo-beca-container').hide();
             $('#otro-especificar-container').hide();
             // Limpia selección y texto para evitar valores residuales en UI
-            $('#alumbecas-tipos_becas_id').val(null).trigger('change');
+            $tipoBeca.prop('required', false).val(null).trigger('change').removeClass('is-invalid');
             $('#alumbecas-otro_especificar').val('');
         }
     }
@@ -26,11 +28,13 @@
      */
     function toggleOtroEspecificar() {
         const tipoBeca = $('#alumbecas-tipos_becas_id').val();
-        // Asume que '1' corresponde a "Otro"
+        const otroId = (typeof window.TIPO_BECA_OTRO_ID !== 'undefined' && window.TIPO_BECA_OTRO_ID !== null)
+            ? String(window.TIPO_BECA_OTRO_ID)
+            : null;
         const $otroContainer = $('#otro-especificar-container');
         const $otroInput = $('#alumbecas-otro_especificar');
 
-        if (tipoBeca === '1') {
+        if (otroId && tipoBeca === otroId) {
             $otroContainer.show();
             $otroInput.prop('required', true);
             return;
@@ -48,9 +52,12 @@
      */
     function validateBecaOtro(event) {
         const tipoBeca = $('#alumbecas-tipos_becas_id').val();
+        const otroId = (typeof window.TIPO_BECA_OTRO_ID !== 'undefined' && window.TIPO_BECA_OTRO_ID !== null)
+            ? String(window.TIPO_BECA_OTRO_ID)
+            : null;
         const $otroInput = $('#alumbecas-otro_especificar');
 
-        if (tipoBeca !== '1') {
+        if (!otroId || tipoBeca !== otroId) {
             if ($otroInput[0]) {
                 $otroInput[0].setCustomValidity('');
             }
@@ -80,11 +87,44 @@
     }
 
     /**
+     * Valida que el tipo de beca sea obligatorio cuando tiene_beca = 1
+     */
+    function validateTipoBeca(event) {
+        const tieneBeca = $('#alumbecas-tiene_beca').val();
+        const $tipoBeca = $('#alumbecas-tipos_becas_id');
+
+        if (tieneBeca !== '1') {
+            if ($tipoBeca[0]) $tipoBeca[0].setCustomValidity('');
+            $tipoBeca.removeClass('is-invalid');
+            return true;
+        }
+
+        const val = ($tipoBeca.val() || '').trim();
+        if (val === '') {
+            if ($tipoBeca[0]) {
+                $tipoBeca[0].setCustomValidity('Selecciona el tipo de beca.');
+                $tipoBeca[0].reportValidity();
+            }
+            $tipoBeca.addClass('is-invalid');
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            return false;
+        }
+
+        if ($tipoBeca[0]) $tipoBeca[0].setCustomValidity('');
+        $tipoBeca.removeClass('is-invalid');
+        return true;
+    }
+
+    /**
      * Inicializa los eventos del formulario de becas
      */
     function initBecaForm() {
         $('#alumbecas-tiene_beca').on('change', toggleBecaFields);
         $('#alumbecas-tipos_becas_id').on('change', function () {
+            validateTipoBeca();
             toggleOtroEspecificar();
             validateBecaOtro();
         });
@@ -95,6 +135,11 @@
         const $form = $('.expediente-form form');
         if ($form.length) {
             $form.on('submit', function (e) {
+                if (!validateTipoBeca(e)) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    return false;
+                }
                 if (!validateBecaOtro(e)) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -103,7 +148,7 @@
                 return true;
             });
             $form.on('beforeSubmit', function (e) {
-                if (!validateBecaOtro(e)) {
+                if (!validateTipoBeca(e) || !validateBecaOtro(e)) {
                     e.preventDefault();
                     return false;
                 }
