@@ -37,7 +37,6 @@
   const tratamientoDetalleSelector = '.tratamiento-detalle';
   const tratamientoFrecuenciaSelector = '.tratamiento-frecuencia';
   const tratamientoFechaSelector = '.tratamiento-fecha';
-  const tratamientoRangoSelector = '.tratamiento-rango';
   const select2Defaults = {
     theme: 'bootstrap-5',
     width: '100%',
@@ -768,7 +767,6 @@
       $(tratamientoFechaSelector).val('').prop('disabled', true).each(function () {
         if (this.setCustomValidity) this.setCustomValidity('');
       });
-      $(tratamientoRangoSelector).val('').prop('disabled', true).removeClass('is-invalid');
       setCheckboxSectionError({
         containerSelector: tratamientosContainerSelector,
         checkboxSelector: tratamientoCheckboxSelector,
@@ -790,13 +788,11 @@
     const $detalle = $row.find(tratamientoDetalleSelector);
     const $frecuencia = $row.find(tratamientoFrecuenciaSelector);
     const $fechas = $row.find(tratamientoFechaSelector);
-    const $rango = $row.find(tratamientoRangoSelector);
     const checked = $checkbox.is(':checked');
 
     $detalle.toggleClass('d-none', !checked);
     $frecuencia.prop('required', checked).prop('disabled', !checked).trigger('change.select2');
     $fechas.prop('disabled', !checked);
-    $rango.prop('disabled', !checked);
 
     if (!checked) {
       resetSelect($frecuencia);
@@ -804,7 +800,6 @@
       $fechas.each(function () {
         if (this.setCustomValidity) this.setCustomValidity('');
       });
-      $rango.val('').removeClass('is-invalid');
     } else {
       initSelect2($frecuencia);
     }
@@ -1071,7 +1066,7 @@
     toggleTratamientoDetalle($(this));
     validateTratamientos(null, { showError: true });
   })
-    .on('change', `${tratamientoFrecuenciaSelector}, ${tratamientoFechaSelector}, ${tratamientoRangoSelector}`, function () {
+    .on('change', `${tratamientoFrecuenciaSelector}, ${tratamientoFechaSelector}`, function () {
       this.setCustomValidity('');
       $(this).removeClass('is-invalid');
     })
