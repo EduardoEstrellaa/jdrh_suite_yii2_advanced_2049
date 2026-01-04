@@ -54,8 +54,7 @@ class TratamientosManager
 
         $catalogoId = (int)($row['catalogo_tratamientos_id'] ?? 0);
         $frecuenciaId = (int)($row['frecuencia_tiempo_id'] ?? 0);
-        $fechaInicio = trim((string)($row['fecha_inicio'] ?? ''));
-        $fechaFin = trim((string)($row['fecha_fin'] ?? ''));
+        [$fechaInicio, $fechaFin] = self::extractFechas($row);
 
         if ($catalogoId <= 0) {
             throw new DomainException('Cada tratamiento requiere tipo y frecuencia.');
@@ -65,7 +64,7 @@ class TratamientosManager
             throw new DomainException('Selecciona la frecuencia para cada tratamiento marcado.');
         }
 
-        if ($fechaFin !== '' && $fechaInicio !== '' && strtotime($fechaFin) < strtotime($fechaInicio)) {
+        if ($fechaFin !== null && $fechaInicio !== null && strtotime($fechaFin) < strtotime($fechaInicio)) {
             throw new DomainException('La fecha fin debe ser igual o posterior a la fecha de inicio.');
         }
 
@@ -75,13 +74,68 @@ class TratamientosManager
             'frecuencia_tiempo_id' => $frecuenciaId,
         ]);
 
-        if ($fechaInicio !== '') {
+        if ($fechaInicio !== null) {
             $tratamiento->fecha_inicio = $fechaInicio;
         }
-        if ($fechaFin !== '') {
+        if ($fechaFin !== null) {
             $tratamiento->fecha_fin = $fechaFin;
         }
 
         return $tratamiento;
+    }
+
+    /**
+     * Obtiene fechas de inicio y fin desde el POST, tolerando rangos combinados.
+     *
+     * @return array{0: string|null, 1: string|null}
+     */
+    private static function extractFechas(array $row): array
+    {
+        $inicioRaw = $row['fecha_inicio'] ?? null;
+        $finRaw = $row['fecha_fin'] ?? null;
+
+        // Si viene solo el rango combinado, usalo para poblar ambos extremos.
+        $rangoRaw = $row['fecha_rango'] ?? null;
+        if ($rangoRaw === null && is_string($inicioRaw) && strpos($inicioRaw, ' - ') !== false && empty($finRaw)) {
+            $rangoRaw = $inicioRaw;
+        }
+
+        if (is_string($rangoRaw) && strpos($rangoRaw, ' - ') !== false) {
+            $parts = array_map('trim', explode(' - ', $rangoRaw, 2));
+            $inicioRaw = $inicioRaw ?: ($parts[0] ?? null);
+            $finRaw = $finRaw ?: ($parts[1] ?? null);
+        }
+
+        return [
+            self::normalizeDate($inicioRaw),
+            self::normalizeDate($finRaw),
+        ];
+    }
+
+    /**
+     * Normaliza fechas desde el form a YYYY-MM-DD evitando doble conversión.
+     */
+    private static function normalizeDate($value): ?string
+    {
+        $raw = trim((string)($value ?? ''));
+        if ($raw === '') {
+            return null;
+        }
+
+        $formats = ['Y-m-d', 'd/m/Y', 'Y/m/d'];
+        foreach ($formats as $fmt) {
+            $dt = \DateTime::createFromFormat($fmt, $raw);
+            if ($dt && $dt->format($fmt) === $raw) {
+                return $dt->format('Y-m-d');
+            }
+        }
+
+        // Fallback: si llega en formato completo de rango u otro, intentamos parsear con strtotime.
+        $ts = strtotime($raw);
+        if ($ts !== false) {
+            return date('Y-m-d', $ts);
+        }
+
+        return null;
     }
 }
