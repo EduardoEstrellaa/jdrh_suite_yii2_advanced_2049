@@ -35,6 +35,26 @@ class AlumBecas extends \yii\db\ActiveRecord
             [['alumnos_id', 'tiene_beca'], 'required'],
             [['alumnos_id', 'tiene_beca', 'tipos_becas_id'], 'integer'],
             [['otro_especificar'], 'string', 'max' => 250],
+            [
+                'tipos_becas_id',
+                'required',
+                'when' => function ($model) {
+                    return (int)$model->tiene_beca === 1;
+                },
+                'whenClient' => "function(){ return $('#alumbecas-tiene_beca').val() === '1'; }"
+            ],
+            [
+                'otro_especificar',
+                'required',
+                'when' => function ($model) {
+                    $otroId = TiposBecas::getOtroId();
+                    return $otroId !== null && (int)$model->tiene_beca === 1 && (int)$model->tipos_becas_id === (int)$otroId;
+                },
+                'whenClient' => "function(){
+                    if (typeof window.TIPO_BECA_OTRO_ID === 'undefined' || window.TIPO_BECA_OTRO_ID === null) { return false; }
+                    return $('#alumbecas-tiene_beca').val() === '1' && $('#alumbecas-tipos_becas_id').val() === String(window.TIPO_BECA_OTRO_ID);
+                }"
+            ],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
             [['tipos_becas_id'], 'exist', 'skipOnError' => true, 'targetClass' => TiposBecas::class, 'targetAttribute' => ['tipos_becas_id' => 'id']],
         ];
