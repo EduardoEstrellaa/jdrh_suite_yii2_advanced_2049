@@ -74,6 +74,7 @@ $alumTrabajo = $alumTrabajo ?? new AlumTrabajo();
 $alumVivienda = $alumVivienda ?? new AlumVivienda(['alumnos_id' => $alumno->id ?? null]);
 $alumTransportes = $alumTransportes ?? new AlumTransportes(['alumnos_id' => $alumno->id ?? null]);
 $alumHabitosConsumo = $alumHabitosConsumo ?? new AlumHabitosConsumo(['alumnos_id' => $alumno->id ?? null]);
+$tipoBecaOtroId = $tipoBecaOtroId ?? TiposBecas::getOtroId();
 $catalogoDependenciasOptions = $catalogoDependenciasOptions ?? [];
 $otroCatalogoDependenciaId = $otroCatalogoDependenciaId ?? null;
 $dependientes = $dependientes ?? [];
@@ -759,7 +760,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                                 $alumBecas,
                                                 'tipos_becas_id',
                                                 'fa-award',
-                                                TiposBecas::getTiposBecasMap(),
+                                                TiposBecas::dropdownOptions(),
                                                 [
                                                     'options' => [
                                                         'placeholder' => 'Selecciona el tipo',
@@ -825,7 +826,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingHijos">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHijos" aria-expanded="false" aria-controls="collapseHijos">
-                    <i class="fas fa-children me-2 text-info"></i> V. INFORMACIàN DE HIJOS
+                    <i class="fas fa-children me-2 text-info"></i> V. INFORMACION DE HIJOS
                 </button>
             </h2>
 
@@ -2061,55 +2062,33 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                                     )->label('Frecuencia', ['class' => 'form-label fw-semibold']) ?>
 
                                                     <div class="form-field mb-3">
-                                                        <label class="form-label fw-semibold" for="tratamiento-rango-<?= $id ?>">Rango de fechas</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                                            <?= DateRangePicker::widget([
-                                                                'model' => $tratamiento,
-                                                                'attribute' => "[{$id}]fecha_inicio",
-                                                                'startAttribute' => "[{$id}]fecha_inicio",
-                                                                'endAttribute' => "[{$id}]fecha_fin",
-                                                                'convertFormat' => true,
-                                                                'value' => ($tratamiento->fecha_inicio && $tratamiento->fecha_fin)
-                                                                    ? Html::encode($tratamiento->fecha_inicio . ' - ' . $tratamiento->fecha_fin)
-                                                                    : '',
-                                                                'options' => [
-                                                                    'id' => "tratamiento-rango-{$id}",
-                                                                    'class' => 'form-control tratamiento-rango',
-                                                                    'placeholder' => 'Selecciona rango...',
-                                                                    'readonly' => true,
-                                                                    'disabled' => !$seleccionado,
-                                                                ],
-                                                                'startInputOptions' => [
-                                                                    'class' => 'd-none tratamiento-fecha tratamiento-fecha-inicio',
-                                                                    'id' => "tratamiento-inicio-{$id}",
-                                                                ],
-                                                                'endInputOptions' => [
-                                                                    'class' => 'd-none tratamiento-fecha tratamiento-fecha-fin',
-                                                                    'id' => "tratamiento-fin-{$id}",
-                                                                ],
-                                                                'pluginOptions' => [
-                                                                    'locale' => [
-                                                                        'format' => 'Y-MM-DD',
-                                                                        'separator' => ' - ',
-                                                                    ],
-                                                                    'autoUpdateInput' => false,
-                                                                    'opens' => 'center',
-                                                                ],
-                                                                'pluginEvents' => [
-                                                                    'apply.daterangepicker' => "function(ev, picker) {
-                                                                        const val = picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD');
-                                                                        $(this).val(val);
-                                                                        $('#tratamiento-inicio-{$id}').val(picker.startDate.format('YYYY-MM-DD')).trigger('change');
-                                                                        $('#tratamiento-fin-{$id}').val(picker.endDate.format('YYYY-MM-DD')).trigger('change');
-                                                                    }",
-                                                                    'cancel.daterangepicker' => "function(ev, picker) {
-                                                                        $(this).val('');
-                                                                        $('#tratamiento-inicio-{$id}').val('').trigger('change');
-                                                                        $('#tratamiento-fin-{$id}').val('').trigger('change');
-                                                                    }",
-                                                                ],
-                                                            ]) ?>
+                                                        <div class="row g-2">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label fw-semibold" for="tratamiento-inicio-<?= $id ?>">Fecha inicio</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                                                    <input
+                                                                        type="date"
+                                                                        class="form-control tratamiento-fecha tratamiento-fecha-inicio"
+                                                                        id="tratamiento-inicio-<?= $id ?>"
+                                                                        name="Tratamientos[<?= $id ?>][fecha_inicio]"
+                                                                        value="<?= Html::encode($tratamiento->fecha_inicio) ?>"
+                                                                        <?= $seleccionado ? '' : 'disabled' ?>>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label fw-semibold" for="tratamiento-fin-<?= $id ?>">Fecha fin</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                                                    <input
+                                                                        type="date"
+                                                                        class="form-control tratamiento-fecha tratamiento-fecha-fin"
+                                                                        id="tratamiento-fin-<?= $id ?>"
+                                                                        name="Tratamientos[<?= $id ?>][fecha_fin]"
+                                                                        value="<?= Html::encode($tratamiento->fecha_fin) ?>"
+                                                                        <?= $seleccionado ? '' : 'disabled' ?>>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2317,7 +2296,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                                                         <input
                                                             type="text"
                                                             class="form-control lugar-comer-otro-input"
-                                                            name="AlumLugaresComer[<?= $id ?>][lugar_otro]"
+                                                            name="AlumLugaresComer[<?= $id ?>][otro_especificar]"
                                                             id="lugar-comer-otro-<?= $id ?>"
                                                             value="<?= Html::encode($lugaresComerOtroMap[$id] ?? $lugarComerOtro) ?>"
                                                             <?= $checked ? '' : 'disabled' ?>>
@@ -3060,6 +3039,7 @@ JS;
 
 $this->registerJs($script, View::POS_BEGIN);
 
+$this->registerJsVar('TIPO_BECA_OTRO_ID', $tipoBecaOtroId);
 $this->registerJsVar('DEPENDENCIA_OTRO_ID', $otroCatalogoDependenciaId);
 $this->registerJsVar('TIPO_VIVIENDA_OTRO_ID', $tipoViviendaOtroId);
 $this->registerJsVar('VIVIENDA_BIEN_OTRO_ID', $catalogoBienOtroId);
