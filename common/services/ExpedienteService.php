@@ -52,6 +52,7 @@ use common\models\AlumDeportes;
 use common\models\AlumEjercicio;
 use common\models\Deportes;
 use common\models\EjercicioFisico;
+use common\models\TiposBecas;
 use common\services\support\DependientesManager;
 use common\services\support\HijosManager;
 use common\services\support\ViviendaBienesManager;
@@ -166,25 +167,37 @@ class ExpedienteService
 
     /**
      * Obtiene los modelos para actualizar expediente.
+     * IMPORTANTE: Orden consistente con getModelsForCreate() para mantener predictible el saveModels().
      */
     public static function getModelsForUpdate($perfilId, $alumnoId)
     {
         return [
+            // 1) Hábitos (igual que create: primero)
+            'alumHabitosConsumo' => self::findOrCreateHabitosConsumo($alumnoId),
+
+            // 2) Perfil
             'datosPersonales' => self::findOrCreateModel(DatosPersonales::class, ['perfil_id' => $perfilId]),
             'lugaresNacimiento' => self::findOrCreateModel(LugaresNacimiento::class, ['perfil_id' => $perfilId]),
             'domiciliosActuales' => self::findOrCreateModel(DomiciliosActuales::class, ['perfil_id' => $perfilId]),
             'datosGenerales' => self::findOrCreateModel(DatosGenerales::class, ['perfil_id' => $perfilId]),
+
+            // 3) Económico / familiar
             'alumBecas' => self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]),
             'alumDatosFamiliares' => self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]),
             'alumInfoHijos' => self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]),
             'alumDependeEconomicamente' => self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]),
             'alumDependenEconomica' => self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]),
             'alumTrabajo' => self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]),
+
+            // 4) Vivienda / transporte
             'alumVivienda' => self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]),
             'alumTransportes' => self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]),
+
+            // 5) Actividad física
             'alumDeportes' => self::findOrCreateModel(AlumDeportes::class, ['alumnos_id' => $alumnoId]),
             'alumEjercicio' => self::findOrCreateModel(AlumEjercicio::class, ['alumnos_id' => $alumnoId]),
-            'alumHabitosConsumo' => self::findOrCreateHabitosConsumo($alumnoId),
+
+            // 6) Salud
             'alumEstadoSalud' => self::findOrCreateModel(AlumEstadoSalud::class, ['alumnos_id' => $alumnoId]),
             'alumServiciosSalud' => self::findOrCreateModel(AlumServiciosSalud::class, ['alumnos_id' => $alumnoId]),
             'alumAsisteMedico' => self::findOrCreateModel(AlumAsisteMedico::class, ['alumnos_id' => $alumnoId]),
@@ -193,10 +206,13 @@ class ExpedienteService
             'alumTratamientos' => self::findOrCreateModel(AlumTratamientos::class, ['alumnos_id' => $alumnoId]),
             'alumEnfermedadesCronicas' => self::findOrCreateModel(AlumEnfermedadesCronicas::class, ['alumnos_id' => $alumnoId]),
             'alumAlergia' => self::findOrCreateModel(AlumAlergia::class, ['alumnos_id' => $alumnoId]),
+
+            // 7) Recreación / organización
             'alumRecreacionTiempo' => self::findOrCreateModel(AlumRecreacionTiempo::class, ['alumnos_id' => $alumnoId]),
             'alumOrganizacion' => self::findOrCreateModel(AlumOrganizacion::class, ['alumnos_id' => $alumnoId]),
         ];
     }
+
 
     private static function findOrCreateModel($className, $conditions)
     {
@@ -303,7 +319,8 @@ class ExpedienteService
             return;
         }
 
-        if ((int)$alumBecas->tipos_becas_id !== 1) {
+        $otroId = TiposBecas::getOtroId();
+        if ($otroId !== null && (int)$alumBecas->tipos_becas_id !== (int)$otroId) {
             $alumBecas->otro_especificar = null;
         }
     }
