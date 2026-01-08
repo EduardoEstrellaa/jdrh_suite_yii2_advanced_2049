@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CiclosEscolares;
+use common\models\CiclosEscolares;
 
 /**
- * CiclosEscolaresSearch represents the model behind the search form of `backend\models\CiclosEscolares`.
+ * CiclosEscolaresSearch represents the model behind the search form of `common\models\CiclosEscolares`.
  */
 class CiclosEscolaresSearch extends CiclosEscolares
 {
@@ -17,8 +17,8 @@ class CiclosEscolaresSearch extends CiclosEscolares
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['nombre', 'fecha_inicio', 'fecha_fin'], 'safe'],
+            [['id', 'estados_ciclos_escolares_id'], 'integer'],
+            [['nombre', 'fecha_inicio', 'fecha_fin', 'periodo_texto'], 'safe'],
         ];
     }
 
@@ -61,9 +61,11 @@ class CiclosEscolaresSearch extends CiclosEscolares
             'id' => $this->id,
             'fecha_inicio' => $this->fecha_inicio,
             'fecha_fin' => $this->fecha_fin,
+            'estados_ciclos_escolares_id' => $this->estados_ciclos_escolares_id,
         ]);
 
-        $query->andFilterWhere(['like', 'nombre', $this->nombre]);
+        $query->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'periodo_texto', $this->periodo_texto]);
 
         return $dataProvider;
     }

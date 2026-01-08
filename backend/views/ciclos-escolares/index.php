@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CiclosEscolares;
+use common\models\CiclosEscolares;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -34,6 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'nombre',
             'fecha_inicio',
             'fecha_fin',
+            'periodo_texto',
+            //'estados_ciclos_escolares_id',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, CiclosEscolares $model, $key, $index, $column) {
