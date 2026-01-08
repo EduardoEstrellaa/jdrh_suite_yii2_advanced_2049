@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AsignacionesTutores;
+use common\models\AsignacionesTutores;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

@@ -2,11 +2,12 @@
 
 namespace backend\controllers;
 
-use backend\models\AsignacionesTutores;
+use common\models\AsignacionesTutores;
 use backend\models\search\AsignacionesTutoresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii;
 
 /**
  * AsignacionesTutoresController implements the CRUD actions for AsignacionesTutores model.

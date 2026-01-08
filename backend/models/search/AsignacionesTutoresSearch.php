@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AsignacionesTutores;
+use common\models\AsignacionesTutores;
 
 /**
- * AsignacionesTutoresSearch represents the model behind the search form of `backend\models\AsignacionesTutores`.
+ * AsignacionesTutoresSearch represents the model behind the search form of `common\models\AsignacionesTutores`.
  */
 class AsignacionesTutoresSearch extends AsignacionesTutores
 {
