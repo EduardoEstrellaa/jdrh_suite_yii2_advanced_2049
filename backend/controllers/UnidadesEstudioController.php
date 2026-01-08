@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\UnidadesEstudio;
+use common\models\UnidadesEstudio;
 use backend\models\search\UnidadesEstudioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
