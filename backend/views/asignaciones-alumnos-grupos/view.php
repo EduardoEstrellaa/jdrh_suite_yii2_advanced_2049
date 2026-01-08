@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\AsignacionesAlumnosGrupos $model */
+/** @var common\models\AsignacionesAlumnosGrupos $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Asignaciones Alumnos Grupos'), 'url' => ['index']];

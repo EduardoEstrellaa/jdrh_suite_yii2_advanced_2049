@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AsignacionesAlumnosGrupos;
+use common\models\AsignacionesAlumnosGrupos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

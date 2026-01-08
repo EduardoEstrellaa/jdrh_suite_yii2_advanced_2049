@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\AsignacionesAlumnosGrupos;
+use common\models\AsignacionesAlumnosGrupos;
 use backend\models\search\AsignacionesAlumnosGruposSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

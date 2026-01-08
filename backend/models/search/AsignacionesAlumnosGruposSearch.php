@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AsignacionesAlumnosGrupos;
+use common\models\AsignacionesAlumnosGrupos;
 
 /**
- * AsignacionesAlumnosGruposSearch represents the model behind the search form of `backend\models\AsignacionesAlumnosGrupos`.
+ * AsignacionesAlumnosGruposSearch represents the model behind the search form of `common\models\AsignacionesAlumnosGrupos`.
  */
 class AsignacionesAlumnosGruposSearch extends AsignacionesAlumnosGrupos
 {
