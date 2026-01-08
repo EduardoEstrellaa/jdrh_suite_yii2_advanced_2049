@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\EntidadesFederativas;
+use common\models\EntidadesFederativas;
 use backend\models\search\EntidadesFederativasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
