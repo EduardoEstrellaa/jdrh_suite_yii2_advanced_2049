@@ -1,7 +1,7 @@
 body {
     font-family: 'Segoe UI', 'Inter', sans-serif;
     font-size: 11pt;
-    background: #ffffff;
+    background: #1b5c4e;
     color: #111827;
     margin: 0;
     padding: 18px 0 26px;
@@ -13,56 +13,86 @@ body {
     background: #ffffff;
     padding: 18px 24px 24px;
     border-radius: 10px;
-    border: 1px solid #dfe5ef;
+    border: 5px solid #b38e5f;
 }
 
-.pdf-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 2px solid #0f3ea5;
+/* =========================
+   HEADER (mPDF friendly)
+   - NO flex
+   - Use tables
+   ========================= */
+
+.pdf-header-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 3px solid #1b5c4e;
     margin-bottom: 14px;
+}
+
+.pdf-header-left,
+.pdf-header-meta {
     padding-bottom: 10px;
+    vertical-align: top;
 }
 
-.pdf-header h1 {
-    font-size: 19pt;
-    margin: 0;
-    letter-spacing: 0.01em;
-}
-
-.badge {
-    display: inline-flex;
-    padding: 4px 10px;
-    background: #0f3ea5;
-    color: #ffffff;
-    border-radius: 999px;
-    font-size: 9pt;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-}
-
-.pdf-header__date {
-    font-size: 9pt;
-    color: #6b7280;
+.pdf-header-meta {
     text-align: right;
-    margin: 0;
+    white-space: nowrap;
 }
+
+.pdf-logo-cell {
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+.pdf-title-cell {
+    vertical-align: middle;
+}
+
+/* Logo */
+.pdf-logo {
+    display: inline;
+    vertical-align: middle;
+}
+
+/* Title */
+.pdf-title {
+    font-size: 19pt;
+    color: #9b2249;
+    text-transform: uppercase;
+    font-weight: bold;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+
+/* Meta */
+.pdf-header__meta-label {
+    font-size: 9pt;
+    color: #666c6c;
+}
+
+.pdf-header__meta-value {
+    font-size: 9pt;
+    color: #666c6c;
+}
+
+/* =========================
+   RESTO DE TU DISEÑO
+   ========================= */
 
 h2 {
     font-size: 12pt;
     margin: 10px 0 6px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #0f172a;
+    color: #002f29;
 }
 
 h3 {
     font-size: 11pt;
     margin: 10px 0 6px;
-    color: #0f172a;
+    color: #1b5c4e;
 }
 
 .muted {
@@ -71,7 +101,7 @@ h3 {
 
 .section-card {
     border: 1px solid #d7deeb;
-    border-left: 5px solid #0f3ea5;
+    border-left: 5px solid #621132;
     background: #ffffff;
     padding: 16px 16px 10px;
     border-radius: 8px;
@@ -114,11 +144,13 @@ th {
 }
 
 .page-block {
-    page-break-after: always;
+    page-break-after: auto;
+    page-break-inside: avoid;
 }
 
-.page-block:last-of-type {
+.page-break {
     page-break-after: auto;
+    height: 0;
 }
 
 .small {
@@ -134,7 +166,7 @@ ul {
     height: 6px;
     margin: 12px 0;
     border-radius: 3px;
-    background: #e5e7eb;
+    background: #b38e5f;
 }
 
 .muted span {
