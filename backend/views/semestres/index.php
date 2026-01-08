@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\Semestres;
+use common\models\Semestres;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nombre',
             'descripcion',
+            'tipo_semestres_id',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Semestres $model, $key, $index, $column) {

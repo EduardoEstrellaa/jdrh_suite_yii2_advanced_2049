@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -10,10 +10,11 @@ use Yii;
  * @property int $id
  * @property string $nombre
  * @property string $descripcion
+ * @property int $tipo_semestres_id
  *
- * @property AlumInscripciones[] $alumInscripciones
- * @property AsignacionesGrupos[] $asignacionesGrupos
+ * @property CiclosSemestres[] $ciclosSemestres
  * @property PlanSemestres[] $planSemestres
+ * @property TipoSemestres $tipoSemestres
  * @property UnidadesEstudio[] $unidadesEstudios
  */
 class Semestres extends \yii\db\ActiveRecord
@@ -32,9 +33,11 @@ class Semestres extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'descripcion'], 'required'],
+            [['nombre', 'descripcion', 'tipo_semestres_id'], 'required'],
+            [['tipo_semestres_id'], 'integer'],
             [['nombre'], 'string', 'max' => 150],
             [['descripcion'], 'string', 'max' => 250],
+            [['tipo_semestres_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoSemestres::class, 'targetAttribute' => ['tipo_semestres_id' => 'id']],
         ];
     }
 
@@ -47,27 +50,18 @@ class Semestres extends \yii\db\ActiveRecord
             'id' => 'ID',
             'nombre' => 'Nombre',
             'descripcion' => 'Descripcion',
+            'tipo_semestres_id' => 'Tipo Semestres ID',
         ];
     }
 
     /**
-     * Gets query for [[AlumInscripciones]].
+     * Gets query for [[CiclosSemestres]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAlumInscripciones()
+    public function getCiclosSemestres()
     {
-        return $this->hasMany(AlumInscripciones::class, ['semestre_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[AsignacionesGrupos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAsignacionesGrupos()
-    {
-        return $this->hasMany(AsignacionesGrupos::class, ['semestres_id' => 'id']);
+        return $this->hasMany(CiclosSemestres::class, ['semestres_id' => 'id']);
     }
 
     /**
@@ -78,6 +72,16 @@ class Semestres extends \yii\db\ActiveRecord
     public function getPlanSemestres()
     {
         return $this->hasMany(PlanSemestres::class, ['semestres_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[TipoSemestres]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTipoSemestres()
+    {
+        return $this->hasOne(TipoSemestres::class, ['id' => 'tipo_semestres_id']);
     }
 
     /**
