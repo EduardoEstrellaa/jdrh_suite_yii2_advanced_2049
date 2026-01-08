@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -8,16 +8,14 @@ use Yii;
  * This is the model class for table "asignaciones_grupos".
  *
  * @property int $id
- * @property int $semestres_id
- * @property int $ciclos_escolares_id
+ * @property int $ciclos_semestres_id
  * @property int $grupos_id
  * @property int $asignaciones_tutores_id
  *
  * @property AsignacionesAlumnosGrupos[] $asignacionesAlumnosGrupos
  * @property AsignacionesTutores $asignacionesTutores
- * @property CiclosEscolares $ciclosEscolares
+ * @property CiclosSemestres $ciclosSemestres
  * @property Grupos $grupos
- * @property Semestres $semestres
  */
 class AsignacionesGrupos extends \yii\db\ActiveRecord
 {
@@ -35,12 +33,11 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['semestres_id', 'ciclos_escolares_id', 'grupos_id', 'asignaciones_tutores_id'], 'required'],
-            [['semestres_id', 'ciclos_escolares_id', 'grupos_id', 'asignaciones_tutores_id'], 'integer'],
+            [['ciclos_semestres_id', 'grupos_id', 'asignaciones_tutores_id'], 'required'],
+            [['ciclos_semestres_id', 'grupos_id', 'asignaciones_tutores_id'], 'integer'],
             [['asignaciones_tutores_id'], 'exist', 'skipOnError' => true, 'targetClass' => AsignacionesTutores::class, 'targetAttribute' => ['asignaciones_tutores_id' => 'id']],
-            [['ciclos_escolares_id'], 'exist', 'skipOnError' => true, 'targetClass' => CiclosEscolares::class, 'targetAttribute' => ['ciclos_escolares_id' => 'id']],
             [['grupos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Grupos::class, 'targetAttribute' => ['grupos_id' => 'id']],
-            [['semestres_id'], 'exist', 'skipOnError' => true, 'targetClass' => Semestres::class, 'targetAttribute' => ['semestres_id' => 'id']],
+            [['ciclos_semestres_id'], 'exist', 'skipOnError' => true, 'targetClass' => CiclosSemestres::class, 'targetAttribute' => ['ciclos_semestres_id' => 'id']],
         ];
     }
 
@@ -51,8 +48,7 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'semestres_id' => 'Semestres ID',
-            'ciclos_escolares_id' => 'Ciclos Escolares ID',
+            'ciclos_semestres_id' => 'Ciclos Semestres ID',
             'grupos_id' => 'Grupos ID',
             'asignaciones_tutores_id' => 'Asignaciones Tutores ID',
         ];
@@ -79,13 +75,13 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CiclosEscolares]].
+     * Gets query for [[CiclosSemestres]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCiclosEscolares()
+    public function getCiclosSemestres()
     {
-        return $this->hasOne(CiclosEscolares::class, ['id' => 'ciclos_escolares_id']);
+        return $this->hasOne(CiclosSemestres::class, ['id' => 'ciclos_semestres_id']);
     }
 
     /**
@@ -96,15 +92,5 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     public function getGrupos()
     {
         return $this->hasOne(Grupos::class, ['id' => 'grupos_id']);
-    }
-
-    /**
-     * Gets query for [[Semestres]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSemestres()
-    {
-        return $this->hasOne(Semestres::class, ['id' => 'semestres_id']);
     }
 }

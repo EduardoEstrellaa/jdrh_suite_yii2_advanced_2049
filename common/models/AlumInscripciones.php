@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -9,14 +9,12 @@ use Yii;
  *
  * @property int $id
  * @property int $alumnos_id
+ * @property int $ciclos_semestres_id
  * @property int $tipos_inscripciones_id
- * @property int $semestre_id
- * @property int $ciclos_escolares_id
  *
  * @property Alumnos $alumnos
  * @property AsignacionesAlumnosGrupos[] $asignacionesAlumnosGrupos
- * @property CiclosEscolares $ciclosEscolares
- * @property Semestres $semestre
+ * @property CiclosSemestres $ciclosSemestres
  * @property TiposInscripciones $tiposInscripciones
  */
 class AlumInscripciones extends \yii\db\ActiveRecord
@@ -35,12 +33,11 @@ class AlumInscripciones extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alumnos_id', 'tipos_inscripciones_id', 'semestre_id', 'ciclos_escolares_id'], 'required'],
-            [['alumnos_id', 'tipos_inscripciones_id', 'semestre_id', 'ciclos_escolares_id'], 'integer'],
+            [['alumnos_id', 'ciclos_semestres_id', 'tipos_inscripciones_id'], 'required'],
+            [['alumnos_id', 'ciclos_semestres_id', 'tipos_inscripciones_id'], 'integer'],
             [['alumnos_id'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['alumnos_id' => 'id']],
-            [['ciclos_escolares_id'], 'exist', 'skipOnError' => true, 'targetClass' => CiclosEscolares::class, 'targetAttribute' => ['ciclos_escolares_id' => 'id']],
             [['tipos_inscripciones_id'], 'exist', 'skipOnError' => true, 'targetClass' => TiposInscripciones::class, 'targetAttribute' => ['tipos_inscripciones_id' => 'id']],
-            [['semestre_id'], 'exist', 'skipOnError' => true, 'targetClass' => Semestres::class, 'targetAttribute' => ['semestre_id' => 'id']],
+            [['ciclos_semestres_id'], 'exist', 'skipOnError' => true, 'targetClass' => CiclosSemestres::class, 'targetAttribute' => ['ciclos_semestres_id' => 'id']],
         ];
     }
 
@@ -52,9 +49,8 @@ class AlumInscripciones extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'alumnos_id' => 'Alumnos ID',
+            'ciclos_semestres_id' => 'Ciclos Semestres ID',
             'tipos_inscripciones_id' => 'Tipos Inscripciones ID',
-            'semestre_id' => 'Semestre ID',
-            'ciclos_escolares_id' => 'Ciclos Escolares ID',
         ];
     }
 
@@ -79,23 +75,13 @@ class AlumInscripciones extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CiclosEscolares]].
+     * Gets query for [[CiclosSemestres]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCiclosEscolares()
+    public function getCiclosSemestres()
     {
-        return $this->hasOne(CiclosEscolares::class, ['id' => 'ciclos_escolares_id']);
-    }
-
-    /**
-     * Gets query for [[Semestre]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSemestre()
-    {
-        return $this->hasOne(Semestres::class, ['id' => 'semestre_id']);
+        return $this->hasOne(CiclosSemestres::class, ['id' => 'ciclos_semestres_id']);
     }
 
     /**
