@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Grupos;
+use common\models\Grupos;
 use backend\models\search\GruposSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Grupos $model */
+/** @var common\models\Grupos $model */
 
 $this->title = Yii::t('app', 'Update Grupos: {name}', [
     'name' => $model->id,
