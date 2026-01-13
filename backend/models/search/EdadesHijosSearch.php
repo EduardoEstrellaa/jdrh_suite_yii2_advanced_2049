@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\EdadesHijos;
+use common\models\EdadesHijos;
 
 /**
- * EdadesHijosSearch represents the model behind the search form of `backend\models\EdadesHijos`.
+ * EdadesHijosSearch represents the model behind the search form of `common\models\EdadesHijos`.
  */
 class EdadesHijosSearch extends EdadesHijos
 {

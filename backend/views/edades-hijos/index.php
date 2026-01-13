@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\EdadesHijos;
+use common\models\EdadesHijos;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
