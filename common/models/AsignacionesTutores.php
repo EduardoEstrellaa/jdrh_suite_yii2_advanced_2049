@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property int $perfil_id
+ * @property string|null $tutorEtiqueta
  *
  * @property AsignacionesGrupos[] $asignacionesGrupos
  * @property Perfil $perfil
@@ -42,7 +43,8 @@ class AsignacionesTutores extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'perfil_id' => 'Perfil ID',
+            'perfil_id' => Yii::t('app', 'Tutor'),
+            'tutorEtiqueta' => Yii::t('app', 'Tutor'),
         ];
     }
 
@@ -64,5 +66,14 @@ class AsignacionesTutores extends \yii\db\ActiveRecord
     public function getPerfil()
     {
         return $this->hasOne(Perfil::class, ['id' => 'perfil_id']);
+    }
+
+    public function getTutorEtiqueta(): string
+    {
+        if ($this->perfil) {
+            return $this->perfil->nombreCompleto ?: (string) $this->perfil->id;
+        }
+
+        return Yii::t('app', 'Tutor #{id}', ['id' => $this->perfil_id]);
     }
 }

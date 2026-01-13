@@ -3,10 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/** @var yii\web\View $this */
-/** @var common\models\AsignacionesTutores $model */
-
-$this->title = $model->id;
+$this->title = $model->tutorEtiqueta;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Asignaciones Tutores'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,7 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'perfil_id',
+            [
+                'label' => Yii::t('app', 'Tutor'),
+                'value' => $model->tutorEtiqueta,
+            ],
         ],
     ]) ?>
 
