@@ -65,6 +65,24 @@ class AlumInscripciones extends \yii\db\ActiveRecord
     }
 
     /**
+     * Nombre completo del alumno.
+     */
+    public function getAlumnoNombre(): string
+    {
+        $alumno = $this->alumnos;
+        if (!$alumno) {
+            return Yii::t('app', 'Alumno #{id}', ['id' => $this->alumnos_id]);
+        }
+
+        $perfil = $alumno->perfil;
+        if ($perfil) {
+            return trim($perfil->nombre . ' ' . $perfil->apellido) ?: $alumno->matricula;
+        }
+
+        return $alumno->matricula ?: Yii::t('app', 'Alumno #{id}', ['id' => $alumno->id]);
+    }
+
+    /**
      * Gets query for [[AsignacionesAlumnosGrupos]].
      *
      * @return \yii\db\ActiveQuery
@@ -85,6 +103,44 @@ class AlumInscripciones extends \yii\db\ActiveRecord
     }
 
     /**
+     * Etiqueta combinada para ciclo y semestre.
+     */
+    public function getCicloEtiqueta(): string
+    {
+        $ciclo = $this->ciclosSemestres;
+        if (!$ciclo) {
+            return Yii::t('app', 'Ciclo #{id}', ['id' => $this->ciclos_semestres_id]);
+        }
+
+        $parts = array_filter([
+            $ciclo->ciclosEscolares->nombre ?? null,
+            $ciclo->semestres->nombre ?? null,
+        ]);
+
+        return $parts ? implode(' · ', $parts) : Yii::t('app', 'Ciclo #{id}', ['id' => $ciclo->id]);
+    }
+
+    /**
+     * Relación al ciclo escolar asociado.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCiclosEscolares()
+    {
+        return $this->hasOne(CiclosEscolares::class, ['id' => 'ciclos_escolares_id'])->via('ciclosSemestres');
+    }
+
+    /**
+     * Relación al semestre asociado.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSemestre()
+    {
+        return $this->hasOne(Semestres::class, ['id' => 'semestres_id'])->via('ciclosSemestres');
+    }
+
+    /**
      * Gets query for [[TiposInscripciones]].
      *
      * @return \yii\db\ActiveQuery
@@ -92,5 +148,13 @@ class AlumInscripciones extends \yii\db\ActiveRecord
     public function getTiposInscripciones()
     {
         return $this->hasOne(TiposInscripciones::class, ['id' => 'tipos_inscripciones_id']);
+    }
+
+    /**
+     * Nombre legible del tipo de inscripción.
+     */
+    public function getTipoNombre(): string
+    {
+        return $this->tiposInscripciones->nombre ?? Yii::t('app', 'Tipo #{id}', ['id' => $this->tipos_inscripciones_id]);
     }
 }

@@ -13,17 +13,18 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => [
+            'data-pjax' => 1
+        ],
     ]); ?>
 
     <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'alumnos_id') ?>
 
+    <?= $form->field($model, 'ciclos_semestres_id') ?>
+
     <?= $form->field($model, 'tipos_inscripciones_id') ?>
-
-    <?= $form->field($model, 'semestre_id') ?>
-
-    <?= $form->field($model, 'ciclos_escolares_id') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
