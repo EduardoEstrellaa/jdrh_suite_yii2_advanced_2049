@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumVivienda;
+use common\models\AlumVivienda;
 
 /**
- * AlumViviendaSearch represents the model behind the search form of `backend\models\AlumVivienda`.
+ * AlumViviendaSearch represents the model behind the search form of `common\models\AlumVivienda`.
  */
 class AlumViviendaSearch extends AlumVivienda
 {
