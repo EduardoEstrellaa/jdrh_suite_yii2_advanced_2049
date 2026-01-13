@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var common\models\PlanLicenciaturas $model */
 
-$this->title = $model->id;
+$this->title = $model->planEtiqueta;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Plan Licenciaturas'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,8 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'plan_estudios_id',
-            'licenciaturas_id',
+            [
+                'label' => Yii::t('app', 'Plan de estudios'),
+                'value' => $model->planEtiqueta,
+            ],
+            [
+                'label' => Yii::t('app', 'Licenciatura'),
+                'value' => $model->licenciaturaEtiqueta,
+            ],
         ],
     ]) ?>
 

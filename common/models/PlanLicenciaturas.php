@@ -16,6 +16,9 @@ use yii\helpers\ArrayHelper;
  * @property Alumnos[] $alumnos
  * @property Licenciaturas $licenciaturas
  * @property PlanEstudios $planEstudios
+ * @property-read string $planNombre
+ * @property-read string $planEtiqueta
+ * @property-read string $licenciaturaEtiqueta
  * @property PlanSemestres[] $planSemestres
  */
 class PlanLicenciaturas extends \yii\db\ActiveRecord
@@ -48,8 +51,8 @@ class PlanLicenciaturas extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'plan_estudios_id' => 'Plan Estudios ID',
-            'licenciaturas_id' => 'Licenciaturas ID',
+            'plan_estudios_id' => 'Plan de estudios',
+            'licenciaturas_id' => 'Licenciatura',
         ];
     }
 
@@ -91,6 +94,44 @@ class PlanLicenciaturas extends \yii\db\ActiveRecord
     public function getPlanSemestres()
     {
         return $this->hasMany(PlanSemestres::class, ['plan_licenciatura_id' => 'id']);
+    }
+
+    /**
+     * Nombre del plan de estudios.
+     */
+    public function getPlanNombre(): ?string
+    {
+        return $this->planEstudios ? $this->planEstudios->nombre : null;
+    }
+
+    /**
+     * Etiqueta que combina plan de estudios y licenciatura.
+     */
+    public function getPlanEtiqueta(): string
+    {
+        $plan = $this->planEstudios;
+        $lic = $this->licenciaturas;
+        if ($plan && $lic) {
+            return $plan->nombre . ' – ' . $lic->nombre;
+        }
+
+        if ($plan) {
+            return $plan->nombre;
+        }
+
+        if ($lic) {
+            return $lic->nombre;
+        }
+
+        return Yii::t('app', 'Plan #{id}', ['id' => $this->id]);
+    }
+
+    /**
+     * Etiqueta legible específica para la licenciatura.
+     */
+    public function getLicenciaturaEtiqueta(): string
+    {
+        return $this->licenciaturas ? $this->licenciaturas->nombre : Yii::t('app', 'Licenciatura #{id}', ['id' => $this->licenciaturas_id]);
     }
 
     /**
