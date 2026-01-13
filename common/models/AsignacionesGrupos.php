@@ -16,6 +16,9 @@ use Yii;
  * @property AsignacionesTutores $asignacionesTutores
  * @property CiclosSemestres $ciclosSemestres
  * @property Grupos $grupos
+ * @property-read string $cicloEtiqueta
+ * @property-read string $grupoEtiqueta
+ * @property-read string $tutorEtiqueta
  */
 class AsignacionesGrupos extends \yii\db\ActiveRecord
 {
@@ -48,9 +51,9 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'ciclos_semestres_id' => 'Ciclos Semestres ID',
-            'grupos_id' => 'Grupos ID',
-            'asignaciones_tutores_id' => 'Asignaciones Tutores ID',
+            'ciclos_semestres_id' => 'Ciclo / Semestre',
+            'grupos_id' => 'Grupo',
+            'asignaciones_tutores_id' => 'Tutor asignado',
         ];
     }
 
@@ -85,6 +88,26 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     }
 
     /**
+     * Relación al semestre vía el ciclo.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSemestres()
+    {
+        return $this->hasOne(Semestres::class, ['id' => 'semestres_id'])->via('ciclosSemestres');
+    }
+
+    /**
+     * Relación al ciclo escolar para filtros.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCiclosEscolares()
+    {
+        return $this->hasOne(CiclosEscolares::class, ['id' => 'ciclos_escolares_id'])->via('ciclosSemestres');
+    }
+
+    /**
      * Gets query for [[Grupos]].
      *
      * @return \yii\db\ActiveQuery
@@ -92,5 +115,56 @@ class AsignacionesGrupos extends \yii\db\ActiveRecord
     public function getGrupos()
     {
         return $this->hasOne(Grupos::class, ['id' => 'grupos_id']);
+    }
+
+    /**
+     * Etiqueta legible para el ciclo y semestre.
+     */
+    public function getCicloEtiqueta(): string
+    {
+        $ciclo = $this->ciclosSemestres;
+        if (!$ciclo) {
+            return Yii::t('app', 'Ciclo #{id}', ['id' => $this->id]);
+        }
+
+        $partes = array_filter([
+            $ciclo->cicloEtiqueta ?? null,
+            $ciclo->semestreEtiqueta ?? null,
+            $ciclo->periodo_texto_semestre,
+        ]);
+
+        return $partes ? implode(' · ', $partes) : Yii::t('app', 'Ciclo #{id}', ['id' => $this->id]);
+    }
+
+    /**
+     * Etiqueta legible para el grupo.
+     */
+    public function getGrupoEtiqueta(): string
+    {
+        $grupo = $this->grupos;
+        if (!$grupo) {
+            return Yii::t('app', 'Grupo #{id}', ['id' => $this->id]);
+        }
+
+        $partes = array_filter([
+            $grupo->nombre,
+            $grupo->descripcion,
+        ]);
+
+        return $partes ? implode(' · ', $partes) : Yii::t('app', 'Grupo #{id}', ['id' => $this->id]);
+    }
+
+    /**
+     * Etiqueta legible para el tutor.
+     */
+    public function getTutorEtiqueta(): string
+    {
+        $tutor = $this->asignacionesTutores;
+        if (!$tutor || !$tutor->perfil) {
+            return Yii::t('app', 'Tutor #{id}', ['id' => $this->asignaciones_tutores_id]);
+        }
+
+        $nombreCompleto = trim($tutor->perfil->getNombreCompleto());
+        return $nombreCompleto !== '' ? $nombreCompleto : Yii::t('app', 'Tutor #{id}', ['id' => $tutor->id]);
     }
 }

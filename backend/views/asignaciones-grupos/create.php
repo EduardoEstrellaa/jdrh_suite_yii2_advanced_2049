@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\AsignacionesGrupos $model */
+/** @var common\models\AsignacionesGrupos $model */
 
 $this->title = Yii::t('app', 'Create Asignaciones Grupos');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Asignaciones Grupos'), 'url' => ['index']];
