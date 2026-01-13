@@ -1,10 +1,15 @@
 <?php
 
+use common\models\Semestres;
+use common\models\UnidadesEstudio;
+use common\helpers\InputHelper;
+use common\models\PlanLicenciaturas;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\PlanSemestres $model */
+/** @var common\models\PlanSemestres $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -12,11 +17,41 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'plan_licenciatura_id')->textInput() ?>
+    <?php
+    $planOptions = PlanLicenciaturas::getPlanesLicenciaturasMap();
+    $semestreOptions = ArrayHelper::map(Semestres::find()->orderBy(['nombre' => SORT_ASC])->all(), 'id', 'nombre');
+    $unidadOptions = ArrayHelper::map(UnidadesEstudio::find()->orderBy(['nombre' => SORT_ASC])->all(), 'id', 'nombre');
+    ?>
 
-    <?= $form->field($model, 'semestres_id')->textInput() ?>
+    <?= InputHelper::iconSelect2Field(
+        $form,
+        $model,
+        'plan_licenciatura_id',
+        'fa-book',
+        $planOptions,
+        ['placeholder' => Yii::t('app', 'Selecciona un plan de licenciatura')],
+        ['allowClear' => true]
+    ) ?>
 
-    <?= $form->field($model, 'unidades_estudio_id')->textInput() ?>
+    <?= InputHelper::iconSelect2Field(
+        $form,
+        $model,
+        'semestres_id',
+        'fa-calendar',
+        $semestreOptions,
+        ['placeholder' => Yii::t('app', 'Selecciona un semestre')],
+        ['allowClear' => true]
+    ) ?>
+
+    <?= InputHelper::iconSelect2Field(
+        $form,
+        $model,
+        'unidades_estudio_id',
+        'fa-layer-group',
+        $unidadOptions,
+        ['placeholder' => Yii::t('app', 'Selecciona una unidad de estudio')],
+        ['allowClear' => true]
+    ) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

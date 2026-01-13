@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
@@ -47,9 +47,9 @@ class PlanSemestres extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'plan_licenciatura_id' => 'Plan Licenciatura ID',
-            'semestres_id' => 'Semestres ID',
-            'unidades_estudio_id' => 'Unidades Estudio ID',
+            'plan_licenciatura_id' => 'Plan Licenciatura',
+            'semestres_id' => 'Semestre',
+            'unidades_estudio_id' => 'Unidad de estudio',
         ];
     }
 
@@ -81,5 +81,20 @@ class PlanSemestres extends \yii\db\ActiveRecord
     public function getUnidadesEstudio()
     {
         return $this->hasOne(UnidadesEstudio::class, ['id' => 'unidades_estudio_id']);
+    }
+
+    public function getPlanNombre(): ?string
+    {
+        return $this->planLicenciatura ? $this->planLicenciatura->planNombre : null;
+    }
+
+    public function getSemestreNombre(): ?string
+    {
+        return $this->semestres ? $this->semestres->nombre : null;
+    }
+
+    public function getUnidadNombre(): ?string
+    {
+        return $this->unidadesEstudio ? $this->unidadesEstudio->nombre : null;
     }
 }
