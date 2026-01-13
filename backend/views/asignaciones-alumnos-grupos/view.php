@@ -30,8 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'asignaciones_grupos_id',
-            'alum_inscripciones_id',
+            [
+                'label' => Yii::t('app', 'Grupo'),
+                'value' => $model->grupoEtiqueta,
+            ],
+            [
+                'label' => Yii::t('app', 'Alumno / Inscripcion'),
+                'value' => $model->inscripcionEtiqueta,
+            ],
         ],
     ]) ?>
 
