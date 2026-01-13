@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\TiposInscripciones $model */
+/** @var common\models\TiposInscripciones $model */
 
 $this->title = Yii::t('app', 'Create Tipos Inscripciones');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Tipos Inscripciones'), 'url' => ['index']];

@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\TiposInscripciones;
+use common\models\TiposInscripciones;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

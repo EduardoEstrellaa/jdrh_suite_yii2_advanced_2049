@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TiposInscripciones;
+use common\models\TiposInscripciones;
 
 /**
- * TiposInscripcionesSearch represents the model behind the search form of `backend\models\TiposInscripciones`.
+ * TiposInscripcionesSearch represents the model behind the search form of `common\models\TiposInscripciones`.
  */
 class TiposInscripcionesSearch extends TiposInscripciones
 {
