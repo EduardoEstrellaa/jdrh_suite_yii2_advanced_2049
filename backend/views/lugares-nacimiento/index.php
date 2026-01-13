@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\LugaresNacimiento;
+use common\models\LugaresNacimiento;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'perfil_id',
             'entidades_federativas_id',
             'municipios_id',
-            'localidades_id',
+            'localidad',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, LugaresNacimiento $model, $key, $index, $column) {
