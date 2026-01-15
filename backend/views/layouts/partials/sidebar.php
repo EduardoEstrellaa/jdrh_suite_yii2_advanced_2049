@@ -922,6 +922,12 @@ use common\models\PermisosHelpers;
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="<?= Url::to(['/reportes/index']); ?>">
+                        <i class="ri-file-copy-line"></i> <span data-key="t-reportes">Reportes oficiales</span>
+                    </a>
+                </li>
+
 
                 <!-- INVENTARIO -->
                 <li class="nav-item">
