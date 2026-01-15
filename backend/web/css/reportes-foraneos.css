@@ -56,6 +56,14 @@
     border-bottom: none;
 }
 
+.reportes-foraneos__table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.reportes-foraneos__table thead {
+    background: #eef2ff;
+}
+
 @media (max-width: 768px) {
     .reportes-foraneos__hero {
         padding: 1.25rem;

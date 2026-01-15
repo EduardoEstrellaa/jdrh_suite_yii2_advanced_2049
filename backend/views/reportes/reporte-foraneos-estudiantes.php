@@ -24,7 +24,7 @@ $municipiosOptions = $municipiosOptions ?? [];
         <div class="card-body d-flex flex-column flex-md-row justify-content-between gap-3 align-items-start">
             <div>
                 <h4 class="mb-1">Estudiantes foraneos</h4>
-                <p class="text-muted mb-0">Alumnos cuyo domicilio registrado no corresponde a Valladolid (municipio 2). Usa los filtros para ajustar el periodo antes de exportar.</p>
+                <p class="text-muted mb-0">Alumnos cuyo domicilio registrado no corresponde a Valladolid. Usa los filtros para ajustar el periodo antes de exportar.</p>
             </div>
             <div class="reportes-foraneos__hero-cta">
                 <a href="<?= Html::encode($pdfUrl) ?>" class="btn btn-outline-secondary btn-sm reportes-foraneos__btn">
