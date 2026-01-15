@@ -2,7 +2,6 @@
 
 namespace backend\services\reportes;
 
-use backend\forms\reportes\AlimentacionEntornoReportRequest;
 use backend\forms\reportes\AsignacionTutoresReportRequest;
 use backend\forms\reportes\BecasApoyosReportRequest;
 use backend\forms\reportes\ForaneosEstudiantesReportRequest;
@@ -120,6 +119,24 @@ class ReportesService
             $query->andWhere(['ps.catalogo_problemas_salud_id' => $request->problema_id]);
         }
 
+        if ($request->cronica_id) {
+            $query->innerJoin('alum_enfermedades_cronicas aec', 'aec.alumnos_id = a.id');
+            $query->innerJoin('enfermedades_cronicas ec', 'ec.alum_enfermedades_cronicas_id = aec.id');
+            $query->andWhere(['ec.catalogo_enferm_cronicas_id' => $request->cronica_id]);
+        }
+
+        if ($request->alergia_id) {
+            $query->innerJoin('alum_alergia aal', 'aal.alumnos_id = a.id');
+            $query->innerJoin('alergias al', 'al.alum_alergia_id = aal.id');
+            $query->andWhere(['al.catalogo_alergias_id' => $request->alergia_id]);
+        }
+
+        if ($request->tratamiento_id) {
+            $query->innerJoin('alum_tratamientos atr', 'atr.alumnos_id = a.id');
+            $query->innerJoin('tratamientos tr', 'tr.alum_tratamientos_id = atr.id');
+            $query->andWhere(['tr.catalogo_tratamientos_id' => $request->tratamiento_id]);
+        }
+
         if ($matricula) {
             $query->andWhere(['a.matricula' => $matricula]);
         }
@@ -129,6 +146,11 @@ class ReportesService
         $condicionQuery = clone $query;
         $condicionQuery->andWhere(array_merge(['or'], $this->repository->crearCondicionExpressions('a', 'aes')));
         $resumen['con_condicion'] = (int)(clone $condicionQuery)->count('id');
+        $condicionExpressions = $this->repository->crearCondicionExpressions('a', 'aes');
+        $resumen['problemas_salud'] = $this->contarCondicionIndividual($query, $condicionExpressions[0]);
+        $resumen['tratamientos'] = $this->contarCondicionIndividual($query, $condicionExpressions[2]);
+        $resumen['alergias'] = $this->contarCondicionIndividual($query, $condicionExpressions[3]);
+        $resumen['cronicas'] = $this->contarCondicionIndividual($query, $condicionExpressions[4]);
 
         $dataQuery = $request->solo_con_condicion ? $condicionQuery : $query;
         $totalCount = (int)(clone $dataQuery)->count('id');
@@ -149,6 +171,8 @@ class ReportesService
                 'alergias' => $this->formatter->tieneAlergias($registro),
                 'tratamientos' => $this->formatter->tieneTratamientos($registro),
                 'servicios' => $this->formatter->tieneServiciosSalud($registro),
+                'detalles' => $this->formatter->extraerDetalleSalud($registro),
+                'detalles_salud' => $this->formatter->extraerDetalladoSalud($registro),
             ];
         }
 
@@ -159,6 +183,11 @@ class ReportesService
             'resumen' => $resumen,
             'filtros' => $request->obtenerFiltros(),
         ];
+    }
+
+    private function contarCondicionIndividual(\yii\db\ActiveQuery $query, Expression $condicion): int
+    {
+        return (int)(clone $query)->andWhere($condicion)->count('id');
     }
 
     private function crearConsultaDetalleAlumno(): \yii\db\ActiveQuery
@@ -203,20 +232,30 @@ class ReportesService
 
         $alumnos = $query->orderBy('a.id')->all();
         $items = [];
-        $semaforo = ['verde' => 0, 'amarillo' => 0, 'rojo' => 0];
+        $semaforo = ['verde' => 0, 'amarillo' => 0, 'rojo' => 0, 'sin_consumo' => 0];
 
         foreach ($alumnos as $registro) {
             $habito = $registro->alumHabitosConsumos[0] ?? null;
-            if (!$habito) {
+            if ($habito) {
+                $riesgo = $this->formatter->clasificarRiesgoHabitos($habito);
+            } else {
+                $riesgo = [
+                    'nivel' => 'sin_consumo',
+                    'etiqueta' => 'Sin riesgo',
+                    'motivos' => ['Sin consumo registrado'],
+                    'peso' => 0,
+                ];
+            }
+            if ($request->nivel_riesgo && $request->nivel_riesgo !== $riesgo['nivel']) {
                 continue;
             }
-
-            $riesgo = $this->formatter->clasificarRiesgoHabitos($habito);
             $items[] = array_merge($riesgo, [
                 'nombre' => $this->formatter->obtenerNombreAlumno($registro),
                 'grupo' => $this->formatter->extraerGrupoPrincipal($registro),
             ]);
-            $semaforo[$riesgo['nivel']]++;
+            if (isset($semaforo[$riesgo['nivel']])) {
+                $semaforo[$riesgo['nivel']]++;
+            }
         }
 
         usort($items, function (array $a, array $b) {
@@ -248,7 +287,7 @@ class ReportesService
     public function generarReporteBecas(BecasApoyosReportRequest $request): array
     {
         $query = Alumnos::find()->alias('a')
-            ->with(['perfil', 'alumInscripciones.ciclosEscolares', 'alumBecas.tiposBecas'])
+            ->with(['perfil', 'alumInscripciones.ciclosEscolares', 'alumBecas.tiposBecas', 'generaciones'])
             ->leftJoin('alum_inscripciones ins', 'ins.alumnos_id = a.id')
             ->leftJoin('ciclos_semestres cs', 'cs.id = ins.ciclos_semestres_id')
             ->leftJoin('alum_becas ab', 'ab.alumnos_id = a.id');
@@ -269,6 +308,7 @@ class ReportesService
         $alumnos = $query->groupBy('a.id')->orderBy('a.id')->all();
         $datos = [];
         $totalesPorTipo = [];
+        $sinBecaTotal = 0;
 
         foreach ($alumnos as $registro) {
             $beca = $registro->alumBecas[0] ?? null;
@@ -278,93 +318,30 @@ class ReportesService
                 ? $inscripcionActivo->ciclosEscolares->nombre
                 : 'No definido';
             $estatus = $beca && (int)$beca->tiene_beca === 1 ? 'Vigente' : 'Sin beca';
-
             if ($beca && $beca->tiene_beca && $tipo !== 'Sin beca') {
                 $totalesPorTipo[$tipo] = ($totalesPorTipo[$tipo] ?? 0) + 1;
+            } else {
+                $sinBecaTotal++;
             }
+
+            $generacion = $registro->generaciones ? $registro->generaciones->nombre : 'Sin generacion';
 
             $datos[] = [
                 'nombre' => $this->formatter->obtenerNombreAlumno($registro),
                 'matricula' => $registro->matricula,
                 'tipo' => $tipo,
                 'periodo' => $periodo,
+                'generacion' => $generacion,
                 'estatus' => $estatus,
             ];
         }
 
+        $totalesPorTipo['Sin beca'] = $sinBecaTotal;
+
         return [
             'datos' => $datos,
             'totalesPorTipo' => $totalesPorTipo,
-            'filtros' => $request->obtenerFiltros(),
-        ];
-    }
-
-    /**
-     * Construye los datos del reporte de alimentacion y entornos de consumo.
-     */
-    public function generarReporteAlimentacion(AlimentacionEntornoReportRequest $request): array
-    {
-        $query = Alumnos::find()->alias('a')
-            ->with([
-                'perfil',
-                'generaciones',
-                'alumConsumoAlimentos.catalogoAlimentos',
-                'alumConsumoAlimentos.frecuenciaVeces',
-                'alumLugaresComers.catalogoLugaresComer',
-                'alumInscripciones.asignacionesAlumnosGrupos.asignacionesGrupos.grupos',
-            ])
-            ->leftJoin('alum_inscripciones ins', 'ins.alumnos_id = a.id')
-            ->leftJoin('asignaciones_alumnos_grupos aag', 'aag.alum_inscripciones_id = ins.id')
-            ->leftJoin('asignaciones_grupos ag', 'ag.id = aag.asignaciones_grupos_id');
-
-        if ($request->generacion_id) {
-            $query->andWhere(['a.generaciones_id' => $request->generacion_id]);
-        }
-        if ($request->grupo_id) {
-            $query->andWhere(['ag.grupos_id' => $request->grupo_id]);
-        }
-
-        $alumnos = $query->orderBy('a.id')->all();
-
-        $frecuenciaAlimentos = [];
-        $lugaresConteo = [];
-        $patronesCohorte = [];
-        $patronesGrupo = [];
-
-        foreach ($alumnos as $alumno) {
-            $cohorte = $alumno->generaciones ? $alumno->generaciones->nombre : 'Sin generacion';
-            $grupoNombre = $this->formatter->extraerGrupoPrincipal($alumno);
-
-            $patronesCohorte[$cohorte]['alumnos'] = ($patronesCohorte[$cohorte]['alumnos'] ?? 0) + 1;
-            $patronesGrupo[$grupoNombre]['alumnos'] = ($patronesGrupo[$grupoNombre]['alumnos'] ?? 0) + 1;
-
-            foreach ($alumno->alumConsumoAlimentos as $consumo) {
-                $alimento = $consumo->catalogoAlimentos ? $consumo->catalogoAlimentos->nombre : 'Otro alimento';
-                $frecuencia = $consumo->frecuenciaVeces ? $consumo->frecuenciaVeces->nombre : 'Sin frecuencia';
-                $frecuenciaAlimentos[$alimento][$frecuencia] = ($frecuenciaAlimentos[$alimento][$frecuencia] ?? 0) + 1;
-                $patronesCohorte[$cohorte]['frecuencias'][$frecuencia] = ($patronesCohorte[$cohorte]['frecuencias'][$frecuencia] ?? 0) + 1;
-                $patronesGrupo[$grupoNombre]['frecuencias'][$frecuencia] = ($patronesGrupo[$grupoNombre]['frecuencias'][$frecuencia] ?? 0) + 1;
-            }
-
-            foreach ($alumno->alumLugaresComers as $lugar) {
-                $nombreLugar = $lugar->catalogoLugaresComer ? $lugar->catalogoLugaresComer->nombre : 'Otro lugar';
-                $lugaresConteo[$nombreLugar] = ($lugaresConteo[$nombreLugar] ?? 0) + 1;
-                $patronesCohorte[$cohorte]['lugares'][$nombreLugar] = ($patronesCohorte[$cohorte]['lugares'][$nombreLugar] ?? 0) + 1;
-                $patronesGrupo[$grupoNombre]['lugares'][$nombreLugar] = ($patronesGrupo[$grupoNombre]['lugares'][$nombreLugar] ?? 0) + 1;
-            }
-        }
-
-        ksort($frecuenciaAlimentos);
-        arsort($lugaresConteo);
-        ksort($patronesCohorte);
-        ksort($patronesGrupo);
-
-        return [
-            'frecuenciaAlimentos' => $frecuenciaAlimentos,
-            'lugaresConteo' => $lugaresConteo,
-            'patronesCohorte' => $patronesCohorte,
-            'patronesGrupo' => $patronesGrupo,
-            'totalAlumnos' => count($alumnos),
+            'sinBecaTotal' => $sinBecaTotal,
             'filtros' => $request->obtenerFiltros(),
         ];
     }
@@ -383,12 +360,18 @@ class ReportesService
             ->innerJoin('perfil p', 'p.id = a.perfil_id')
             ->innerJoin('domicilios_actuales da', 'da.perfil_id = p.id')
             ->leftJoin('municipios m', 'm.id = da.municipios_id')
-            ->leftJoin('alum_inscripciones ins', 'ins.alumnos_id = a.id')
-            ->leftJoin('ciclos_semestres cs', 'cs.id = ins.ciclos_semestres_id')
             ->andWhere(['<>', 'da.municipios_id', 2]);
 
-        if ($request->ciclo_escolar_id) {
-            $query->andWhere(['cs.ciclos_escolares_id' => $request->ciclo_escolar_id]);
+        if ($request->generacion_id) {
+            $query->andWhere(['a.generaciones_id' => $request->generacion_id]);
+        }
+
+        if ($request->entidad_federativa_id) {
+            $query->andWhere(['da.entidades_federativas_id' => $request->entidad_federativa_id]);
+        }
+
+        if ($request->municipio_id) {
+            $query->andWhere(['da.municipios_id' => $request->municipio_id]);
         }
 
         $query->groupBy('a.id');
