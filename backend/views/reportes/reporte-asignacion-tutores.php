@@ -4,6 +4,7 @@ use backend\forms\reportes\AsignacionTutoresReportRequest;
 use common\helpers\InputHelper;
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
@@ -117,45 +118,98 @@ $this->registerCssFile('@web/css/reportes-asignacion.css', ['depends' => [\yii\b
 
     <?php if (!$tieneFiltroCiclo): ?>
         <div class="alert alert-info">Seleccione un ciclo escolar para activar el reporte.</div>
-    <?php endif; ?>
+<?php endif; ?>
+
+<?php
+$script = <<<'JS'
+(function () {
+    const modalElement = document.getElementById('detalleModal');
+    if (!modalElement) {
+        return;
+    }
+
+    const modalTitle = modalElement.querySelector('#detalleModalLabel');
+    const modalList = modalElement.querySelector('.reportes-asignacion__modal-list');
+
+    modalElement.addEventListener('show.bs.modal', (event) => {
+        const trigger = event.relatedTarget;
+        if (!trigger) {
+            return;
+        }
+        const studentsData = trigger.getAttribute('data-students');
+        const tutorName = trigger.getAttribute('data-tutor') || 'Tutor';
+        let students = [];
+        try {
+            students = studentsData ? JSON.parse(studentsData) : [];
+        } catch {
+            students = [];
+        }
+        modalTitle.textContent = `Alumnos de ${tutorName}`;
+        modalList.innerHTML = students.length
+            ? students.map((name) => `<li>• ${name}</li>`).join('')
+            : '<li class="text-muted">Sin alumnos registrados.</li>';
+    });
+})();
+JS;
+$this->registerJs($script);
+?>
+
+</div>
+
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalleModalLabel">Alumnos del tutor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled mb-0 reportes-asignacion__modal-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
 
     <?php if ($tieneFiltroCiclo && $tabla): ?>
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm align-middle">
-                <thead>
-                    <tr>
-                        <th>Tutor</th>
-                        <th>Grupo</th>
-                        <th>Semestre</th>
-                        <th>Alumnos</th>
-                        <th>Detalle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($tabla as $index => $fila): ?>
-                        <tr>
-                            <td><?= Html::encode($fila['tutor']) ?></td>
-                            <td><?= Html::encode($fila['grupo']) ?></td>
-                            <td><?= Html::encode($fila['semestre']) ?></td>
-                            <td><?= Html::encode($fila['conteo']) ?></td>
-                            <td>
-                                <?php if ($fila['alumnos']): ?>
-                                    <button class="btn btn-link btn-sm px-0" type="button" data-bs-toggle="collapse" data-bs-target="#detalle-<?= $index ?>">Ver lista</button>
-                                    <div class="collapse mt-2" id="detalle-<?= $index ?>">
-                                        <ul class="list-unstyled mb-0 small">
-                                            <?php foreach ($fila['alumnos'] as $alumnoNombre): ?>
-                                                <li>? <?= Html::encode($alumnoNombre) ?></li>
-                                            <?php endforeach; ?>
-                                        </ul>
-                                    </div>
-                                <?php else: ?>
-                                    <span class="text-muted small">Sin alumnos</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+        <div class="card reportes-asignacion__table-card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0 reportes-asignacion__table">
+                        <thead>
+                            <tr>
+                                <th>Tutor</th>
+                                <th>Grupo</th>
+                                <th>Semestre</th>
+                                <th>Alumnos</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($tabla as $index => $fila): ?>
+                                <tr>
+                                    <td><?= Html::encode($fila['tutor']) ?></td>
+                                    <td><?= Html::encode($fila['grupo']) ?></td>
+                                    <td><?= Html::encode($fila['semestre']) ?></td>
+                                    <td><?= Html::encode($fila['conteo']) ?></td>
+                                    <td>
+                                        <?php if ($fila['alumnos']): ?>
+                                            <button class="btn btn-link btn-sm px-0 reportes-asignacion__detail-btn" type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#detalleModal"
+                                                data-students='<?= Html::encode(Json::encode($fila['alumnos'])) ?>'
+                                                data-tutor="<?= Html::encode($fila['tutor']) ?>">
+                                                Ver lista
+                                            </button>
+                                        <?php else: ?>
+                                            <span class="text-muted small">Sin alumnos</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     <?php elseif ($tieneFiltroCiclo): ?>
         <div class="alert alert-warning">No hay registros con los filtros seleccionados.</div>
