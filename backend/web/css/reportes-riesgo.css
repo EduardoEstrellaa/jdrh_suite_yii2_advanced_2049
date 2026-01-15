@@ -1,0 +1,137 @@
+.reportes-riesgo__hero {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 1px solid #fecaca;
+}
+
+.reportes-riesgo__hero h4 {
+    font-size: 1.3rem;
+}
+
+.reportes-riesgo__hero-cta {
+    align-self: center;
+}
+
+.reportes-riesgo__btn {
+    border-radius: 0.85rem;
+    font-weight: 600;
+}
+
+.reportes-riesgo__filter-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.reportes-riesgo__filter-actions {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 0.75rem;
+    justify-content: flex-end;
+}
+
+.reportes-riesgo__stats-row {
+    margin-bottom: 0;
+}
+
+.reportes-riesgo__stat-card {
+    border-radius: 0.85rem;
+}
+
+.reportes-riesgo__stat-label {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.reportes-riesgo__stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.reportes-riesgo__stat-card--verde {
+    border-color: #059669 !important;
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+}
+
+.reportes-riesgo__stat-card--verde .reportes-riesgo__stat-label {
+    color: #065f46;
+}
+
+.reportes-riesgo__stat-card--verde .reportes-riesgo__stat-value {
+    color: #047857;
+}
+
+.reportes-riesgo__stat-card--amarillo {
+    border-color: #f59e0b !important;
+    background: linear-gradient(145deg, #fff7ed, #fee2b6);
+}
+
+.reportes-riesgo__stat-card--amarillo .reportes-riesgo__stat-label {
+    color: #92400e;
+}
+
+.reportes-riesgo__stat-card--amarillo .reportes-riesgo__stat-value {
+    color: #b45309;
+}
+
+.reportes-riesgo__stat-card--rojo {
+    border-color: #dc2626 !important;
+    background: linear-gradient(145deg, #fee2e2, #fecdd3);
+}
+
+.reportes-riesgo__stat-card--rojo .reportes-riesgo__stat-label {
+    color: #991b1b;
+}
+
+.reportes-riesgo__stat-card--rojo .reportes-riesgo__stat-value {
+    color: #b91c1c;
+}
+
+.reportes-riesgo__table-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.reportes-riesgo__table thead th {
+    border-bottom: 1px solid #e5e7eb;
+    letter-spacing: 0.05em;
+}
+
+.reportes-riesgo__table tbody td {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.reportes-riesgo__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.reportes-riesgo__badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+}
+
+.reportes-riesgo__no-grupo {
+    color: #9ca3af !important;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .reportes-riesgo__hero {
+        padding: 1.25rem;
+    }
+
+    .reportes-riesgo__filter-actions {
+        padding-top: 0.25rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .reportes-riesgo__filter-actions .btn {
+        width: 100%;
+    }
+}
