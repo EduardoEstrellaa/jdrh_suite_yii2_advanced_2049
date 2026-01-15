@@ -284,6 +284,16 @@ class Alumnos extends \yii\db\ActiveRecord
     }
 
     /**
+     * Relación singular útil para consultas que esperan sólo un registro.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAlumServiciosSalud()
+    {
+        return $this->hasOne(AlumServiciosSalud::class, ['alumnos_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[AlumTrabajos]].
      *
      * @return \yii\db\ActiveQuery
