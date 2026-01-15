@@ -1,0 +1,143 @@
+.reportes-becas__hero {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f3f6ff, #eef2ff);
+    border: 1px solid #dbeafe;
+}
+
+.reportes-becas__hero h4 {
+    font-size: 1.25rem;
+}
+
+.reportes-becas__hero-cta {
+    align-self: center;
+}
+
+.reportes-becas__btn {
+    border-radius: 0.75rem;
+    font-weight: 600;
+}
+
+.reportes-becas__filter-panel {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.reportes-becas__switch-content {
+    display: flex;
+    align-items: center;
+}
+
+.reportes-becas__filter-actions {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 0.75rem;
+}
+
+.reportes-becas__filter-actions .btn {
+    min-width: 140px;
+}
+
+.reportes-becas__table-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.reportes-becas__table-card .table-responsive {
+    border-bottom: none;
+}
+
+.reportes-becas__table {
+    border: none;
+    border-bottom: none;
+}
+
+.reportes-becas__table thead th {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.reportes-becas__table tbody tr {
+    border-bottom: none;
+}
+
+.reportes-becas__table tbody td {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.reportes-becas__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.reportes-becas__status {
+    text-transform: uppercase;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.75rem;
+    border-radius: 999px;
+}
+
+.reportes-becas__totals-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.reportes-becas__totals-title {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.reportes-becas__totals-grid {
+    margin: 0;
+}
+
+.reportes-becas__total-card {
+    border: 1px dashed #cbd5f5;
+    border-radius: 0.9rem;
+    padding: 1rem;
+    text-align: center;
+    background: #f8fafc;
+    min-height: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.reportes-becas__total-label {
+    font-size: 0.9rem;
+    color: #0f172a;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reportes-becas__total-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+    .reportes-becas__hero {
+        padding: 1.25rem;
+    }
+
+    .reportes-becas__filter-panel .row {
+        margin-bottom: 0;
+    }
+
+    .reportes-becas__filter-actions {
+        justify-content: flex-start;
+    }
+
+    .reportes-becas__filter-actions .btn {
+        min-width: auto;
+        flex: 1;
+    }
+}
