@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\UsosInternet;
+use common\models\UsosInternet;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CatalogoEnfermCronicas;
+use common\models\CatalogoEnfermCronicas;
 use backend\models\search\CatalogoEnfermCronicasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

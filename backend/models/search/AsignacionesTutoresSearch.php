@@ -4,13 +4,15 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AsignacionesTutores;
+use common\models\AsignacionesTutores;
 
 /**
- * AsignacionesTutoresSearch represents the model behind the search form of `backend\models\AsignacionesTutores`.
+ * AsignacionesTutoresSearch represents the model behind the search form of `common\models\AsignacionesTutores`.
  */
 class AsignacionesTutoresSearch extends AsignacionesTutores
 {
+    public ?string $perfilNombre = null;
+
     /**
      * {@inheritdoc}
      */
@@ -18,6 +20,7 @@ class AsignacionesTutoresSearch extends AsignacionesTutores
     {
         return [
             [['id', 'perfil_id'], 'integer'],
+            [['perfilNombre'], 'safe'],
         ];
     }
 
@@ -39,13 +42,22 @@ class AsignacionesTutoresSearch extends AsignacionesTutores
      */
     public function search($params)
     {
-        $query = AsignacionesTutores::find();
+        $query = AsignacionesTutores::find()
+            ->alias('at')
+            ->joinWith(['perfil' => function ($queryPerfil) {
+                $queryPerfil->alias('perfil');
+            }]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $dataProvider->sort->attributes['perfilNombre'] = [
+            'asc' => ['perfil.nombre' => SORT_ASC, 'perfil.apellido' => SORT_ASC],
+            'desc' => ['perfil.nombre' => SORT_DESC, 'perfil.apellido' => SORT_DESC],
+        ];
+        $dataProvider->sort->defaultOrder = ['perfilNombre' => SORT_ASC];
 
         $this->load($params);
 
@@ -57,9 +69,17 @@ class AsignacionesTutoresSearch extends AsignacionesTutores
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'perfil_id' => $this->perfil_id,
+            'at.id' => $this->id,
+            'at.perfil_id' => $this->perfil_id,
         ]);
+
+        if ($this->perfilNombre) {
+            $query->andWhere([
+                'or',
+                ['like', 'perfil.nombre', $this->perfilNombre],
+                ['like', 'perfil.apellido', $this->perfilNombre],
+            ]);
+        }
 
         return $dataProvider;
     }

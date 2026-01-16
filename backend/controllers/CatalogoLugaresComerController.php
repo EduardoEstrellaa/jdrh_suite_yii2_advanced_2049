@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CatalogoLugaresComer;
+use common\models\CatalogoLugaresComer;
 use backend\models\search\CatalogoLugaresComerSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumOrganizacion;
+use common\models\AlumOrganizacion;
 
 /**
- * AlumOrganizacionSearch represents the model behind the search form of `backend\models\AlumOrganizacion`.
+ * AlumOrganizacionSearch represents the model behind the search form of `common\models\AlumOrganizacion`.
  */
 class AlumOrganizacionSearch extends AlumOrganizacion
 {
@@ -34,11 +34,10 @@ class AlumOrganizacionSearch extends AlumOrganizacion
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params)
     {
         $query = AlumOrganizacion::find();
 
@@ -48,7 +47,7 @@ class AlumOrganizacionSearch extends AlumOrganizacion
             'query' => $query,
         ]);
 
-        $this->load($params, $formName);
+        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

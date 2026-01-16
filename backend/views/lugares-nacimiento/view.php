@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\LugaresNacimiento $model */
+/** @var common\models\LugaresNacimiento $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Lugares Nacimientos'), 'url' => ['index']];
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'perfil_id',
             'entidades_federativas_id',
             'municipios_id',
-            'localidades_id',
+            'localidad',
         ],
     ]) ?>
 

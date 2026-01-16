@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumDeportes;
+use common\models\AlumDeportes;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

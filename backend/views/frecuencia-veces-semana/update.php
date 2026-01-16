@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\FrecuenciaVecesSemana $model */
+/** @var common\models\FrecuenciaVecesSemana $model */
 
 $this->title = Yii::t('app', 'Update Frecuencia Veces Semana: {name}', [
     'name' => $model->id,

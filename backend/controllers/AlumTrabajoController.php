@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\AlumTrabajo;
+use common\models\AlumTrabajo;
 use backend\models\search\AlumTrabajoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AsignacionesTutores;
+use common\models\AsignacionesTutores;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -31,7 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'perfil_id',
+            [
+                'attribute' => 'perfilNombre',
+                'label' => Yii::t('app', 'Tutor'),
+                'value' => function (AsignacionesTutores $model) {
+                    return $model->tutorEtiqueta;
+                },
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, AsignacionesTutores $model, $key, $index, $column) {

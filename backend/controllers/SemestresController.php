@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Semestres;
+use common\models\Semestres;
 use backend\models\search\SemestresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

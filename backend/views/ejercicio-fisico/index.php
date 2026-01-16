@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\EjercicioFisico;
+use common\models\EjercicioFisico;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

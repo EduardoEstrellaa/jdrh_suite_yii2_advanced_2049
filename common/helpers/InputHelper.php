@@ -78,6 +78,32 @@ class InputHelper
     }
 
     /**
+     * Crea un Select2 para filtros (`GridView::filter`) sin icono.
+     */
+    public static function select2Filter($model, string $attribute, array $data = [], array $options = [], array $pluginOptions = []): string
+    {
+        self::registerSelect2Css();
+
+        $defaultOptions = [
+            'placeholder' => 'Selecciona una opción...',
+            'class' => 'form-select form-select-sm',
+        ];
+        $defaultPluginOptions = [
+            'allowClear' => true,
+        ];
+
+        $widget = Select2::widget([
+            'model' => $model,
+            'attribute' => $attribute,
+            'data' => $data,
+            'options' => array_merge($defaultOptions, $options),
+            'pluginOptions' => array_merge($defaultPluginOptions, $pluginOptions),
+        ]);
+
+        return Html::tag('div', $widget, ['class' => 'input-group select2-in-input-group']);
+    }
+
+    /**
      * Campo de texto con icono para inputs dinámicos (arrays), sin ActiveForm.
      */
     public static function iconFieldArray($name, $value, $icon, $placeholder = '', $options = [])

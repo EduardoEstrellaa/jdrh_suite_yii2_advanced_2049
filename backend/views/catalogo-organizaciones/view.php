@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\CatalogoOrganizaciones $model */
+/** @var common\models\CatalogoOrganizaciones $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Catalogo Organizaciones'), 'url' => ['index']];
@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'nombre',
+            'descripcion',
             'tipo_organizacion_id',
         ],
     ]) ?>

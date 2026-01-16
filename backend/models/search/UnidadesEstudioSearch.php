@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\UnidadesEstudio;
+use common\models\UnidadesEstudio;
 
 /**
- * UnidadesEstudioSearch represents the model behind the search form of `backend\models\UnidadesEstudio`.
+ * UnidadesEstudioSearch represents the model behind the search form of `common\models\UnidadesEstudio`.
  */
 class UnidadesEstudioSearch extends UnidadesEstudio
 {

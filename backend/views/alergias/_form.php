@@ -4,15 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Alergias $model */
+/** @var common\models\Alergias $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
 <div class="alergias-form">
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($model, 'id')->textInput() ?>
 
     <?= $form->field($model, 'alum_alergia_id')->textInput() ?>
 

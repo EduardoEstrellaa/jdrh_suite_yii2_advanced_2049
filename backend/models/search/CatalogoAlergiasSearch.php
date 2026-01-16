@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoAlergias;
+use common\models\CatalogoAlergias;
 
 /**
- * CatalogoAlergiasSearch represents the model behind the search form of `backend\models\CatalogoAlergias`.
+ * CatalogoAlergiasSearch represents the model behind the search form of `common\models\CatalogoAlergias`.
  */
 class CatalogoAlergiasSearch extends CatalogoAlergias
 {
@@ -18,7 +18,7 @@ class CatalogoAlergiasSearch extends CatalogoAlergias
     {
         return [
             [['id', 'tipo_alergias_id'], 'integer'],
-            [['nombre'], 'safe'],
+            [['nombre', 'descripcion'], 'safe'],
         ];
     }
 
@@ -62,7 +62,8 @@ class CatalogoAlergiasSearch extends CatalogoAlergias
             'tipo_alergias_id' => $this->tipo_alergias_id,
         ]);
 
-        $query->andFilterWhere(['like', 'nombre', $this->nombre]);
+        $query->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'descripcion', $this->descripcion]);
 
         return $dataProvider;
     }

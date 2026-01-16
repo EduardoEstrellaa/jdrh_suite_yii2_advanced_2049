@@ -1,0 +1,27 @@
+.pdf-summary-card {
+    text-align: left;
+}
+
+.pdf-summary-card--tutores {
+    border-color: #2563eb !important;
+    background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+}
+
+.pdf-summary-card--grupos {
+    border-color: #059669 !important;
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+}
+
+.pdf-summary-card--alumnos {
+    border-color: #f97316 !important;
+    background: linear-gradient(145deg, #fff7ed, #fee2b6);
+}
+
+.pdf-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 12px 0 6px;
+    color: #1f2937;
+}

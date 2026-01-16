@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CatalogoAlergias;
+use common\models\CatalogoAlergias;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
+            'descripcion',
             'tipo_alergias_id',
             [
                 'class' => ActionColumn::className(),

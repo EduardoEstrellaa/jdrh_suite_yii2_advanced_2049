@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\EntidadesFederativas $model */
+/** @var common\models\EntidadesFederativas $model */
 
 $this->title = Yii::t('app', 'Create Entidades Federativas');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Entidades Federativas'), 'url' => ['index']];

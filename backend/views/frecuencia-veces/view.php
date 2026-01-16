@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\FrecuenciaVeces $model */
+/** @var common\models\FrecuenciaVeces $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Frecuencia Veces'), 'url' => ['index']];

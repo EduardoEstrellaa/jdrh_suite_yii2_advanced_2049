@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\CategoriasCatalogoAlimentos $model */
+/** @var common\models\CategoriasCatalogoAlimentos $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Categorias Catalogo Alimentos'), 'url' => ['index']];

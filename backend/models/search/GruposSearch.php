@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Grupos;
+use common\models\Grupos;
 
 /**
- * GruposSearch represents the model behind the search form of `backend\models\Grupos`.
+ * GruposSearch represents the model behind the search form of `common\models\Grupos`.
  */
 class GruposSearch extends Grupos
 {

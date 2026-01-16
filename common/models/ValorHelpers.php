@@ -1,5 +1,7 @@
 <?php
+
 namespace common\models;
+
 use yii;
 use backend\models\Rol;
 use backend\models\Estado;
@@ -13,20 +15,19 @@ class ValorHelpers
         $userTieneRolNombre = Yii::$app->user->identity->rol->rol_nombre;
         return $userTieneRolNombre == $rol_nombre ? true : false;
     }
-
-    public static function getUsersRolValor($userId=null)
+    public static function getUsersRolValor($userId = null)
     {
-        if ($userId == null){
+        if ($userId == null) {
             $usersRolValor = Yii::$app->user->identity->rol->rol_valor;
             return isset($usersRolValor) ? $usersRolValor : false;
         } else {
-            
+
             $user = User::findOne($userId);
             $usersRolValor = $user->rol->rol_valor;
             return isset($usersRolValor) ? $usersRolValor : false;
         }
     }
-    
+
     public static function getRolValor($rol_nombre)
     {
         $rol = Rol::find('rol_valor')

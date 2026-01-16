@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumRecreacionTiempo;
+use common\models\AlumRecreacionTiempo;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

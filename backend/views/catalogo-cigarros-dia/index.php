@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CatalogoCigarrosDia;
+use common\models\CatalogoCigarrosDia;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

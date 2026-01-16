@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\FrecuenciaVecesSemana;
+use common\models\FrecuenciaVecesSemana;
 use backend\models\search\FrecuenciaVecesSemanaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

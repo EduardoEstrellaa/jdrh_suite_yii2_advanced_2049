@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\TipoOrganizacion;
+use common\models\TipoOrganizacion;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
+            'descripcion',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, TipoOrganizacion $model, $key, $index, $column) {

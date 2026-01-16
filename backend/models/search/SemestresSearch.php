@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Semestres;
+use common\models\Semestres;
 
 /**
- * SemestresSearch represents the model behind the search form of `backend\models\Semestres`.
+ * SemestresSearch represents the model behind the search form of `common\models\Semestres`.
  */
 class SemestresSearch extends Semestres
 {
@@ -17,7 +17,7 @@ class SemestresSearch extends Semestres
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id', 'tipo_semestres_id'], 'integer'],
             [['nombre', 'descripcion'], 'safe'],
         ];
     }
@@ -59,6 +59,7 @@ class SemestresSearch extends Semestres
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'tipo_semestres_id' => $this->tipo_semestres_id,
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre])

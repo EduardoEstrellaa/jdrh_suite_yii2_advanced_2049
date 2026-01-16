@@ -14,12 +14,20 @@ use Yii;
  * @property string|null $fecha_inicio
  * @property string|null $fecha_fin
  *
+ * @property string|null $fecha_rango Virtual attribute para el rango mostrado en el formulario.
  * @property AlumTratamientos $alumTratamientos
  * @property CatalogoTratamientos $catalogoTratamientos
  * @property FrecuenciaTiempo $frecuenciaTiempo
  */
 class Tratamientos extends \yii\db\ActiveRecord
 {
+    /**
+     * Rango de fechas combinado solo para el formulario (no se almacena en DB).
+     *
+     * @var string|null
+     */
+    public ?string $fecha_rango = null;
+
     /**
      * {@inheritdoc}
      */
@@ -37,6 +45,7 @@ class Tratamientos extends \yii\db\ActiveRecord
             [['alum_tratamientos_id', 'catalogo_tratamientos_id', 'frecuencia_tiempo_id'], 'required'],
             [['alum_tratamientos_id', 'catalogo_tratamientos_id', 'frecuencia_tiempo_id'], 'integer'],
             [['fecha_inicio', 'fecha_fin'], 'safe'],
+            [['fecha_rango'], 'safe'],
             [['alum_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlumTratamientos::class, 'targetAttribute' => ['alum_tratamientos_id' => 'id']],
             [['catalogo_tratamientos_id'], 'exist', 'skipOnError' => true, 'targetClass' => CatalogoTratamientos::class, 'targetAttribute' => ['catalogo_tratamientos_id' => 'id']],
             [['frecuencia_tiempo_id'], 'exist', 'skipOnError' => true, 'targetClass' => FrecuenciaTiempo::class, 'targetAttribute' => ['frecuencia_tiempo_id' => 'id']],

@@ -64,7 +64,7 @@ class TiposBecas extends \yii\db\ActiveRecord
      *
      * @return array<int, string> Mapa donde la clave es el ID del tipo de beca y el valor es su nombre.
      */
-    public static function getTiposBecasMap(): array
+    public static function dropdownOptions(): array
     {
         $tiposBecas = self::find()
             ->select(['id', 'nombre'])
@@ -73,5 +73,18 @@ class TiposBecas extends \yii\db\ActiveRecord
             ->all();
 
         return ArrayHelper::map($tiposBecas, 'id', 'nombre');
+    }
+
+    /**
+     * Obtiene el ID de la opcion "Otro" si existe.
+     */
+    public static function getOtroId(): ?int
+    {
+        $id = static::find()
+            ->select('id')
+            ->where(['nombre' => 'Otro (especificar)'])
+            ->scalar();
+
+        return $id ? (int)$id : null;
     }
 }

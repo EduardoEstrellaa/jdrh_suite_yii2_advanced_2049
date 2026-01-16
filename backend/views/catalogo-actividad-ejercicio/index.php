@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\CatalogoActividadEjercicio;
+use common\models\CatalogoActividadEjercicio;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

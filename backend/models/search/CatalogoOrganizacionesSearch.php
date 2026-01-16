@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\CatalogoOrganizaciones;
+use common\models\CatalogoOrganizaciones;
 
 /**
- * CatalogoOrganizacionesSearch represents the model behind the search form of `backend\models\CatalogoOrganizaciones`.
+ * CatalogoOrganizacionesSearch represents the model behind the search form of `common\models\CatalogoOrganizaciones`.
  */
 class CatalogoOrganizacionesSearch extends CatalogoOrganizaciones
 {
@@ -18,7 +18,7 @@ class CatalogoOrganizacionesSearch extends CatalogoOrganizaciones
     {
         return [
             [['id', 'tipo_organizacion_id'], 'integer'],
-            [['nombre'], 'safe'],
+            [['nombre', 'descripcion'], 'safe'],
         ];
     }
 
@@ -35,11 +35,10 @@ class CatalogoOrganizacionesSearch extends CatalogoOrganizaciones
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params)
     {
         $query = CatalogoOrganizaciones::find();
 
@@ -49,7 +48,7 @@ class CatalogoOrganizacionesSearch extends CatalogoOrganizaciones
             'query' => $query,
         ]);
 
-        $this->load($params, $formName);
+        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -63,7 +62,8 @@ class CatalogoOrganizacionesSearch extends CatalogoOrganizaciones
             'tipo_organizacion_id' => $this->tipo_organizacion_id,
         ]);
 
-        $query->andFilterWhere(['like', 'nombre', $this->nombre]);
+        $query->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'descripcion', $this->descripcion]);
 
         return $dataProvider;
     }

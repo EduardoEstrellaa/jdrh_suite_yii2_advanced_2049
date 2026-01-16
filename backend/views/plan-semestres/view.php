@@ -4,9 +4,9 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\PlanSemestres $model */
+/** @var common\models\PlanSemestres $model */
 
-$this->title = $model->id;
+$this->title = $model->planNombre;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Plan Semestres'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,9 +30,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'plan_licenciatura_id',
-            'semestres_id',
-            'unidades_estudio_id',
+            [
+                'label' => Yii::t('app', 'Plan de licenciatura'),
+                'value' => $model->planNombre,
+            ],
+            [
+                'label' => Yii::t('app', 'Semestre'),
+                'value' => $model->semestreNombre,
+            ],
+            [
+                'label' => Yii::t('app', 'Unidad de estudio'),
+                'value' => $model->unidadNombre,
+            ],
         ],
     ]) ?>
 

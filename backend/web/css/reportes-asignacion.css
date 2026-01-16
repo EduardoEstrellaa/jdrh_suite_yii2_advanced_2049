@@ -1,0 +1,124 @@
+.reportes-asignacion__hero {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1px solid #c7d2fe;
+}
+
+.reportes-asignacion__hero h4 {
+    font-size: 1.3rem;
+}
+
+.reportes-asignacion__hero-cta {
+    align-self: center;
+}
+
+.reportes-asignacion__filter-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.reportes-asignacion__stats-row {
+    margin-bottom: 0;
+}
+
+.reportes-asignacion__stat-card {
+    border-radius: 0.85rem;
+}
+
+.reportes-asignacion__stat-label {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.reportes-asignacion__stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.reportes-asignacion__stat-card--tutores {
+    border-color: #2563eb !important;
+    background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+}
+
+.reportes-asignacion__stat-card--tutores .reportes-asignacion__stat-label {
+    color: #1d4ed8;
+}
+
+.reportes-asignacion__stat-card--tutores .reportes-asignacion__stat-value {
+    color: #1c3faa;
+}
+
+.reportes-asignacion__stat-card--grupos {
+    border-color: #059669 !important;
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+}
+
+.reportes-asignacion__stat-card--grupos .reportes-asignacion__stat-label {
+    color: #065f46;
+}
+
+.reportes-asignacion__stat-card--grupos .reportes-asignacion__stat-value {
+    color: #047857;
+}
+
+.reportes-asignacion__stat-card--alumnos {
+    border-color: #f97316 !important;
+    background: linear-gradient(145deg, #fff7ed, #fee2b6);
+}
+
+.reportes-asignacion__stat-card--alumnos .reportes-asignacion__stat-label {
+    color: #92400e;
+}
+
+.reportes-asignacion__stat-card--alumnos .reportes-asignacion__stat-value {
+    color: #b45309;
+}
+
+@media (max-width: 768px) {
+    .reportes-asignacion__hero {
+        padding: 1.25rem;
+    }
+}
+
+.reportes-asignacion__table-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.reportes-asignacion__table {
+    margin-bottom: 0;
+}
+
+.reportes-asignacion__table thead {
+    background: #eef2ff;
+}
+
+.reportes-asignacion__table thead th {
+    border-bottom: 1px solid #e5e7eb;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #1d4ed8;
+}
+
+.reportes-asignacion__table tbody td {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.reportes-asignacion__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.reportes-asignacion__table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.reportes-asignacion__modal-list li {
+    padding: 0.15rem 0;
+}

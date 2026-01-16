@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Alergias;
+use common\models\Alergias;
 
 /**
- * AlergiasSearch represents the model behind the search form of `backend\models\Alergias`.
+ * AlergiasSearch represents the model behind the search form of `common\models\Alergias`.
  */
 class AlergiasSearch extends Alergias
 {

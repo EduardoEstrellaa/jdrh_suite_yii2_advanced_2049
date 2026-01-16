@@ -1,0 +1,200 @@
+.expediente-card {
+    border: 1px solid #f1f3f5;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+    border-radius: 16px;
+}
+
+.accordion-item {
+    border: 1px solid #e9ecef;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.section-intro {
+    background: linear-gradient(135deg, #f8fbff, #f4f7fb);
+    border: 1px dashed #d0d7e2;
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.accordion-button {
+    font-weight: 700;
+}
+
+#lista-consumo-alimentos.consumo-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+}
+
+.consumo-tile {
+    border: 1px solid #e7ecf3;
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+.consumo-tile-title {
+    min-width: 160px;
+}
+
+.consumo-tile-header {
+    width: 100%;
+}
+
+.consumo-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background: linear-gradient(135deg, #2f8bfc, #5ad1ff);
+    box-shadow: 0 0 0 4px rgba(47, 139, 252, 0.12);
+}
+
+.consumo-tile-select .select2-container--bootstrap-5 .select2-selection {
+    border-color: #cfd8e3;
+}
+
+.consumo-tile-select .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+    color: #6c757d;
+}
+
+.consumo-chip {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #e7f1ff;
+    color: #0d6efd;
+    border: 1px solid #cfe2ff;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .consumo-tile {
+        padding: 10px;
+    }
+
+    .consumo-tile-title {
+        width: 100%;
+    }
+}
+
+.actividad-card {
+    border-radius: 14px;
+}
+
+.actividad-tile {
+    border: 1px solid #e7ecf3;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 12px 14px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+.actividad-tip-list i {
+    width: 16px;
+    text-align: center;
+}
+
+.actividad-tile .form-check-label {
+    color: #0f172a;
+}
+
+.actividad-subcard {
+    border: 1px dashed #d0d7e2;
+    border-radius: 12px;
+    background: #f8fbff;
+    padding: 14px 16px;
+}
+
+.deporte-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.deporte-check:hover {
+    background: #f1f5ff;
+}
+
+.deporte-check .form-check-input {
+    margin-top: 0.3rem;
+}
+
+.deporte-check .form-check-label {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.habitos-card {
+    border-radius: 14px;
+}
+
+.habito-tile {
+    border: 1px solid #e7ecf3;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 14px 16px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+.habito-detail {
+    border: 1px dashed #d0d7e2;
+    background: #f8fbff;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.habitos-tip-list i {
+    width: 16px;
+    text-align: center;
+}
+
+.habito-badge {
+    font-size: 11px;
+}
+
+.habitos-hero {
+    background: linear-gradient(135deg, #fff7e6, #f8fbff);
+    border: 1px solid #ffe8c2;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+}
+
+.habitos-hero-icon {
+    width: 44px;
+    height: 44px;
+    background: #fff3d9;
+    box-shadow: 0 6px 16px rgba(255, 193, 7, 0.25);
+}
+
+.habito-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.habito-chip.soft {
+    background: #f7f9fb;
+    color: #6c757d;
+    border-color: #e7ecf3;
+}
+
+.habitos-card .card-header {
+    border-bottom: 1px dashed #e5e7eb;
+}
+
+@media (max-width: 768px) {
+    .habitos-hero {
+        text-align: left;
+    }
+}

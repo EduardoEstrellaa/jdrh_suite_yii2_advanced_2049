@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AlumEjercicio;
+use common\models\AlumEjercicio;
 
 /**
- * AlumEjercicioSearch represents the model behind the search form of `backend\models\AlumEjercicio`.
+ * AlumEjercicioSearch represents the model behind the search form of `common\models\AlumEjercicio`.
  */
 class AlumEjercicioSearch extends AlumEjercicio
 {

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\VariasReaccionesAlergicas $model */
+/** @var common\models\VariasReaccionesAlergicas $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Varias Reacciones Alergicas'), 'url' => ['index']];

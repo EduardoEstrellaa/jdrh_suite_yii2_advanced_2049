@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\AlumOrganizacion;
+use common\models\AlumOrganizacion;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;

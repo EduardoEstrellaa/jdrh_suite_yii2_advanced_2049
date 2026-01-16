@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\EjercicioFisico;
+use common\models\EjercicioFisico;
 use backend\models\search\EjercicioFisicoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

@@ -16,6 +16,8 @@ use common\models\AlumDependenEconomica;
 use common\models\Dependientes;
 use common\models\EdadesHijos;
 use common\models\AlumEstadoSalud;
+use common\models\AlumEnfermedadesCronicas;
+use common\models\AlumAlergia;
 use common\models\ProblemasSalud;
 use common\models\AlumServiciosSalud;
 use common\models\ServiciosSalud;
@@ -25,6 +27,18 @@ use common\models\AlumUsoAnteojos;
 use common\models\UsoAnteojos;
 use common\models\AlumTratamientos;
 use common\models\Tratamientos;
+use common\models\AlumRecreacionTiempo;
+use common\models\UsosInternet;
+use common\models\AlumOrganizacion;
+use common\models\Organizaciones;
+use common\models\CatalogoCigarrosDia;
+use common\models\FrecuenciaVecesSemana;
+use common\models\AlumHabitosConsumo;
+use common\models\AlumConsumoAlimentos;
+use common\models\AlumLugaresComer;
+use common\models\EnfermedadesCronicas;
+use common\models\Alergias;
+use common\models\VariasReaccionesAlergicas;
 use common\models\CatalogoDependenciasEconomicas;
 use common\models\AlumTrabajo;
 use common\models\AlumTransportes;
@@ -34,6 +48,11 @@ use common\models\TiposViviendas;
 use common\models\ViviendaBienes;
 use common\models\ViviendaServicios;
 use common\models\AlumBienesPersonales;
+use common\models\AlumDeportes;
+use common\models\AlumEjercicio;
+use common\models\Deportes;
+use common\models\EjercicioFisico;
+use common\models\TiposBecas;
 use common\services\support\DependientesManager;
 use common\services\support\HijosManager;
 use common\services\support\ViviendaBienesManager;
@@ -43,6 +62,14 @@ use common\services\support\ProblemasSaludManager;
 use common\services\support\ServiciosSaludManager;
 use common\services\support\UsoAnteojosManager;
 use common\services\support\TratamientosManager;
+use common\services\support\AlergiasManager;
+use common\services\support\EnfermedadesCronicasManager;
+use common\services\support\LugaresComerManager;
+use common\services\support\ConsumoAlimentosManager;
+use common\services\support\DeportesManager;
+use common\services\support\EjercicioFisicoManager;
+use common\services\support\RecreacionTiempoManager;
+use common\services\support\OrganizacionesManager;
 
 class ExpedienteService
 {
@@ -106,6 +133,11 @@ class ExpedienteService
     public static function getModelsForCreate($perfil, $alumno)
     {
         return [
+            'alumHabitosConsumo' => new AlumHabitosConsumo([
+                'alumnos_id' => $alumno->id,
+                'catalogo_cigarros_dia_id' => self::getDefaultCatalogoId(CatalogoCigarrosDia::class),
+                'frecuencia_veces_semana_id' => self::getDefaultCatalogoId(FrecuenciaVecesSemana::class),
+            ]),
             'datosPersonales' => new DatosPersonales(['perfil_id' => $perfil->id]),
             'lugaresNacimiento' => new LugaresNacimiento(['perfil_id' => $perfil->id]),
             'domiciliosActuales' => new DomiciliosActuales(['perfil_id' => $perfil->id]),
@@ -118,41 +150,69 @@ class ExpedienteService
             'alumTrabajo' => new AlumTrabajo(['alumnos_id' => $alumno->id]),
             'alumVivienda' => new AlumVivienda(['alumnos_id' => $alumno->id]),
             'alumTransportes' => new AlumTransportes(['alumnos_id' => $alumno->id]),
+            'alumDeportes' => new AlumDeportes(['alumnos_id' => $alumno->id]),
+            'alumEjercicio' => new AlumEjercicio(['alumnos_id' => $alumno->id]),
             'alumEstadoSalud' => new AlumEstadoSalud(['alumnos_id' => $alumno->id]),
             'alumServiciosSalud' => new AlumServiciosSalud(['alumnos_id' => $alumno->id]),
             'alumAsisteMedico' => new AlumAsisteMedico(['alumnos_id' => $alumno->id]),
             'alumAsisteDentista' => new AlumAsisteDentista(['alumnos_id' => $alumno->id]),
             'alumUsoAnteojos' => new AlumUsoAnteojos(['alumnos_id' => $alumno->id]),
             'alumTratamientos' => new AlumTratamientos(['alumnos_id' => $alumno->id]),
+            'alumEnfermedadesCronicas' => new AlumEnfermedadesCronicas(['alumnos_id' => $alumno->id]),
+            'alumAlergia' => new AlumAlergia(['alumnos_id' => $alumno->id]),
+            'alumRecreacionTiempo' => new AlumRecreacionTiempo(['alumnos_id' => $alumno->id]),
+            'alumOrganizacion' => new AlumOrganizacion(['alumnos_id' => $alumno->id]),
         ];
     }
 
     /**
      * Obtiene los modelos para actualizar expediente.
+     * IMPORTANTE: Orden consistente con getModelsForCreate() para mantener predictible el saveModels().
      */
     public static function getModelsForUpdate($perfilId, $alumnoId)
     {
         return [
+            // 1) Hábitos (igual que create: primero)
+            'alumHabitosConsumo' => self::findOrCreateHabitosConsumo($alumnoId),
+
+            // 2) Perfil
             'datosPersonales' => self::findOrCreateModel(DatosPersonales::class, ['perfil_id' => $perfilId]),
             'lugaresNacimiento' => self::findOrCreateModel(LugaresNacimiento::class, ['perfil_id' => $perfilId]),
             'domiciliosActuales' => self::findOrCreateModel(DomiciliosActuales::class, ['perfil_id' => $perfilId]),
             'datosGenerales' => self::findOrCreateModel(DatosGenerales::class, ['perfil_id' => $perfilId]),
+
+            // 3) Económico / familiar
             'alumBecas' => self::findOrCreateModel(AlumBecas::class, ['alumnos_id' => $alumnoId]),
             'alumDatosFamiliares' => self::findOrCreateModel(AlumDatosFamiliares::class, ['alumnos_id' => $alumnoId]),
             'alumInfoHijos' => self::findOrCreateModel(AlumInfoHijos::class, ['alumnos_id' => $alumnoId]),
             'alumDependeEconomicamente' => self::findOrCreateModel(AlumDependeEconomicamente::class, ['alumnos_id' => $alumnoId]),
             'alumDependenEconomica' => self::findOrCreateModel(AlumDependenEconomica::class, ['alumnos_id' => $alumnoId]),
             'alumTrabajo' => self::findOrCreateModel(AlumTrabajo::class, ['alumnos_id' => $alumnoId]),
+
+            // 4) Vivienda / transporte
             'alumVivienda' => self::findOrCreateModel(AlumVivienda::class, ['alumnos_id' => $alumnoId]),
             'alumTransportes' => self::findOrCreateModel(AlumTransportes::class, ['alumnos_id' => $alumnoId]),
+
+            // 5) Actividad física
+            'alumDeportes' => self::findOrCreateModel(AlumDeportes::class, ['alumnos_id' => $alumnoId]),
+            'alumEjercicio' => self::findOrCreateModel(AlumEjercicio::class, ['alumnos_id' => $alumnoId]),
+
+            // 6) Salud
             'alumEstadoSalud' => self::findOrCreateModel(AlumEstadoSalud::class, ['alumnos_id' => $alumnoId]),
             'alumServiciosSalud' => self::findOrCreateModel(AlumServiciosSalud::class, ['alumnos_id' => $alumnoId]),
             'alumAsisteMedico' => self::findOrCreateModel(AlumAsisteMedico::class, ['alumnos_id' => $alumnoId]),
             'alumAsisteDentista' => self::findOrCreateModel(AlumAsisteDentista::class, ['alumnos_id' => $alumnoId]),
             'alumUsoAnteojos' => self::findOrCreateModel(AlumUsoAnteojos::class, ['alumnos_id' => $alumnoId]),
             'alumTratamientos' => self::findOrCreateModel(AlumTratamientos::class, ['alumnos_id' => $alumnoId]),
+            'alumEnfermedadesCronicas' => self::findOrCreateModel(AlumEnfermedadesCronicas::class, ['alumnos_id' => $alumnoId]),
+            'alumAlergia' => self::findOrCreateModel(AlumAlergia::class, ['alumnos_id' => $alumnoId]),
+
+            // 7) Recreación / organización
+            'alumRecreacionTiempo' => self::findOrCreateModel(AlumRecreacionTiempo::class, ['alumnos_id' => $alumnoId]),
+            'alumOrganizacion' => self::findOrCreateModel(AlumOrganizacion::class, ['alumnos_id' => $alumnoId]),
         ];
     }
+
 
     private static function findOrCreateModel($className, $conditions)
     {
@@ -163,6 +223,22 @@ class ExpedienteService
                 $model->$key = $value;
             }
         }
+        return $model;
+    }
+
+    private static function findOrCreateHabitosConsumo(int $alumnoId): AlumHabitosConsumo
+    {
+        $model = AlumHabitosConsumo::find()->where(['alumnos_id' => $alumnoId])->one();
+        if ($model) {
+            return $model;
+        }
+
+        $model = new AlumHabitosConsumo([
+            'alumnos_id' => $alumnoId,
+            'catalogo_cigarros_dia_id' => self::getDefaultCatalogoId(CatalogoCigarrosDia::class),
+            'frecuencia_veces_semana_id' => self::getDefaultCatalogoId(FrecuenciaVecesSemana::class),
+        ]);
+
         return $model;
     }
 
@@ -225,6 +301,14 @@ class ExpedienteService
         if ($model instanceof AlumVivienda) {
             self::normalizeViviendaFields($model);
         }
+
+        if ($model instanceof AlumHabitosConsumo) {
+            self::normalizeHabitosConsumoFields($model);
+        }
+
+        if ($model instanceof AlumRecreacionTiempo) {
+            self::normalizeRecreacionFields($model);
+        }
     }
 
     private static function normalizeBecaFields(AlumBecas $alumBecas): void
@@ -235,7 +319,8 @@ class ExpedienteService
             return;
         }
 
-        if ((int)$alumBecas->tipos_becas_id !== 1) {
+        $otroId = TiposBecas::getOtroId();
+        if ($otroId !== null && (int)$alumBecas->tipos_becas_id !== (int)$otroId) {
             $alumBecas->otro_especificar = null;
         }
     }
@@ -275,20 +360,74 @@ class ExpedienteService
         }
     }
 
+    private static function normalizeHabitosConsumoFields(AlumHabitosConsumo $alumHabitosConsumo): void
+    {
+        $defaultCigarrosId = self::getDefaultCatalogoId(CatalogoCigarrosDia::class);
+        $defaultFrecuenciaId = self::getDefaultCatalogoId(FrecuenciaVecesSemana::class);
+
+        if ((int)$alumHabitosConsumo->fumas === 1) {
+            if ($alumHabitosConsumo->catalogo_cigarros_dia_id === null) {
+                $alumHabitosConsumo->catalogo_cigarros_dia_id = $defaultCigarrosId;
+            }
+        } else {
+            $alumHabitosConsumo->catalogo_cigarros_dia_id = self::getDefaultCatalogoId(CatalogoCigarrosDia::class);
+        }
+
+        if ((int)$alumHabitosConsumo->tomas_alcohol === 1) {
+            if ($alumHabitosConsumo->frecuencia_veces_semana_id === null) {
+                $alumHabitosConsumo->frecuencia_veces_semana_id = $defaultFrecuenciaId;
+            }
+        } else {
+            $alumHabitosConsumo->frecuencia_veces_semana_id = $defaultFrecuenciaId;
+        }
+
+        if ((int)$alumHabitosConsumo->tienes_adicciones !== 1) {
+            $alumHabitosConsumo->especificiar_adiccion = null;
+        } else {
+            $alumHabitosConsumo->especificiar_adiccion = trim((string)$alumHabitosConsumo->especificiar_adiccion) ?: null;
+        }
+    }
+
+    private static function normalizeRecreacionFields(AlumRecreacionTiempo $alumRecreacionTiempo): void
+    {
+        if ((int)$alumRecreacionTiempo->tienes_acceso_internet !== 1) {
+            $alumRecreacionTiempo->catalogo_lugares_acceso_principal_id = null;
+        }
+    }
+
+    private static function getDefaultCatalogoId(string $className): ?int
+    {
+        /** @var \yii\db\ActiveRecord $className */
+        $id = $className::find()
+            ->select('id')
+            ->orderBy(['id' => SORT_ASC])
+            ->scalar();
+
+        return $id !== false ? (int)$id : 1;
+    }
+
     /**
      * Sincroniza colecciones relacionadas después de guardar los modelos base.
      */
     private static function syncAggregates(array $models, array $post, int $alumnoId): void
     {
+        DeportesManager::sync($models['alumDeportes'], $post);
+        EjercicioFisicoManager::sync($models['alumEjercicio'], $post);
         ProblemasSaludManager::sync($models['alumEstadoSalud'], $post);
         ServiciosSaludManager::sync($models['alumServiciosSalud'], $post);
         UsoAnteojosManager::sync($models['alumUsoAnteojos'], $post);
         TratamientosManager::sync($models['alumTratamientos'], $post);
+        EnfermedadesCronicasManager::sync($models['alumEnfermedadesCronicas'], $post);
+        AlergiasManager::sync($models['alumAlergia'], $post);
+        LugaresComerManager::sync($alumnoId, $post);
+        ConsumoAlimentosManager::sync($alumnoId, $post);
         HijosManager::sync($models['alumInfoHijos'], $post);
         DependientesManager::sync($models['alumDependenEconomica'], $post);
         ViviendaBienesManager::sync($models['alumVivienda'], $post);
         ViviendaServiciosManager::sync($models['alumVivienda'], $post);
         AlumBienesPersonalesManager::sync($alumnoId, $post);
+        RecreacionTiempoManager::sync($models['alumRecreacionTiempo'], $post);
+        OrganizacionesManager::sync($models['alumOrganizacion'], $post);
     }
 
     /**
@@ -309,6 +448,19 @@ class ExpedienteService
             AlumTrabajo::deleteAll(['alumnos_id' => $alumnoId]);
             AlumBienesPersonales::deleteAll(['alumnos_id' => $alumnoId]);
             AlumTransportes::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumLugaresComer::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumConsumoAlimentos::deleteAll(['alumnos_id' => $alumnoId]);
+            AlumHabitosConsumo::deleteAll(['alumnos_id' => $alumnoId]);
+            $alumDeportes = AlumDeportes::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumDeportes) {
+                Deportes::deleteAll(['alum_deportes_id' => $alumDeportes->id]);
+                $alumDeportes->delete();
+            }
+            $alumEjercicio = AlumEjercicio::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumEjercicio) {
+                EjercicioFisico::deleteAll(['alum_ejercicio_id' => $alumEjercicio->id]);
+                $alumEjercicio->delete();
+            }
 
             AlumAsisteMedico::deleteAll(['alumnos_id' => $alumnoId]);
             AlumAsisteDentista::deleteAll(['alumnos_id' => $alumnoId]);
@@ -332,10 +484,37 @@ class ExpedienteService
                 Tratamientos::deleteAll(['alum_tratamientos_id' => $alumTratamientos->id]);
                 $alumTratamientos->delete();
             }
+            $alumEnfermedadesCronicas = AlumEnfermedadesCronicas::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumEnfermedadesCronicas) {
+                EnfermedadesCronicas::deleteAll(['alum_enfermedades_cronicas_id' => $alumEnfermedadesCronicas->id]);
+                $alumEnfermedadesCronicas->delete();
+            }
+            $alumAlergia = AlumAlergia::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumAlergia) {
+                $alergiaIds = Alergias::find()
+                    ->select('id')
+                    ->where(['alum_alergia_id' => $alumAlergia->id])
+                    ->column();
+                if (!empty($alergiaIds)) {
+                    VariasReaccionesAlergicas::deleteAll(['alergias_id' => $alergiaIds]);
+                }
+                Alergias::deleteAll(['alum_alergia_id' => $alumAlergia->id]);
+                $alumAlergia->delete();
+            }
             $alumDependen = AlumDependenEconomica::findOne(['alumnos_id' => $alumnoId]);
             if ($alumDependen) {
                 Dependientes::deleteAll(['alum_dependen_economica_id' => $alumDependen->id]);
                 $alumDependen->delete();
+            }
+            $alumRecreacionTiempo = AlumRecreacionTiempo::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumRecreacionTiempo) {
+                UsosInternet::deleteAll(['alum_recreacion_tiempo_id' => $alumRecreacionTiempo->id]);
+                $alumRecreacionTiempo->delete();
+            }
+            $alumOrganizacion = AlumOrganizacion::findOne(['alumnos_id' => $alumnoId]);
+            if ($alumOrganizacion) {
+                Organizaciones::deleteAll(['alum_organizacion_id' => $alumOrganizacion->id]);
+                $alumOrganizacion->delete();
             }
             $alumVivienda = AlumVivienda::findOne(['alumnos_id' => $alumnoId]);
             if ($alumVivienda) {
@@ -383,6 +562,27 @@ class ExpedienteService
                 continue;
             }
             if ($model instanceof AlumTratamientos) {
+                continue;
+            }
+            if ($model instanceof AlumEnfermedadesCronicas) {
+                continue;
+            }
+            if ($model instanceof AlumAlergia) {
+                continue;
+            }
+            if ($model instanceof AlumDeportes) {
+                continue;
+            }
+            if ($model instanceof AlumEjercicio) {
+                continue;
+            }
+            if ($model instanceof AlumHabitosConsumo) {
+                continue;
+            }
+            if ($model instanceof AlumRecreacionTiempo) {
+                continue;
+            }
+            if ($model instanceof AlumOrganizacion) {
                 continue;
             }
             if ($model->isNewRecord) {

@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\EjercicioFisico;
+use common\models\EjercicioFisico;
 
 /**
- * EjercicioFisicoSearch represents the model behind the search form of `backend\models\EjercicioFisico`.
+ * EjercicioFisicoSearch represents the model behind the search form of `common\models\EjercicioFisico`.
  */
 class EjercicioFisicoSearch extends EjercicioFisico
 {

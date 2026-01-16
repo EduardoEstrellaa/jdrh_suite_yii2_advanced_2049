@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\CiclosEscolares;
+use common\models\CiclosEscolares;
 use backend\models\search\CiclosEscolaresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

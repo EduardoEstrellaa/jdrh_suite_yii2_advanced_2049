@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\EdadesHijos;
+use common\models\EdadesHijos;
 use backend\models\search\EdadesHijosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

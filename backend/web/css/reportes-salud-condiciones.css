@@ -1,0 +1,186 @@
+.reportes-salud__hero {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fdf6fb, #eef2ff);
+    border: 1px solid #e0e7ff;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
+}
+
+.reportes-salud__filter-panel {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.reportes-salud__filter-panel .row {
+    margin-bottom: 0;
+}
+
+.reportes-salud__btn-primary,
+.reportes-salud__btn-outline {
+    border-radius: 0.75rem;
+    font-weight: 600;
+}
+
+.reportes-salud__btn-primary {
+    box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
+}
+
+.reportes-salud__counts-row {
+    gap: 1rem;
+}
+
+.reportes-salud__count-card {
+    min-height: 130px;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.reportes-salud__counts-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+}
+
+.reportes-salud__counts-grid article {
+    flex: 1 1 160px;
+    min-width: 140px;
+}
+
+.reportes-salud__count-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.reportes-salud__count-label {
+    min-height: 3rem;
+    margin: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    background: #eef2ff;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.65rem;
+    padding: 0.35rem 0.75rem;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reportes-salud__count-value {
+    margin: 0;
+    text-align: center;
+}
+
+.reportes-salud__count-value h4 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.reportes-salud__count-card:hover {
+    transform: translateY(-2px);
+    border-color: #c7d2fe;
+}
+
+.reportes-salud__profile {
+    border-radius: 1rem;
+    padding: 1.25rem;
+    border: 1px solid #e0e7ff;
+    background: #ffffff;
+}
+
+.reportes-salud__profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.reportes-salud__status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.reportes-salud__status-card {
+    border-radius: 1rem;
+    border: 1px solid #e0e7ff;
+    padding: 1rem;
+    background: #fafbff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reportes-salud__status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.reportes-salud__table-card {
+    border-radius: 1rem;
+    border: 1px solid #e0e7ff;
+}
+
+.table-reportes {
+    border: none;
+}
+
+.table-reportes thead th {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.table-reportes tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-reportes tbody tr:hover {
+    background: #f8fafc;
+}
+
+.reportes-salud__table-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.reportes-salud__table-badge--yes {
+    background: #dc2626;
+    color: #fff;
+}
+
+.reportes-salud__table-badge--no {
+    background: #0ea5e9;
+    color: #fff;
+}
+
+.reportes-salud__count-card h4 {
+    font-size: 2rem;
+}
+
+.reportes-salud__status-card h6 {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 767px) {
+    .reportes-salud__hero {
+        padding: 1.25rem;
+    }
+
+    .reportes-salud__counts-row .col-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

@@ -150,17 +150,17 @@ class UserSearch extends User
 
         // filter by role
         $query->joinWith(['rol' => function ($q) {
-            $q->andFilterWhere(['=', 'rol.rol_nombre', $this->rolNombre]);
+            $q->andFilterWhere(['like', 'rol.rol_nombre', $this->rolNombre]);
         }])
 
             // filter by estado
             ->joinWith(['estado' => function ($q) {
-                $q->andFilterWhere(['=', 'estado.estado_nombre', $this->estadoNombre]);
+                $q->andFilterWhere(['like', 'estado.estado_nombre', $this->estadoNombre]);
             }])
 
             // filter by user type
             ->joinWith(['tipoUsuario' => function ($q) {
-                $q->andFilterWhere(['=', 'tipo_usuario.tipo_usuario_nombre', $this->tipoUsuarioNombre]);
+                $q->andFilterWhere(['like', 'tipo_usuario.tipo_usuario_nombre', $this->tipoUsuarioNombre]);
             }])
 
             // filter by perfil

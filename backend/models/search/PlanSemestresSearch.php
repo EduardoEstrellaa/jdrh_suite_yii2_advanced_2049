@@ -2,15 +2,21 @@
 
 namespace backend\models\search;
 
+use common\models\PlanEstudios;
+use common\models\PlanSemestres;
+use common\models\Semestres;
+use common\models\UnidadesEstudio;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\PlanSemestres;
 
 /**
- * PlanSemestresSearch represents the model behind the search form of `backend\models\PlanSemestres`.
+ * PlanSemestresSearch represents the model behind the search form of `common\models\PlanSemestres`.
  */
 class PlanSemestresSearch extends PlanSemestres
 {
+    public $planNombre;
+    public $semestreNombre;
+    public $unidadNombre;
     /**
      * {@inheritdoc}
      */
@@ -18,6 +24,7 @@ class PlanSemestresSearch extends PlanSemestres
     {
         return [
             [['id', 'plan_licenciatura_id', 'semestres_id', 'unidades_estudio_id'], 'integer'],
+            [['planNombre', 'semestreNombre', 'unidadNombre'], 'safe'],
         ];
     }
 
@@ -39,13 +46,33 @@ class PlanSemestresSearch extends PlanSemestres
      */
     public function search($params)
     {
-        $query = PlanSemestres::find();
+        $query = PlanSemestres::find()->alias('ps')
+            ->joinWith([
+                'planLicenciatura pl' => function ($q) {
+                    $q->joinWith(['planEstudios pe']);
+                },
+                'semestres s',
+                'unidadesEstudio ue',
+            ]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['planNombre'] = [
+            'asc' => ['pe.nombre' => SORT_ASC],
+            'desc' => ['pe.nombre' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['semestreNombre'] = [
+            'asc' => ['s.nombre' => SORT_ASC],
+            'desc' => ['s.nombre' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['unidadNombre'] = [
+            'asc' => ['ue.nombre' => SORT_ASC],
+            'desc' => ['ue.nombre' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -62,6 +89,9 @@ class PlanSemestresSearch extends PlanSemestres
             'semestres_id' => $this->semestres_id,
             'unidades_estudio_id' => $this->unidades_estudio_id,
         ]);
+        $query->andFilterWhere(['like', 'pe.nombre', $this->planNombre]);
+        $query->andFilterWhere(['like', 's.nombre', $this->semestreNombre]);
+        $query->andFilterWhere(['like', 'ue.nombre', $this->unidadNombre]);
 
         return $dataProvider;
     }

@@ -22,6 +22,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'nombre') ?>
 
+    <?= $form->field($model, 'descripcion') ?>
+
     <?= $form->field($model, 'tipo_organizacion_id') ?>
 
     <div class="form-group">

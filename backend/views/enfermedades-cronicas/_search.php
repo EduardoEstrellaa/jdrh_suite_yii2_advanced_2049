@@ -20,11 +20,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'catalogo_enferm_cronicas_id') ?>
-
     <?= $form->field($model, 'alum_enfermedades_cronicas_id') ?>
 
-    <?= $form->field($model, 'otro_especificas') ?>
+    <?= $form->field($model, 'catalogo_enferm_cronicas_id') ?>
+
+    <?= $form->field($model, 'otro_especificar') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>

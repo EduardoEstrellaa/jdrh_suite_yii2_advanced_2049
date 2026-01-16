@@ -2,15 +2,20 @@
 
 namespace backend\models\search;
 
+use common\models\Licenciaturas;
+use common\models\PlanEstudios;
+use common\models\PlanLicenciaturas;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\PlanLicenciaturas;
 
 /**
  * PlanLicenciaturasSearch represents the model behind the search form of `common\models\PlanLicenciaturas`.
  */
 class PlanLicenciaturasSearch extends PlanLicenciaturas
 {
+    public $planNombre;
+    public $planEtiqueta;
+    public $licenciaturaEtiqueta;
     /**
      * {@inheritdoc}
      */
@@ -18,6 +23,7 @@ class PlanLicenciaturasSearch extends PlanLicenciaturas
     {
         return [
             [['id', 'plan_estudios_id', 'licenciaturas_id'], 'integer'],
+            [['planNombre', 'planEtiqueta', 'licenciaturaEtiqueta'], 'safe'],
         ];
     }
 
@@ -39,13 +45,27 @@ class PlanLicenciaturasSearch extends PlanLicenciaturas
      */
     public function search($params)
     {
-        $query = PlanLicenciaturas::find();
+        $query = PlanLicenciaturas::find()->alias('pl')
+            ->joinWith(['planEstudios pe', 'licenciaturas l']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['planNombre'] = [
+            'asc' => ['pe.nombre' => SORT_ASC],
+            'desc' => ['pe.nombre' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['planEtiqueta'] = [
+            'asc' => ['pe.nombre' => SORT_ASC],
+            'desc' => ['pe.nombre' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['licenciaturaEtiqueta'] = [
+            'asc' => ['l.nombre' => SORT_ASC],
+            'desc' => ['l.nombre' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -61,6 +81,9 @@ class PlanLicenciaturasSearch extends PlanLicenciaturas
             'plan_estudios_id' => $this->plan_estudios_id,
             'licenciaturas_id' => $this->licenciaturas_id,
         ]);
+
+        $query->andFilterWhere(['like', 'pe.nombre', $this->planNombre ?: $this->planEtiqueta]);
+        $query->andFilterWhere(['like', 'l.nombre', $this->licenciaturaEtiqueta]);
 
         return $dataProvider;
     }

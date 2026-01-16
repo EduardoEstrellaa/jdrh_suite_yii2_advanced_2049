@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\TiposInscripciones;
+use common\models\TiposInscripciones;
 use backend\models\search\TiposInscripcionesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

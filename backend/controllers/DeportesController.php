@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Deportes;
+use common\models\Deportes;
 use backend\models\search\DeportesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

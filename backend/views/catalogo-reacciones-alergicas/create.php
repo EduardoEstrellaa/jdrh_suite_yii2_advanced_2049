@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\CatalogoReaccionesAlergicas $model */
+/** @var common\models\CatalogoReaccionesAlergicas $model */
 
 $this->title = Yii::t('app', 'Create Catalogo Reacciones Alergicas');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Catalogo Reacciones Alergicas'), 'url' => ['index']];

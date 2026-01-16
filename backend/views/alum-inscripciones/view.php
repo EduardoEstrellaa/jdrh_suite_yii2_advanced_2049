@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\AlumInscripciones $model */
+/** @var common\models\AlumInscripciones $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Alum Inscripciones'), 'url' => ['index']];
@@ -31,9 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'alumnos_id',
+            'ciclos_semestres_id',
             'tipos_inscripciones_id',
-            'semestre_id',
-            'ciclos_escolares_id',
         ],
     ]) ?>
 

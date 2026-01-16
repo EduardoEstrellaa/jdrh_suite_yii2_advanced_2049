@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\CiclosEscolares $model */
+/** @var common\models\CiclosEscolares $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Ciclos Escolares'), 'url' => ['index']];
@@ -33,6 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'nombre',
             'fecha_inicio',
             'fecha_fin',
+            'periodo_texto',
+            'estados_ciclos_escolares_id',
         ],
     ]) ?>
 

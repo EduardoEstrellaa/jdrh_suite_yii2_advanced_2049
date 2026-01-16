@@ -4,10 +4,10 @@ namespace backend\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\TipoOrganizacion;
+use common\models\TipoOrganizacion;
 
 /**
- * TipoOrganizacionSearch represents the model behind the search form of `backend\models\TipoOrganizacion`.
+ * TipoOrganizacionSearch represents the model behind the search form of `common\models\TipoOrganizacion`.
  */
 class TipoOrganizacionSearch extends TipoOrganizacion
 {
@@ -18,7 +18,7 @@ class TipoOrganizacionSearch extends TipoOrganizacion
     {
         return [
             [['id'], 'integer'],
-            [['nombre'], 'safe'],
+            [['nombre', 'descripcion'], 'safe'],
         ];
     }
 
@@ -35,11 +35,10 @@ class TipoOrganizacionSearch extends TipoOrganizacion
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $formName = null)
+    public function search($params)
     {
         $query = TipoOrganizacion::find();
 
@@ -49,7 +48,7 @@ class TipoOrganizacionSearch extends TipoOrganizacion
             'query' => $query,
         ]);
 
-        $this->load($params, $formName);
+        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -62,7 +61,8 @@ class TipoOrganizacionSearch extends TipoOrganizacion
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'nombre', $this->nombre]);
+        $query->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'descripcion', $this->descripcion]);
 
         return $dataProvider;
     }

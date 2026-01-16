@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\FrecuenciaVecesSemana;
+use common\models\FrecuenciaVecesSemana;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
