@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use common\models\Alumnos;
 use common\models\Perfil;
 use common\models\Municipios;
+use common\services\ExpedienteFacade;
 use common\services\ExpedienteService;
 use yii\data\ActiveDataProvider;
 
@@ -109,26 +110,28 @@ class ExpedienteController extends Controller
     {
         $alumno = $this->findAlumnoModel($id);
         $perfil = $alumno->perfil;
-
-        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
+        $facade = new ExpedienteFacade();
 
         if (Yii::$app->request->isPost) {
-            try {
-                if (ExpedienteService::actualizarExpediente($perfil->id, $alumno->id, Yii::$app->request->post())) {
-                    Yii::$app->session->setFlash('success', 'Expediente actualizado correctamente.');
-                    return $this->redirect(['view', 'id' => $alumno->id]);
-                } else {
-                    Yii::$app->session->setFlash('error', 'Error al guardar el expediente.');
-                }
-            } catch (\Exception $e) {
-                Yii::$app->session->setFlash('error', 'Error: ' . $e->getMessage());
+            $result = $facade->update($perfil->id, $alumno->id, Yii::$app->request->post());
+            if ($result->isOk()) {
+                Yii::$app->session->setFlash('success', $result->message() ?: 'Expediente actualizado correctamente.');
+                return $this->redirect(['view', 'id' => $alumno->id]);
             }
+            Yii::$app->session->addFlash('error', $result->message() ?: 'Error al guardar el expediente.');
         }
 
-        return $this->render('update', array_merge([
+        $models = $facade->getUpdateData($perfil->id, $alumno->id);
+        $formParams = array_merge([
             'perfil' => $perfil,
             'alumno' => $alumno,
-        ], $models));
+        ], $models);
+
+        return $this->render('update', [
+            'perfil' => $perfil,
+            'alumno' => $alumno,
+            'formParams' => $formParams,
+        ]);
     }
 
     /* ============================================================= */

@@ -158,7 +158,7 @@ foreach ($ejercicioFisicos as $ejercicioFisico) {
     $ejercicioFisicosMap[(int)$ejercicioFisico->catalogo_actividad_ejercicio_id] = $ejercicioFisico;
 }
 
-$this->registerCssFile('@web/css/expediente-form.css');
+$this->registerCssFile('@frontendUrl/css/expediente-form.css');
 ?>
 
 <div class="expediente-form">
@@ -810,7 +810,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
                         </div>
                     </div>
                     <?php
-                    $this->registerJsFile('@web/js/expediente/expediente-becas.js', [
+                    $this->registerJsFile('@frontendUrl/js/expediente/expediente-becas.js', [
                         'depends' => [\yii\web\JqueryAsset::class],
                     ]);
                     ?>
@@ -980,7 +980,7 @@ $this->registerCssFile('@web/css/expediente-form.css');
 
                     <?php
                     $this->registerJsFile(
-                        '@web/js/expediente/expediente-hijos.js',
+                        '@frontendUrl/js/expediente/expediente-hijos.js',
                         ['depends' => [\yii\web\JqueryAsset::class]]
                     );
                     ?>
@@ -3050,47 +3050,47 @@ $this->registerJsVar('LUGAR_COMER_OTRO_ID', $catalogoLugarComerOtroId);
 $this->registerJsVar('ORGANIZACION_OTRO_ID', $catalogoOrganizacionOtroId);
 $alumnoId = (int)($alumno->id ?? 0);
 $this->registerJsFile(
-    '@web/js/expediente/expediente-dependencia.js',
+    '@frontendUrl/js/expediente/expediente-dependencia.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-dependientes.js',
+    '@frontendUrl/js/expediente/expediente-dependientes.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-trabajo.js',
+    '@frontendUrl/js/expediente/expediente-trabajo.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-vivienda.js',
+    '@frontendUrl/js/expediente/expediente-vivienda.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-salud.js',
+    '@frontendUrl/js/expediente/expediente-salud.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-alimentacion.js',
+    '@frontendUrl/js/expediente/expediente-alimentacion.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-actividad.js',
+    '@frontendUrl/js/expediente/expediente-actividad.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-habitos.js',
+    '@frontendUrl/js/expediente/expediente-habitos.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-recreacion.js',
+    '@frontendUrl/js/expediente/expediente-recreacion.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-organizacion.js',
+    '@frontendUrl/js/expediente/expediente-organizacion.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 $this->registerJsFile(
-    '@web/js/expediente/expediente-focus-errors.js',
+    '@frontendUrl/js/expediente/expediente-focus-errors.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
 );
 
