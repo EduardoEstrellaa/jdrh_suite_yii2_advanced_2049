@@ -95,12 +95,17 @@ class ExpedienteController extends Controller
         }
 
         $perfil = $alumno->perfil;
-        $models = ExpedienteService::getModelsForUpdate($perfil->id, $alumno->id);
+        $facade = new ExpedienteFacade();
+        $models = $facade->getUpdateData($perfil->id, $alumno->id);
 
-        return $this->render('view', array_merge([
+        return $this->render('view', [
             'perfil' => $perfil,
             'alumno' => $alumno,
-        ], $models));
+            'viewParams' => array_merge([
+                'perfil' => $perfil,
+                'alumno' => $alumno,
+            ], $models),
+        ]);
     }
 
     /* ============================================================= */
