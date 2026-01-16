@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use Yii;
 use common\models\User;
 use backend\models\search\UserSearch;
 use yii\web\Controller;
@@ -9,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use common\models\PermisosHelpers;
+use common\models\ValorHelpers;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -25,10 +27,10 @@ class UserController extends Controller
             [
                 'access' => [
                     'class' => \yii\filters\AccessControl::className(),
-                    'only' => ['index', 'view','create', 'update', 'delete'],
+                    'only' => ['index', 'view','create', 'update', 'delete', 'bulk-status'],
                     'rules' => [
                         [
-                            'actions' => ['index', 'create', 'view',],
+                            'actions' => ['index', 'create', 'view', 'bulk-status'],
                             'allow' => true,
                             'roles' => ['@'],
                             'matchCallback' => function ($rule, $action) {
@@ -54,6 +56,7 @@ class UserController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'bulk-status' => ['POST'],
                     ],
                 ],
             ]
@@ -142,6 +145,30 @@ class UserController extends Controller
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    public function actionBulkStatus()
+    {
+        $selection = Yii::$app->request->post('selection', []);
+        $statusId = (int)Yii::$app->request->post('status_id', ValorHelpers::getEstadoId('Activo'));
+
+        if (empty($selection)) {
+            Yii::$app->session->setFlash('warning', 'Selecciona al menos un usuario para actualizar.');
+            return $this->redirect(['index']);
+        }
+
+        $allowedStatuses = array_keys(User::getEstadoLista());
+        if ($statusId <= 0 && !empty($allowedStatuses)) {
+            $statusId = reset($allowedStatuses);
+        }
+        if (!in_array($statusId, $allowedStatuses, true)) {
+            Yii::$app->session->setFlash('error', 'Selecciona un estado válido.');
+            return $this->redirect(['index']);
+        }
+
+        $affected = User::updateAll(['estado_id' => $statusId], ['id' => $selection]);
+        Yii::$app->session->setFlash('success', "Se actualizaron {$affected} usuario(s) al estado seleccionado.");
         return $this->redirect(['index']);
     }
 
