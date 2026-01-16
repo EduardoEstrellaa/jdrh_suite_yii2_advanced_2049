@@ -345,7 +345,7 @@ $form = Html::beginForm(['/site/logout'], 'post', ['class' => 'd-none', 'id' => 
                             <img class="rounded-circle header-profile-user" src="theme/images/users/avatar-1.jpg" alt="Header Avatar">
                             <span class="text-start ms-xl-2">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text"><?= Yii::$app->user->identity->username ?></span>
-                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Admin</span>
+                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text"><?= Html::encode(Yii::$app->user->identity->rolNombre) ?></span>
                             </span>
                         </span>
                     </button>
